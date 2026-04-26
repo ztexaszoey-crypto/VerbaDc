@@ -5,115 +5,81 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>VerbaDoc — Your Friendly Homework Tutor</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    
     body { font-family: 'Inter', system-ui, sans-serif; }
     
     .mascot {
-      animation: float 6s ease-in-out infinite;
-      transition: transform 0.4s ease;
+      animation: float 6.5s ease-in-out infinite;
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    
     .mascot:hover {
-      transform: scale(1.25) rotate(15deg);
+      transform: scale(1.28) rotate(20deg);
       animation-play-state: paused;
     }
-    
     @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(-3deg); }
-      50% { transform: translateY(-40px) rotate(8deg); }
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50% { transform: translateY(-55px) rotate(12deg); }
     }
-    
     .hero-bg {
-      background: linear-gradient(135deg, #86efac 0%, #4ade80 100%);
+      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
     }
   </style>
 </head>
 <body class="bg-zinc-50 text-zinc-900">
 
-  <!-- Navbar -->
   <nav class="bg-white border-b sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-emerald-500 text-white rounded-2xl flex items-center justify-center font-bold text-2xl">V</div>
+        <div class="w-11 h-11 bg-emerald-700 text-white rounded-2xl flex items-center justify-center font-bold text-3xl">V</div>
         <span class="font-bold text-3xl tracking-tight">VerbaDoc</span>
       </div>
-      <div class="hidden md:flex gap-8 text-sm font-medium">
+      <div class="hidden md:flex gap-10 text-sm font-medium">
         <a href="#how" class="hover:text-emerald-600">How it works</a>
-        <a href="#why" class="hover:text-emerald-600">Why Verba</a>
         <a href="#example" class="hover:text-emerald-600">Real Example</a>
+        <a href="#why" class="hover:text-emerald-600">Why Verba</a>
       </div>
       <button onclick="document.getElementById('cta-section').scrollIntoView({ behavior: 'smooth' })" 
-              class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-3xl font-semibold transition">
+              class="bg-emerald-700 hover:bg-emerald-800 text-white px-8 py-3 rounded-3xl font-semibold transition">
         Get Early Access
       </button>
     </div>
   </nav>
 
-  <!-- Hero -->
-  <section class="hero-bg text-white py-32 md:py-44 relative overflow-hidden">
+  <section class="hero-bg text-white py-32 md:py-44 relative overflow-hidden min-h-screen flex items-center">
     <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10">
       <div>
-        <h1 class="text-6xl md:text-7xl font-bold leading-none tracking-tighter mb-6">
+        <h1 class="text-6xl md:text-7xl font-bold leading-none tracking-tighter mb-8">
           The friendly tutor<br>that never sleeps.
         </h1>
-        <p class="text-2xl md:text-3xl text-emerald-900 mb-10">
-          Verba breaks your homework into clear steps so you actually understand — no more guessing or panic.
+        <p class="text-2xl md:text-3xl text-emerald-100 mb-12">
+          Verba breaks your homework into clear steps so you actually understand.
         </p>
-        <div class="flex flex-col sm:flex-row gap-4">
+        <div class="flex flex-col sm:flex-row gap-5">
           <button onclick="document.getElementById('cta-section').scrollIntoView({ behavior: 'smooth' })" 
-                  class="bg-white text-emerald-700 hover:bg-emerald-50 text-xl font-semibold px-12 py-6 rounded-3xl transition">
+                  class="bg-white text-emerald-800 hover:bg-emerald-50 text-xl font-semibold px-12 py-6 rounded-3xl transition">
             Join Early Access
           </button>
-          <a href="#example" class="border-2 border-white/80 hover:border-white text-white text-xl font-medium px-12 py-6 rounded-3xl transition">
+          <a href="#example" class="border-2 border-white/90 hover:bg-white/10 text-white text-xl font-medium px-12 py-6 rounded-3xl transition">
             See Verba in Action
           </a>
         </div>
       </div>
     </div>
 
-    <!-- Your Real Mascot - Big, floating, Duolingo-style -->
-    <div class="absolute bottom-0 right-10 md:right-20 lg:right-32 z-0">
+    <!-- Mascot -->
+    <div class="absolute bottom-12 right-12 md:right-24 lg:right-40 z-0">
       <img id="mascot" 
            src="images/verba-mascot.png" 
-           alt="Verba the friendly green tutor" 
-           class="mascot w-80 md:w-[460px] drop-shadow-2xl">
+           alt="Verba the friendly tutor" 
+           class="mascot w-80 md:w-[480px]">
     </div>
   </section>
 
-  <!-- Rest of the page (Why, Example, How it works, CTA) is the same as before -->
-  <!-- ... (copy the sections from my previous message if needed) ... -->
+  <!-- Rest of the page (Why, Example, CTA) can be added from previous versions -->
 
-  <section id="why" class="py-20 bg-white">
-    <div class="max-w-6xl mx-auto px-6 text-center">
-      <h2 class="text-5xl font-bold mb-4">Why students love Verba</h2>
-      <p class="text-xl text-zinc-600 mb-16">Built to turn confusion into confidence.</p>
-      <div class="grid md:grid-cols-3 gap-10">
-        <div><h3 class="text-2xl font-semibold mb-4">Clear step-by-step</h3><p class="text-zinc-600">Verba teaches the method, not just the answer.</p></div>
-        <div><h3 class="text-2xl font-semibold mb-4">Patient & friendly</h3><p class="text-zinc-600">Explains calmly, even at 2 AM.</p></div>
-        <div><h3 class="text-2xl font-semibold mb-4">Any subject</h3><p class="text-zinc-600">Math, chemistry, essays — you name it.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Add the other sections (example, how it works, final CTA) from previous responses if you want the full page -->
-
-  <footer class="bg-zinc-900 text-zinc-400 py-12 text-center text-sm">
-    <p>© 2026 VerbaDoc • Helping students actually understand their homework</p>
+  <footer class="bg-zinc-900 text-zinc-400 py-12 text-center">
+    <p>© 2026 VerbaDoc</p>
   </footer>
-
-  <script>
-    // Simple form handler
-    document.getElementById('waitlist-form')?.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      if (email) {
-        alert(`Thank you! We'll notify you at ${email} when early access opens.`);
-        this.reset();
-      }
-    });
-  </script>
 </body>
 </html>
