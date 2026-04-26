@@ -1,671 +1,286 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>VerbaDoc — Your Secret Weapon for Homework</title>
-  <meta name="description" content="Stop guessing. Start passing. Get instant AI explanations for any homework problem." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VerbaDoc — Your Friendly AI Homework Tutor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <style>
-    :root {
-      --brand: #2F9E77;
-      --accent: #FF6B35;
-      --dark: #0F1B17;
-      --light: #F7FAF9;
-      --surface: #FFFFFF;
-      --text: #0F1B17;
-      --muted: #4B5D56;
-      --border: #E3ECE8;
-      --danger: #EF4444;
-    }
-
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
     body {
-      font-family: Inter, system-ui, -apple-system, sans-serif;
-      color: var(--text);
-      background: var(--light);
-      line-height: 1.35;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
-
-    a { color: inherit; text-decoration: none; }
-    .container { width: min(1200px, calc(100% - 40px)); margin: 0 auto; }
-
-    /* Header */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(247, 250, 249, .95);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid rgba(227, 236, 232, .5);
+    
+    .mascot {
+      transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
     }
-    .nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 0;
-      gap: 16px;
+    
+    .mascot:hover {
+      transform: scale(1.08) rotate(6deg);
     }
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 900;
-      letter-spacing: -0.02em;
-      font-size: 18px;
+    
+    .hero-bg {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     }
-    .brand-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--brand), #1e8449);
-      display: grid;
-      place-items: center;
-      color: white;
-      font-weight: 900;
-      font-size: 20px;
-    }
-    .nav-center {
-      display: flex;
-      gap: 20px;
-      flex: 1;
-      justify-content: center;
-    }
-    .nav-center a {
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--muted);
-      padding: 8px 12px;
-      border-radius: 10px;
-    }
-    .nav-center a:hover {
-      background: rgba(47, 158, 119, .1);
-      color: var(--text);
-    }
-    .nav-right {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-weight: 700;
-      font-size: 14px;
-      border: none;
-      cursor: pointer;
-      transition: all .15s ease;
-    }
-    .btn:active { transform: translateY(2px); }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--brand), #1e8449);
-      color: white;
-      box-shadow: 0 12px 24px rgba(47, 158, 119, .3);
-    }
-    .btn-primary:hover {
-      box-shadow: 0 16px 32px rgba(47, 158, 119, .4);
-      transform: translateY(-2px);
-    }
-    .btn-secondary {
-      background: rgba(47, 158, 119, .1);
-      color: var(--brand);
-      border: 1.5px solid rgba(47, 158, 119, .2);
-    }
-    .btn-secondary:hover {
-      background: rgba(47, 158, 119, .15);
-    }
-
-    /* Hero Section */
-    .hero {
-      padding: 60px 0 80px;
-    }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 40px;
-      align-items: center;
-    }
-    .hero h1 {
-      margin: 0 0 16px;
-      font-size: clamp(40px, 5vw, 56px);
-      line-height: 1.05;
-      letter-spacing: -0.03em;
-      font-weight: 900;
-      color: var(--dark);
-    }
-    .hero .subtitle {
-      margin: 0 0 24px;
-      font-size: 18px;
-      color: var(--muted);
-      font-weight: 500;
-      max-width: 50ch;
-    }
-    .hero-cta {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin: 28px 0;
-    }
-
-    /* Demo Box */
-    .demo-box {
-      background: var(--surface);
-      border: 2px solid var(--border);
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: 0 20px 48px rgba(15, 27, 23, .12);
-    }
-    .demo-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-    .demo-verba {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--brand), #1e8449);
-      display: grid;
-      place-items: center;
-      color: white;
-      font-weight: 900;
-      font-size: 24px;
-      transition: transform .3s ease;
-    }
-    .demo-verba.excited {
-      transform: scale(1.1) rotate(5deg);
-    }
-    .demo-label {
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-    .demo-input {
-      width: 100%;
-      border: 1.5px solid var(--border);
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 500;
-      outline: none;
-      transition: all .2s;
-      font-family: inherit;
-    }
-    .demo-input:focus {
-      border-color: var(--brand);
-      box-shadow: 0 0 0 3px rgba(47, 158, 119, .1);
-    }
-    .demo-button {
-      width: 100%;
-      margin-top: 12px;
-      background: linear-gradient(135deg, var(--brand), #1e8449);
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all .2s;
-    }
-    .demo-button:hover {
-      box-shadow: 0 12px 24px rgba(47, 158, 119, .3);
-    }
-    .demo-button:active {
-      transform: translateY(2px);
-    }
-    .demo-output {
-      margin-top: 14px;
-      padding: 12px;
-      background: rgba(47, 158, 119, .05);
-      border-radius: 12px;
-      border-left: 4px solid var(--brand);
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      min-height: 40px;
-      display: none;
-    }
-    .demo-output.show {
-      display: block;
-      animation: slideIn .3s ease;
-    }
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Features Bento */
-    .section {
-      padding: 64px 0;
-    }
-    .section-title {
-      font-size: clamp(28px, 4vw, 40px);
-      letter-spacing: -0.03em;
-      margin: 0 0 12px;
-      font-weight: 900;
-    }
-    .section-sub {
-      margin: 0 0 32px;
-      color: var(--muted);
-      font-size: 16px;
-      font-weight: 500;
-      max-width: 60ch;
-    }
-
-    .bento {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      gap: 16px;
-      margin-top: 24px;
-    }
-    .bento-item {
-      background: var(--surface);
-      border: 2px solid var(--border);
-      border-radius: 16px;
-      padding: 28px;
-      transition: all .3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    .bento-item:hover {
-      border-color: var(--brand);
-      box-shadow: 0 20px 40px rgba(47, 158, 119, .15);
+    
+    .card-hover:hover {
       transform: translateY(-4px);
-    }
-    .bento-item.large {
-      grid-row: span 2;
-    }
-    .bento-icon {
-      font-size: 32px;
-      margin-bottom: 12px;
-    }
-    .bento-title {
-      font-weight: 800;
-      font-size: 16px;
-      margin: 0 0 8px;
-      letter-spacing: -0.02em;
-    }
-    .bento-text {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 1.4;
-    }
-
-    /* Real Example Section */
-    .example-section {
-      background: var(--light);
-      border: 2px solid var(--border);
-      border-radius: 20px;
-      padding: 40px;
-      margin: 60px 0;
-    }
-    .example-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-      align-items: center;
-    }
-    .example-problem {
-      background: var(--surface);
-      border: 2px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-    }
-    .example-label {
-      font-weight: 800;
-      font-size: 12px;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 12px;
-    }
-    .example-question {
-      font-weight: 700;
-      font-size: 16px;
-      margin: 0 0 16px;
-      color: var(--text);
-    }
-    .example-answer {
-      background: rgba(47, 158, 119, .06);
-      border-left: 4px solid var(--brand);
-      padding: 16px;
-      border-radius: 12px;
-    }
-    .example-answer ol {
-      margin: 0;
-      padding-left: 20px;
-      color: var(--text);
-    }
-    .example-answer li {
-      margin: 8px 0;
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    /* CTA Section */
-    .cta {
-      background: linear-gradient(135deg, var(--brand), #1e8449);
-      color: white;
-      border-radius: 20px;
-      padding: 60px 40px;
-      margin: 80px 0;
-      text-align: center;
-    }
-    .cta h2 {
-      margin: 0 0 12px;
-      font-size: clamp(28px, 4vw, 40px);
-      letter-spacing: -0.03em;
-      font-weight: 900;
-    }
-    .cta p {
-      margin: 0 0 28px;
-      font-size: 18px;
-      font-weight: 500;
-      max-width: 60ch;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .cta-form {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-    .cta-input {
-      padding: 14px 16px;
-      border: none;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 500;
-      outline: none;
-      font-family: inherit;
-    }
-    .cta-input::placeholder {
-      color: rgba(15, 27, 23, .5);
-    }
-    .cta-button {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 14px 24px;
-      border-radius: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all .2s;
-    }
-    .cta-button:hover {
-      box-shadow: 0 12px 24px rgba(255, 107, 53, .3);
-    }
-
-    /* Footer */
-    footer {
-      padding: 40px 0;
-      color: var(--muted);
-      font-weight: 600;
-      font-size: 13px;
-      border-top: 1px solid var(--border);
-    }
-    .footer-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    /* Mobile */
-    @media (max-width: 1024px) {
-      .hero-grid { grid-template-columns: 1fr; }
-      .bento { grid-template-columns: 1fr 1fr; }
-      .bento-item.large { grid-row: auto; }
-      .example-grid { grid-template-columns: 1fr; }
-      .nav-center { display: none; }
-      .cta-form { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 640px) {
-      .nav { flex-direction: column; gap: 8px; }
-      .nav-right { width: 100%; }
-      .hero h1 { font-size: 32px; }
-      .bento { grid-template-columns: 1fr; }
-      .hero-cta { flex-direction: column; }
-      .hero-cta .btn { width: 100%; }
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     }
   </style>
 </head>
+<body class="bg-zinc-50 text-zinc-900">
 
-<body>
-  <header>
-    <div class="container">
-      <div class="nav">
-        <a class="brand" href="#top">
-          <div class="brand-icon">V</div>
-          <span>VerbaDoc</span>
-        </a>
-        <nav class="nav-center">
-          <a href="#how">How it works</a>
-          <a href="#features">Features</a>
-          <a href="#example">Real Example</a>
-        </nav>
-        <div class="nav-right">
-          <a class="btn btn-primary" href="#solve">Solve Now</a>
-        </div>
+  <!-- Navbar -->
+  <nav class="bg-white border-b sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <img id="logo" src="https://via.placeholder.com/48/10b981/ffffff?text=V" 
+             alt="VerbaDoc Logo" class="w-11 h-11 rounded-2xl">
+        <span class="font-bold text-3xl tracking-tight">VerbaDoc</span>
       </div>
+      
+      <div class="hidden md:flex gap-8 text-sm font-medium">
+        <a href="#how" class="hover:text-emerald-600 transition">How it Works</a>
+        <a href="#features" class="hover:text-emerald-600 transition">Features</a>
+        <a href="#demo" class="hover:text-emerald-600 transition">Demo</a>
+        <a href="#faq" class="hover:text-emerald-600 transition">FAQ</a>
+      </div>
+      
+      <button onclick="document.getElementById('cta-section').scrollIntoView({ behavior: 'smooth' })" 
+              class="bg-emerald-600 hover:bg-emerald-700 text-white px-7 py-3 rounded-2xl font-semibold transition">
+        Get Early Access
+      </button>
     </div>
-  </header>
+  </nav>
 
-  <main id="top">
-    <section class="hero">
-      <div class="container">
-        <div class="hero-grid">
-          <div>
-            <h1>Stop guessing.<br>Start passing.</h1>
-            <p class="subtitle">The tutor that never sleeps. Get instant step-by-step explanations for any homework problem.</p>
-            
-            <div class="hero-cta">
-              <a class="btn btn-primary" href="#solve">Try Free</a>
-              <a class="btn btn-secondary" href="#example">See Real Example</a>
-            </div>
-
-            <p style="font-size: 13px; color: var(--muted); font-weight: 600; margin-top: 24px;">
-              ✓ Works on any subject &nbsp; ✓ Instant answers &nbsp; ✓ No signup required
-            </p>
-          </div>
-
-          <div class="demo-box" id="solve">
-            <div class="demo-header">
-              <div class="demo-verba" id="verba-icon">V</div>
-              <div>
-                <div class="demo-label">VerbaDoc</div>
-                <div style="font-size: 12px; color: var(--muted); font-weight: 600;">Type any problem</div>
-              </div>
-            </div>
-
-            <input 
-              type="text" 
-              class="demo-input" 
-              id="demo-input" 
-              placeholder="e.g., How do I find the derivative of 3x^2 + 2x?"
-            />
-            <button class="demo-button" id="demo-btn">Solve</button>
-
-            <div class="demo-output" id="demo-output"></div>
-          </div>
+  <!-- Hero -->
+  <section class="hero-bg text-white py-24 md:py-32">
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-5 py-2 rounded-full text-sm mb-6">
+          <span class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+          </span>
+          Early access coming soon
         </div>
-      </div>
-    </section>
-
-    <section class="section" id="features">
-      <div class="container">
-        <h2 class="section-title">Why students choose VerbaDoc</h2>
-        <p class="section-sub">Built to replace panic with clarity.</p>
-
-        <div class="bento">
-          <div class="bento-item large">
-            <div class="bento-icon">⚡</div>
-            <h3 class="bento-title">Instant Answers</h3>
-            <p class="bento-text">No waiting. No algorithms. No "thinking." Get your answer in seconds, not hours.</p>
-          </div>
-
-          <div class="bento-item">
-            <div class="bento-icon">🧠</div>
-            <h3 class="bento-title">Actually Understand</h3>
-            <p class="bento-text">Step-by-step breakdowns that teach you the method, not just the answer.</p>
-          </div>
-
-          <div class="bento-item">
-            <div class="bento-icon">🎯</div>
-            <h3 class="bento-title">Any Subject</h3>
-            <p class="bento-text">Math, chemistry, history, essays—anything your teacher assigns.</p>
-          </div>
-
-          <div class="bento-item">
-            <div class="bento-icon">🔒</div>
-            <h3 class="bento-title">Private & Safe</h3>
-            <p class="bento-text">Your homework stays between you and Verba. No history saved.</p>
-          </div>
-
-          <div class="bento-item">
-            <div class="bento-icon">🚀</div>
-            <h3 class="bento-title">No Signup for Quick Solves</h3>
-            <p class="bento-text">Try 3 free solves right now. See if it works before you commit.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="example-section" id="example">
-      <div class="container">
-        <h2 class="section-title">See it in action</h2>
-        <p class="section-sub">Here's what you actually get.</p>
-
-        <div class="example-grid">
-          <div>
-            <div class="example-problem">
-              <div class="example-label">AP Chemistry Problem</div>
-              <div class="example-question">
-                How many grams of NaCl are needed to make a 2.0 M solution in 500 mL of water?
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div class="example-answer">
-              <strong style="display: block; margin-bottom: 12px; color: var(--brand);">VerbaDoc's Solution:</strong>
-              <ol>
-                <li><strong>Molarity formula:</strong> M = moles/volume(L)</li>
-                <li><strong>Rearrange:</strong> moles = M × L = 2.0 × 0.5 = 1.0 mol NaCl</li>
-                <li><strong>Molar mass of NaCl:</strong> 23 + 35.5 = 58.5 g/mol</li>
-                <li><strong>Calculate mass:</strong> 1.0 mol × 58.5 g/mol = <strong>58.5 grams</strong></li>
-              </ol>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="cta">
-      <div class="container">
-        <h2>Stop failing tests.</h2>
-        <p>Get your first 3 solves free. No credit card. No email confirmation tricks.</p>
         
-        <form class="cta-form" onsubmit="handleWaitlist(event)">
-          <input type="email" class="cta-input" placeholder="your@email.com" required />
-          <button type="submit" class="cta-button">Get Access</button>
-        </form>
-        <p style="margin-top: 16px; font-size: 13px; opacity: 0.9;">Early access opens in 2 weeks.</p>
-      </div>
-    </section>
-  </main>
+        <h1 class="text-6xl md:text-7xl font-bold leading-none tracking-tighter mb-6">
+          Stop guessing.<br>
+          <span class="text-emerald-200">Start understanding.</span>
+        </h1>
+        
+        <p class="text-2xl text-emerald-100 mb-10 max-w-lg">
+          Verba is your friendly AI tutor that breaks homework problems into clear, patient steps — so you actually get it.
+        </p>
 
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <span>© 2026 VerbaDoc. Your secret weapon.</span>
-        <div>
-          <a href="#top" style="margin-left: 16px;">Back to top</a>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button onclick="document.getElementById('cta-section').scrollIntoView({ behavior: 'smooth' })" 
+                  class="bg-white text-emerald-700 hover:bg-emerald-50 text-xl font-semibold px-10 py-5 rounded-3xl flex items-center justify-center gap-3 transition">
+            <i class="fas fa-rocket"></i>
+            Join Early Access List
+          </button>
+          <a href="#demo" 
+             class="border-2 border-white/70 hover:border-white text-white text-xl font-medium px-10 py-5 rounded-3xl flex items-center justify-center transition">
+            See Demo
+          </a>
+        </div>
+
+        <div class="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm">
+          <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-300"></i> Private by default</div>
+          <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-300"></i> No spam</div>
+          <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-300"></i> No credit card needed</div>
+        </div>
+      </div>
+
+      <!-- Mascot -->
+      <div class="flex justify-center md:justify-end">
+        <img id="mascot" src="https://via.placeholder.com/520x520/10b981/ffffff?text=Verba" 
+             alt="Verba the Friendly AI Tutor" 
+             class="mascot w-full max-w-md drop-shadow-2xl rounded-3xl">
+      </div>
+    </div>
+  </section>
+
+  <!-- How it Works -->
+  <section id="how" class="py-20 bg-white">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-5xl font-bold mb-4">Three simple steps. Real clarity.</h2>
+        <p class="text-xl text-zinc-600">No fluff. No confusion. Just understanding.</p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-10">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-3xl flex items-center justify-center text-4xl font-bold mx-auto mb-6">1</div>
+          <h3 class="text-2xl font-semibold mb-4">Ask in your own words</h3>
+          <p class="text-zinc-600">Type or paste any homework problem. Math, chemistry, physics, essays — whatever you're stuck on.</p>
+        </div>
+        <div class="text-center">
+          <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-3xl flex items-center justify-center text-4xl font-bold mx-auto mb-6">2</div>
+          <h3 class="text-2xl font-semibold mb-4">Get clear step-by-step</h3>
+          <p class="text-zinc-600">Verba explains every step like a patient tutor — no walls of text, just what you need.</p>
+        </div>
+        <div class="text-center">
+          <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-3xl flex items-center justify-center text-4xl font-bold mx-auto mb-6">3</div>
+          <h3 class="text-2xl font-semibold mb-4">Actually understand it</h3>
+          <p class="text-zinc-600">Learn the method so the next similar problem feels way easier. No more panic before tests.</p>
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- Demo -->
+  <section id="demo" class="py-20 bg-zinc-100">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-5xl font-bold mb-4">See Verba in action</h2>
+        <p class="text-xl text-zinc-600">Real example from chemistry (what students actually struggle with)</p>
+      </div>
+      
+      <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+        <div class="p-10">
+          <p class="font-medium text-lg mb-4">You asked Verba:</p>
+          <div class="bg-zinc-50 border border-zinc-200 p-6 rounded-2xl mb-10 text-lg">
+            How many grams of NaCl are needed to make a 2.0 M solution in 500 mL of water?
+          </div>
+
+          <p class="font-semibold text-emerald-600 flex items-center gap-3 mb-6 text-xl">
+            <i class="fas fa-comment-dots"></i> 
+            Verba's response:
+          </p>
+          
+          <ol class="space-y-7 text-zinc-700 text-lg">
+            <li class="flex gap-4">
+              <span class="font-bold text-emerald-600 w-6">1.</span> 
+              Convert 500 mL to liters: <span class="font-medium">500 mL = 0.5 L</span>
+            </li>
+            <li class="flex gap-4">
+              <span class="font-bold text-emerald-600 w-6">2.</span> 
+              Moles of NaCl needed = Molarity × Volume = 2.0 × 0.5 = <span class="font-medium">1.0 mol</span>
+            </li>
+            <li class="flex gap-4">
+              <span class="font-bold text-emerald-600 w-6">3.</span> 
+              Molar mass of NaCl = 22.99 (Na) + 35.45 (Cl) = <span class="font-medium">58.44 g/mol</span>
+            </li>
+            <li class="flex gap-4">
+              <span class="font-bold text-emerald-600 w-6">4.</span> 
+              Mass = moles × molar mass = 1.0 × 58.44 = <span class="font-bold text-emerald-700">58.44 grams</span>
+            </li>
+          </ol>
+        </div>
+        
+        <div class="bg-emerald-50 p-6 text-sm text-emerald-800 border-t">
+          Verba always explains <strong>why</strong> each step matters — so you can solve the next one yourself.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <h2 class="text-5xl font-bold text-center mb-6">Built for real students</h2>
+      <p class="text-center text-xl text-zinc-600 mb-16 max-w-2xl mx-auto">
+        Not another generic AI. Designed to reduce stress and actually help you learn.
+      </p>
+      
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="bg-zinc-50 p-8 rounded-3xl card-hover transition-all">
+          <h3 class="text-2xl font-semibold mb-4">Step-by-step explanations</h3>
+          <p class="text-zinc-600">We teach the method, not just give the answer. So you get better at solving problems yourself.</p>
+        </div>
+        <div class="bg-zinc-50 p-8 rounded-3xl card-hover transition-all">
+          <h3 class="text-2xl font-semibold mb-4">Friendly & encouraging tone</h3>
+          <p class="text-zinc-600">Like having a patient tutor who never judges you for asking "dumb" questions at 2 AM.</p>
+        </div>
+        <div class="bg-zinc-50 p-8 rounded-3xl card-hover transition-all">
+          <h3 class="text-2xl font-semibold mb-4">Works on your hardest subjects</h3>
+          <p class="text-zinc-600">Math, chemistry, physics, biology, and more. We're constantly improving on tougher material.</p>
+        </div>
+        <div class="bg-zinc-50 p-8 rounded-3xl card-hover transition-all">
+          <h3 class="text-2xl font-semibold mb-4">100% private</h3>
+          <p class="text-zinc-600">Your homework stays between you and Verba. Nothing is stored or shared.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section id="cta-section" class="py-24 bg-emerald-700 text-white">
+    <div class="max-w-2xl mx-auto text-center px-6">
+      <h2 class="text-5xl font-bold mb-6">Ready to make homework less painful?</h2>
+      <p class="text-2xl mb-10">
+        Join the early access list and be among the first to try Verba when we launch in the next couple of weeks.
+      </p>
+      
+      <form id="waitlist-form" class="max-w-md mx-auto space-y-4">
+        <input type="email" id="email" placeholder="you@email.com" required
+               class="w-full px-8 py-5 rounded-3xl text-zinc-900 focus:outline-none text-lg border border-transparent focus:border-emerald-400">
+        <button type="submit"
+                class="w-full bg-white text-emerald-700 font-semibold text-xl py-5 rounded-3xl hover:bg-emerald-50 transition">
+          Join the Waitlist
+        </button>
+      </form>
+      
+      <p class="text-emerald-200 mt-8 text-sm">No spam. Only important updates and your early access link.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-20 bg-zinc-50">
+    <div class="max-w-3xl mx-auto px-6">
+      <h2 class="text-4xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+      <div class="space-y-10">
+        <div>
+          <h3 class="font-semibold text-xl mb-3">When does early access start?</h3>
+          <p class="text-zinc-600">We're targeting the next 2–4 weeks. Everyone on the list will get notified first.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-xl mb-3">Is it really private?</h3>
+          <p class="text-zinc-600">Yes. Your homework problems are not saved or used to train models. Privacy is non-negotiable.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-xl mb-3">Will it handle hard subjects?</h3>
+          <p class="text-zinc-600">Yes — that's the plan. The demo shows chemistry, but we're actively training on calculus, physics, org chem, and more.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-xl mb-3">Do I need to pay right away?</h3>
+          <p class="text-zinc-600">No. Early access will include free solves to test it out before any paid plans.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-zinc-900 text-zinc-400 py-12 text-center text-sm">
+    <p>© 2026 VerbaDoc • Built to help students actually understand their homework, not just survive it.</p>
   </footer>
 
   <script>
-    const demoInput = document.getElementById('demo-input');
-    const demoBtn = document.getElementById('demo-btn');
-    const demoOutput = document.getElementById('demo-output');
-    const verbaIcon = document.getElementById('verba-icon');
-
-    // Sample responses
-    const sampleResponses = {
-      'derivative': '1. Identify the function: f(x) = 3x² + 2x\n2. Apply power rule to each term: d/dx(3x²) = 6x, d/dx(2x) = 2\n3. Combine: f\'(x) = 6x + 2',
-      'integral': '1. Set up: ∫(2x + 3)dx\n2. Apply power rule in reverse: ∫2x dx = x², ∫3 dx = 3x\n3. Add constant: x² + 3x + C',
-      'pythagorean': '1. Use Pythagorean theorem: a² + b² = c²\n2. Substitute: 3² + 4² = c²\n3. Calculate: 9 + 16 = 25, so c = 5',
-      'chemistry': '1. Molarity = moles/volume(L)\n2. 2.0 M × 0.5 L = 1.0 mol\n3. Mass = 1.0 mol × 58.5 g/mol = 58.5g',
-      'photosynthesis': '1. Light reactions occur in thylakoid membranes\n2. Produce ATP and NADPH for dark reactions\n3. Dark reactions (Calvin cycle) use these to fix CO₂ into glucose'
-    };
-
-    demoBtn.addEventListener('click', () => {
-      const input = demoInput.value.trim().toLowerCase();
-      if (!input) return;
-
-      // Animate Verba
-      verbaIcon.classList.add('excited');
-      setTimeout(() => verbaIcon.classList.remove('excited'), 600);
-
-      // Find matching response
-      let response = 'Analyzing your problem...';
-      for (const [key, value] of Object.entries(sampleResponses)) {
-        if (input.includes(key)) {
-          response = value;
-          break;
-        }
-      }
-
-      // If no match, give generic response
-      if (response === 'Analyzing your problem...') {
-        response = '1. Break down the problem into smaller parts\n2. Identify what you know and what you need to find\n3. Apply relevant formulas or concepts\n4. Check your work';
-      }
-
-      demoOutput.textContent = response;
-      demoOutput.classList.add('show');
-    });
-
-    demoInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') demoBtn.click();
-    });
-
-    // Hover states for mascot (exit intent)
-    document.addEventListener('mouseleave', () => {
-      if (Math.random() > 0.7) {
-        verbaIcon.style.opacity = '0.6';
-        setTimeout(() => verbaIcon.style.opacity = '1', 500);
-      }
-    });
-
-    function handleWaitlist(e) {
+    // Simple form handling
+    document.getElementById('waitlist-form').addEventListener('submit', function(e) {
       e.preventDefault();
-      const email = e.target.querySelector('input[type="email"]').value;
-      alert('🎉 You\'re on the list! Check your email for early access details.');
-      e.target.reset();
-    }
+      const email = document.getElementById('email').value.trim();
+      
+      if (email) {
+        alert(`Thank you! We'll notify you at ${email} when early access opens.\n\nNo spam — just important updates.`);
+        this.reset();
+      }
+    });
 
-    document.getElementById('year').textContent = new Date().getFullYear();
+    // Mascot subtle animation on load
+    window.addEventListener('load', () => {
+      const mascot = document.getElementById('mascot');
+      if (mascot) {
+        setTimeout(() => {
+          mascot.style.transform = 'scale(1.05)';
+        }, 600);
+      }
+    });
   </script>
 </body>
 </html>
