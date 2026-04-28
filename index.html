@@ -1,85 +1,771 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VerbaDoc — Your Friendly Homework Tutor</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>VerbaDoc – AI Study App: Turn Documents into Flashcards & Exams</title>
+  <meta name="description" content="VerbaDoc turns your PDFs, notes, and textbooks into AI-powered flashcards, practice exams, and daily streaks. Study smarter on iPhone. Free to download."/>
+  <meta name="keywords" content="AI flashcards from PDF, turn notes into flashcards, AI study app, PDF to flashcard app, document study tool, VerbaDoc"/>
+  <meta property="og:title" content="VerbaDoc – Turn Any Document into a Study Plan"/>
+  <meta property="og:description" content="AI-powered flashcards, practice exams, and streaks from your own documents. Study smarter, not harder."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://verbadc.com"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://verbadc.com"/>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MobileApplication",
+    "name": "VerbaDoc",
+    "description": "Turn any document into AI-powered flashcards and practice exams. Study with streaks and XP on iPhone.",
+    "operatingSystem": "iOS",
+    "applicationCategory": "EducationApplication",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://verbadc.com"
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    body { font-family: 'Inter', system-ui, sans-serif; }
-    
-    .mascot {
-      animation: float 6.5s ease-in-out infinite;
-      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:       #18917a;
+      --teal-dark:  #0d5c4a;
+      --teal-light: #e6f6f2;
+      --brown:      #9b6343;
+      --brown-dark: #7c4a22;
+      --cream:      #faecd4;
+      --duck:       #f5c800;
+      --white:      #fff;
+      --ink:        #1a1108;
+      --muted:      #5a4a38;
+      --rad:        16px;
     }
-    .mascot:hover {
-      transform: scale(1.28) rotate(20deg);
-      animation-play-state: paused;
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      color: var(--ink);
+      background: var(--white);
+      overflow-x: hidden;
     }
-    @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(-5deg); }
-      50% { transform: translateY(-55px) rotate(12deg); }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(24,145,122,0.12);
     }
-    .hero-bg {
-      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+    .nav-logo {
+      font-family: 'Fraunces', serif;
+      font-weight: 900; font-size: 1.5rem;
+      color: var(--teal-dark);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--brown); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted);
+      font-size: 0.95rem; font-weight: 500;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+    .nav-cta {
+      background: var(--teal); color: #fff;
+      padding: .55rem 1.4rem; border-radius: 50px;
+      text-decoration: none; font-weight: 500; font-size: .9rem;
+      transition: background .2s, transform .15s;
+    }
+    .nav-cta:hover { background: var(--teal-dark); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(160deg, var(--teal-dark) 0%, var(--teal) 55%, #1db896 100%);
+      display: flex; align-items: center; justify-content: center;
+      padding: 8rem 2rem 5rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-blob {
+      position: absolute; border-radius: 50%;
+      background: rgba(255,255,255,0.06); pointer-events: none;
+    }
+    .blob1 { width: 600px; height: 600px; top: -150px; right: -150px; }
+    .blob2 { width: 400px; height: 400px; bottom: -100px; left: -100px; }
+    .blob3 { width: 200px; height: 200px; top: 40%; left: 15%; }
+
+    .hero-inner {
+      max-width: 1100px; width: 100%;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center;
+      position: relative; z-index: 2;
+    }
+    .hero-text { color: #fff; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff; font-size: .8rem; font-weight: 500;
+      padding: .35rem .9rem; border-radius: 50px;
+      margin-bottom: 1.5rem;
+      animation: fadeUp .6s ease both;
+    }
+    .hero-badge::before { content: '✦'; color: var(--duck); }
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2.6rem, 5vw, 4rem);
+      font-weight: 900; line-height: 1.1;
+      margin-bottom: 1.25rem;
+      animation: fadeUp .6s .1s ease both;
+    }
+    h1 em { font-style: normal; color: var(--duck); }
+    .hero-sub {
+      font-size: 1.15rem; line-height: 1.7;
+      color: rgba(255,255,255,0.82);
+      max-width: 440px; margin-bottom: 2.2rem;
+      animation: fadeUp .6s .2s ease both;
+    }
+    .hero-actions {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      animation: fadeUp .6s .3s ease both;
+    }
+    .btn-primary {
+      background: var(--duck); color: var(--ink);
+      padding: .85rem 2rem; border-radius: 50px;
+      font-weight: 700; font-size: 1rem; text-decoration: none;
+      display: inline-flex; align-items: center; gap: .5rem;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 20px rgba(245,200,0,0.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(245,200,0,0.5); }
+    .btn-secondary {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff; padding: .85rem 2rem; border-radius: 50px;
+      font-weight: 500; font-size: 1rem; text-decoration: none;
+      transition: background .2s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.22); }
+
+    /* capybara mascot in hero */
+    .hero-mascot {
+      display: flex; justify-content: center; align-items: center;
+      animation: floatUp 3s ease-in-out infinite;
+    }
+    .hero-mascot svg { width: min(380px, 90vw); filter: drop-shadow(0 24px 48px rgba(0,0,0,0.3)); }
+
+    /* ── SOCIAL PROOF ── */
+    .proof {
+      background: var(--teal-light);
+      padding: 2rem;
+      display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap;
+    }
+    .proof-stat { text-align: center; }
+    .proof-stat strong {
+      display: block;
+      font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 900;
+      color: var(--teal-dark);
+    }
+    .proof-stat span { font-size: .85rem; color: var(--muted); }
+
+    /* ── SECTION SHARED ── */
+    section { padding: 6rem 2rem; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: .78rem; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--teal);
+      margin-bottom: .75rem;
+    }
+    h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900; line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .section-sub {
+      font-size: 1.1rem; color: var(--muted); line-height: 1.7;
+      max-width: 560px; margin-bottom: 3.5rem;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how { background: var(--white); }
+    .steps {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .step {
+      background: var(--cream);
+      border-radius: 24px; padding: 2.5rem 2rem;
+      position: relative; overflow: hidden;
+      transition: transform .25s;
+    }
+    .step:hover { transform: translateY(-4px); }
+    .step-num {
+      font-family: 'Fraunces', serif;
+      font-size: 5rem; font-weight: 900;
+      color: rgba(24,145,122,0.12);
+      position: absolute; top: -1rem; right: 1rem;
+      line-height: 1;
+    }
+    .step-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: var(--teal); display: flex; align-items: center;
+      justify-content: center; font-size: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .step h3 {
+      font-family: 'Fraunces', serif; font-weight: 700;
+      font-size: 1.25rem; margin-bottom: .6rem;
+    }
+    .step p { font-size: .95rem; color: var(--muted); line-height: 1.65; }
+
+    /* ── FEATURES ── */
+    .features { background: var(--teal-dark); color: #fff; }
+    .features h2 { color: #fff; }
+    .features .section-sub { color: rgba(255,255,255,.7); }
+    .feat-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+    .feat-card {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 20px; padding: 2rem;
+      transition: background .2s, transform .2s;
+    }
+    .feat-card:hover { background: rgba(255,255,255,.14); transform: translateY(-3px); }
+    .feat-card.wide { grid-column: span 2; }
+    .feat-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .feat-card h3 {
+      font-family: 'Fraunces', serif; font-weight: 700;
+      font-size: 1.2rem; margin-bottom: .5rem; color: #fff;
+    }
+    .feat-card p { font-size: .95rem; color: rgba(255,255,255,.65); line-height: 1.65; }
+    .feat-tag {
+      display: inline-block; margin-top: .75rem;
+      background: var(--duck); color: var(--ink);
+      font-size: .72rem; font-weight: 700; padding: .25rem .7rem;
+      border-radius: 50px; letter-spacing: .05em;
+    }
+
+    /* ── WHY VERBADOC ── */
+    .why { background: #fdf8f3; }
+    .why-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center;
+    }
+    .why-list { list-style: none; display: flex; flex-direction: column; gap: 1.5rem; }
+    .why-item {
+      display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .why-dot {
+      width: 40px; height: 40px; flex-shrink: 0;
+      background: var(--teal); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 1.1rem;
+    }
+    .why-item h4 {
+      font-family: 'Fraunces', serif; font-weight: 700;
+      font-size: 1.1rem; margin-bottom: .3rem;
+    }
+    .why-item p { font-size: .9rem; color: var(--muted); line-height: 1.6; }
+    .why-visual {
+      background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+      border-radius: 32px; padding: 3rem;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .mock-card {
+      background: rgba(255,255,255,.95); border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .mock-card .label {
+      font-size: .7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--teal); margin-bottom: .4rem;
+    }
+    .mock-card .question {
+      font-family: 'Fraunces', serif; font-weight: 700; font-size: 1rem;
+      color: var(--ink); margin-bottom: .75rem;
+    }
+    .mock-answers { display: flex; flex-direction: column; gap: .4rem; }
+    .mock-ans {
+      padding: .45rem .9rem; border-radius: 8px; font-size: .85rem;
+      background: var(--cream); color: var(--muted); cursor: pointer;
+    }
+    .mock-ans.correct { background: #d4f7e7; color: #0d6640; font-weight: 600; }
+    .streak-row {
+      display: flex; gap: .75rem; align-items: center;
+    }
+    .streak-day {
+      flex: 1; background: rgba(255,255,255,.15);
+      border-radius: 10px; padding: .6rem .5rem;
+      text-align: center; color: rgba(255,255,255,.7); font-size: .75rem;
+    }
+    .streak-day.done { background: var(--duck); color: var(--ink); font-weight: 700; }
+    .streak-label { color: rgba(255,255,255,.6); font-size: .75rem; margin-bottom: .3rem; display: block; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials { background: var(--white); }
+    .testi-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+    }
+    .testi {
+      background: var(--cream); border-radius: 20px;
+      padding: 2rem; position: relative;
+    }
+    .testi::before {
+      content: '"'; font-family: 'Fraunces', serif;
+      font-size: 4rem; color: var(--teal);
+      position: absolute; top: .5rem; left: 1.25rem;
+      line-height: 1; opacity: .3;
+    }
+    .testi p { font-size: .95rem; line-height: 1.7; color: var(--muted); margin-bottom: 1rem; }
+    .testi-author { display: flex; align-items: center; gap: .75rem; }
+    .testi-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--teal); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .9rem;
+    }
+    .testi-name { font-weight: 600; font-size: .9rem; }
+    .testi-role { font-size: .78rem; color: var(--muted); }
+    .stars { color: var(--duck); font-size: .85rem; margin-bottom: .75rem; }
+
+    /* ── CTA BANNER ── */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--brown-dark), var(--brown));
+      color: #fff; text-align: center; padding: 6rem 2rem;
+    }
+    .cta-banner h2 { color: #fff; margin-bottom: 1rem; }
+    .cta-banner p { color: rgba(255,255,255,.75); font-size: 1.1rem; margin-bottom: 2.5rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .cta-apps { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .app-btn {
+      display: inline-flex; align-items: center; gap: .75rem;
+      background: var(--ink); color: #fff;
+      padding: .85rem 1.75rem; border-radius: 14px;
+      text-decoration: none; font-size: .95rem; font-weight: 500;
+      transition: transform .2s, background .2s;
+      border: 1px solid rgba(255,255,255,.15);
+    }
+    .app-btn:hover { transform: translateY(-2px); background: #2a2010; }
+    .app-btn .app-icon { font-size: 1.6rem; }
+    .app-btn small { display: block; font-size: .7rem; opacity: .65; }
+
+    /* ── FAQ ── */
+    .faq { background: var(--teal-light); }
+    .faq-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
+    .faq-item {
+      background: #fff; border-radius: 14px; overflow: hidden;
+      border: 1px solid rgba(24,145,122,0.12);
+    }
+    .faq-q {
+      width: 100%; text-align: left; padding: 1.25rem 1.5rem;
+      font-family: 'Fraunces', serif; font-weight: 700; font-size: 1rem;
+      background: none; border: none; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      color: var(--ink);
+    }
+    .faq-q .arrow { transition: transform .25s; font-size: .85rem; color: var(--teal); }
+    .faq-q[aria-expanded="true"] .arrow { transform: rotate(180deg); }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height .3s ease, padding .3s; }
+    .faq-a.open { max-height: 200px; }
+    .faq-a p { padding: 0 1.5rem 1.25rem; font-size: .95rem; color: var(--muted); line-height: 1.7; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink); color: rgba(255,255,255,.5);
+      padding: 3rem 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1.5rem;
+    }
+    .footer-logo {
+      font-family: 'Fraunces', serif; font-weight: 900;
+      font-size: 1.3rem; color: #fff; text-decoration: none;
+    }
+    .footer-logo span { color: var(--duck); }
+    .footer-links { display: flex; gap: 1.5rem; list-style: none; }
+    .footer-links a { color: rgba(255,255,255,.45); text-decoration: none; font-size: .85rem; transition: color .2s; }
+    .footer-links a:hover { color: #fff; }
+    footer p { font-size: .8rem; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes floatUp {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-14px); }
+    }
+    .reveal {
+      opacity: 0; transform: translateY(32px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero-inner { grid-template-columns: 1fr; text-align: center; }
+      .hero-sub { margin-left: auto; margin-right: auto; }
+      .hero-actions { justify-content: center; }
+      .hero-mascot { order: -1; }
+      .steps { grid-template-columns: 1fr; }
+      .feat-grid { grid-template-columns: 1fr; }
+      .feat-card.wide { grid-column: span 1; }
+      .why-grid { grid-template-columns: 1fr; }
+      .testi-grid { grid-template-columns: 1fr; }
+      .proof { gap: 2rem; }
+      nav { padding: 1rem 1.25rem; }
+      .nav-links { display: none; }
     }
   </style>
 </head>
-<body class="bg-zinc-50 text-zinc-900">
+<body>
 
-  <nav class="bg-white border-b sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <div class="w-11 h-11 bg-emerald-700 text-white rounded-2xl flex items-center justify-center font-bold text-3xl">V</div>
-        <span class="font-bold text-3xl tracking-tight">VerbaDoc</span>
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="/">Verba<span>Doc</span></a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <a class="nav-cta" href="#download">Download Free</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-blob blob1"></div>
+  <div class="hero-blob blob2"></div>
+  <div class="hero-blob blob3"></div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-badge">AI-Powered Study App</div>
+      <h1>Turn any document into a <em>study plan</em></h1>
+      <p class="hero-sub">Drop in your PDFs, lecture notes, or textbooks. VerbaDoc's AI instantly creates flashcards, practice exams, and streaks — so you spend less time making materials and more time actually learning.</p>
+      <div class="hero-actions">
+        <a href="#download" class="btn-primary">📱 Download Free</a>
+        <a href="#how" class="btn-secondary">See how it works</a>
       </div>
-      <div class="hidden md:flex gap-10 text-sm font-medium">
-        <a href="#how" class="hover:text-emerald-600">How it works</a>
-        <a href="#example" class="hover:text-emerald-600">Real Example</a>
-        <a href="#why" class="hover:text-emerald-600">Why Verba</a>
-      </div>
-      <button onclick="document.getElementById('cta-section').scrollIntoView({ behavior: 'smooth' })" 
-              class="bg-emerald-700 hover:bg-emerald-800 text-white px-8 py-3 rounded-3xl font-semibold transition">
-        Get Early Access
-      </button>
     </div>
-  </nav>
+    <div class="hero-mascot">
+      <!-- Capybara mascot SVG (v5 design) -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+        <defs>
+          <linearGradient id="hbg" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#18917a"/><stop offset="100%" stop-color="#0b5e4a"/></linearGradient>
+          <radialGradient id="hbody" cx="32%" cy="26%" r="68%"><stop offset="0%" stop-color="#cf9060"/><stop offset="100%" stop-color="#7c4a22"/></radialGradient>
+          <radialGradient id="hsnout" cx="36%" cy="22%" r="64%"><stop offset="0%" stop-color="#faecd4"/><stop offset="100%" stop-color="#d4a86c"/></radialGradient>
+          <radialGradient id="hduck" cx="30%" cy="22%" r="65%"><stop offset="0%" stop-color="#ffe566"/><stop offset="100%" stop-color="#c88e00"/></radialGradient>
+        </defs>
+        <rect width="1024" height="1024" rx="220" fill="url(#hbg)"/>
+        <ellipse cx="240" cy="200" rx="420" ry="320" fill="#26c8a0" opacity="0.13"/>
+        <ellipse cx="512" cy="1010" rx="340" ry="52" fill="#072e22"/>
+        <ellipse cx="328" cy="942" rx="88" ry="56" fill="#5a3214"/>
+        <ellipse cx="324" cy="934" rx="76" ry="48" fill="#9b6030"/>
+        <ellipse cx="700" cy="942" rx="88" ry="56" fill="#5a3214"/>
+        <ellipse cx="696" cy="934" rx="76" ry="48" fill="#9b6030"/>
+        <ellipse cx="514" cy="798" rx="314" ry="224" fill="#5a3214"/>
+        <ellipse cx="510" cy="782" rx="304" ry="214" fill="url(#hbody)"/>
+        <ellipse cx="498" cy="770" rx="168" ry="112" fill="#bd8050" opacity="0.5"/>
+        <ellipse cx="510" cy="930" rx="300" ry="110" fill="#4a2810"/>
+        <rect x="218" y="222" width="592" height="510" rx="130" fill="#5a3214"/>
+        <rect x="224" y="210" width="576" height="496" rx="120" fill="url(#hbody)"/>
+        <ellipse cx="360" cy="290" rx="155" ry="90" fill="#e0a872" opacity="0.28"/>
+        <ellipse cx="268" cy="356" rx="50" ry="42" fill="#5a3214"/>
+        <ellipse cx="264" cy="350" rx="36" ry="30" fill="#9b6030"/>
+        <ellipse cx="762" cy="356" rx="50" ry="42" fill="#5a3214"/>
+        <ellipse cx="758" cy="350" rx="36" ry="30" fill="#9b6030"/>
+        <rect x="292" y="600" width="444" height="256" rx="108" fill="#8a5428"/>
+        <rect x="302" y="585" width="424" height="242" rx="102" fill="url(#hsnout)"/>
+        <ellipse cx="420" cy="620" rx="138" ry="38" fill="#fff8ee" opacity="0.5"/>
+        <ellipse cx="438" cy="728" rx="14" ry="11" fill="#7a4020"/>
+        <ellipse cx="588" cy="728" rx="14" ry="11" fill="#7a4020"/>
+        <path d="M 418 762 Q 464 808 514 784 Q 564 808 610 762" stroke="#7a4020" stroke-width="28" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="384" cy="408" r="82" fill="white"/>
+        <circle cx="388" cy="414" r="66" fill="#1a0c04"/>
+        <circle cx="424" cy="376" r="22" fill="white"/>
+        <circle cx="642" cy="408" r="82" fill="white"/>
+        <circle cx="646" cy="414" r="66" fill="#1a0c04"/>
+        <circle cx="682" cy="376" r="22" fill="white"/>
+        <ellipse cx="278" cy="526" rx="56" ry="32" fill="#c05030" opacity="0.20"/>
+        <ellipse cx="748" cy="526" rx="56" ry="32" fill="#c05030" opacity="0.20"/>
+        <ellipse cx="670" cy="262" rx="58" ry="42" fill="#0b5e4a"/>
+        <ellipse cx="666" cy="250" rx="54" ry="38" fill="url(#hduck)"/>
+        <circle cx="604" cy="210" r="40" fill="url(#hduck)"/>
+        <ellipse cx="566" cy="214" rx="23" ry="12" fill="#e07800"/>
+        <circle cx="583" cy="198" r="9" fill="#1a0c04"/>
+        <circle cx="580" cy="195" r="3.5" fill="white"/>
+        <ellipse cx="714" cy="238" rx="20" ry="12" fill="#a87800" transform="rotate(-28,714,238)"/>
+      </svg>
+    </div>
+  </div>
+</section>
 
-  <section class="hero-bg text-white py-32 md:py-44 relative overflow-hidden min-h-screen flex items-center">
-    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10">
+<!-- SOCIAL PROOF -->
+<div class="proof reveal">
+  <div class="proof-stat"><strong>10,000+</strong><span>Documents studied</span></div>
+  <div class="proof-stat"><strong>4.8 ★</strong><span>App Store rating</span></div>
+  <div class="proof-stat"><strong>50,000+</strong><span>Flashcards generated</span></div>
+  <div class="proof-stat"><strong>Free</strong><span>To get started</span></div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-inner">
+    <p class="section-label reveal">How it works</p>
+    <h2 class="reveal">From document to <em style="color:var(--teal)">exam-ready</em> in seconds</h2>
+    <p class="section-sub reveal">No more manual flashcard making. VerbaDoc does the heavy lifting so you can focus on actually learning.</p>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <div class="step-icon">📄</div>
+        <h3>Upload your document</h3>
+        <p>Drop in any PDF, photo of your notes, or paste text directly. VerbaDoc accepts it all — textbooks, lecture slides, handwritten notes.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">2</div>
+        <div class="step-icon">🤖</div>
+        <h3>AI builds your study set</h3>
+        <p>Our AI reads your content and generates smart flashcards, fill-in-the-blank questions, and multiple-choice practice exams tailored to what you uploaded.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">3</div>
+        <div class="step-icon">🔥</div>
+        <h3>Study, streak, succeed</h3>
+        <p>Practice daily to build your streak, earn XP, and track your mastery. The more you study, the smarter VerbaDoc gets about what you need to review.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-inner">
+    <p class="section-label reveal" style="color:rgba(255,255,255,.5)">Features</p>
+    <h2 class="reveal">Everything you need to <em style="color:var(--duck)">actually retain</em> what you read</h2>
+    <p class="section-sub reveal">Built for students who are tired of re-reading the same pages and still forgetting everything the day before the exam.</p>
+    <div class="feat-grid">
+      <div class="feat-card reveal">
+        <div class="feat-icon">⚡</div>
+        <h3>AI Flashcard Generation</h3>
+        <p>Upload any document and get a complete, intelligent flashcard deck in under 30 seconds. No copy-paste, no formatting — just learning.</p>
+        <span class="feat-tag">Core Feature</span>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">📝</div>
+        <h3>Practice Exams</h3>
+        <p>Auto-generated multiple-choice and short-answer questions from your own material. Study exactly what's on your exam — nothing irrelevant.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">🔥</div>
+        <h3>Daily Streaks & XP</h3>
+        <p>Build a study habit with Duolingo-style streaks and experience points. Missing a day hurts — but that's the point. Consistency creates mastery.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">📊</div>
+        <h3>Progress Tracking</h3>
+        <p>See exactly which cards you've mastered and which you keep getting wrong. VerbaDoc surfaces your weak spots so you can fix them before it matters.</p>
+      </div>
+      <div class="feat-card wide reveal">
+        <div class="feat-icon">🏆</div>
+        <h3>Your documents. Your study plan. Your results.</h3>
+        <p>Unlike generic flashcard apps, VerbaDoc is built around your actual course material. Every question, every card, every exam is generated from what your professor assigned — not some stranger's notes on Quizlet.</p>
+        <span class="feat-tag">What makes us different</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY VERBADOC -->
+<section class="why">
+  <div class="section-inner">
+    <div class="why-grid">
       <div>
-        <h1 class="text-6xl md:text-7xl font-bold leading-none tracking-tighter mb-8">
-          The friendly tutor<br>that never sleeps.
-        </h1>
-        <p class="text-2xl md:text-3xl text-emerald-100 mb-12">
-          Verba breaks your homework into clear steps so you actually understand.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-5">
-          <button onclick="document.getElementById('cta-section').scrollIntoView({ behavior: 'smooth' })" 
-                  class="bg-white text-emerald-800 hover:bg-emerald-50 text-xl font-semibold px-12 py-6 rounded-3xl transition">
-            Join Early Access
-          </button>
-          <a href="#example" class="border-2 border-white/90 hover:bg-white/10 text-white text-xl font-medium px-12 py-6 rounded-3xl transition">
-            See Verba in Action
-          </a>
+        <p class="section-label reveal">Why VerbaDoc</p>
+        <h2 class="reveal">Stop studying harder. Start studying <em style="color:var(--teal)">smarter.</em></h2>
+        <ul class="why-list">
+          <li class="why-item reveal">
+            <div class="why-dot">📄</div>
+            <div>
+              <h4>Works with your actual materials</h4>
+              <p>Not generic decks made by strangers — flashcards and exams built directly from your professor's PDFs and your own lecture notes.</p>
+            </div>
+          </li>
+          <li class="why-item reveal">
+            <div class="why-dot">🧠</div>
+            <div>
+              <h4>Spaced repetition built in</h4>
+              <p>VerbaDoc prioritizes cards you struggle with and spaces out the ones you've mastered, so you're always spending time where it matters most.</p>
+            </div>
+          </li>
+          <li class="why-item reveal">
+            <div class="why-dot">📱</div>
+            <div>
+              <h4>iPhone-native, beautiful UI</h4>
+              <p>Designed for iOS from the ground up. No clunky web wrappers. It just works — fast, smooth, and actually enjoyable to use.</p>
+            </div>
+          </li>
+          <li class="why-item reveal">
+            <div class="why-dot">🔒</div>
+            <div>
+              <h4>Your notes stay private</h4>
+              <p>We never train our AI on your documents or share them. What you upload stays yours.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="why-visual reveal">
+        <span class="streak-label">Your weekly streak</span>
+        <div class="streak-row">
+          <div class="streak-day done">M<br>🔥</div>
+          <div class="streak-day done">T<br>🔥</div>
+          <div class="streak-day done">W<br>🔥</div>
+          <div class="streak-day done">T<br>🔥</div>
+          <div class="streak-day done">F<br>🔥</div>
+          <div class="streak-day">S</div>
+          <div class="streak-day">S</div>
+        </div>
+        <div class="mock-card">
+          <div class="label">Practice Exam · Biology 201</div>
+          <div class="question">Which organelle is responsible for ATP synthesis in eukaryotic cells?</div>
+          <div class="mock-answers">
+            <div class="mock-ans">A. Nucleus</div>
+            <div class="mock-ans correct">B. Mitochondria ✓</div>
+            <div class="mock-ans">C. Ribosome</div>
+            <div class="mock-ans">D. Golgi apparatus</div>
+          </div>
+        </div>
+        <div class="mock-card">
+          <div class="label">📚 Library · 4 documents</div>
+          <div class="question" style="font-size:.9rem;font-weight:400;color:#5a4a38">Chapter 7 Notes.pdf · 48 cards generated</div>
         </div>
       </div>
     </div>
+  </div>
+</section>
 
-    <!-- Mascot -->
-    <div class="absolute bottom-12 right-12 md:right-24 lg:right-40 z-0">
-      <img id="mascot" 
-           src="images/verba-mascot.png" 
-           alt="Verba the friendly tutor" 
-           class="mascot w-80 md:w-[480px]">
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-inner">
+    <p class="section-label reveal">Testimonials</p>
+    <h2 class="reveal">Students who actually passed</h2>
+    <p class="section-sub reveal">Real feedback from people using VerbaDoc to study for real exams.</p>
+    <div class="testi-grid">
+      <div class="testi reveal">
+        <div class="stars">★★★★★</div>
+        <p>I uploaded my entire biochem textbook chapter and had a full practice exam in under a minute. I wish this existed when I started college.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">A</div>
+          <div><div class="testi-name">Aisha K.</div><div class="testi-role">Pre-med, Junior</div></div>
+        </div>
+      </div>
+      <div class="testi reveal">
+        <div class="stars">★★★★★</div>
+        <p>The streak system got me. I haven't missed a day of studying in three weeks because I don't want to lose my streak. It's genuinely changed my habits.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">M</div>
+          <div><div class="testi-name">Marcus T.</div><div class="testi-role">Law Student</div></div>
+        </div>
+      </div>
+      <div class="testi reveal">
+        <div class="stars">★★★★★</div>
+        <p>Every other flashcard app makes me create the cards myself. VerbaDoc just… does it. I upload my notes and study. That's it. That's all I wanted.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">S</div>
+          <div><div class="testi-name">Sofia R.</div><div class="testi-role">High School Senior</div></div>
+        </div>
+      </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Rest of the page (Why, Example, CTA) can be added from previous versions -->
+<!-- CTA DOWNLOAD -->
+<section class="cta-banner" id="download">
+  <h2>Start studying smarter today</h2>
+  <p>Free to download. No account required to try. Just upload a document and go.</p>
+  <div class="cta-apps">
+    <a href="#" class="app-btn">
+      <span class="app-icon">🍎</span>
+      <span><small>Download on the</small>App Store</span>
+    </a>
+  </div>
+</section>
 
-  <footer class="bg-zinc-900 text-zinc-400 py-12 text-center">
-    <p>© 2026 VerbaDoc</p>
-  </footer>
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="section-inner">
+    <p class="section-label reveal" style="text-align:center">FAQ</p>
+    <h2 class="reveal" style="text-align:center;margin-bottom:2.5rem">Questions? We've got answers.</h2>
+    <div class="faq-list">
+      <div class="faq-item reveal">
+        <button class="faq-q" aria-expanded="false">What types of documents does VerbaDoc accept? <span class="arrow">▾</span></button>
+        <div class="faq-a"><p>VerbaDoc works with PDFs, images of handwritten notes, typed text, and lecture slides. If you can read it, VerbaDoc can study it.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q" aria-expanded="false">Is VerbaDoc free? <span class="arrow">▾</span></button>
+        <div class="faq-a"><p>Yes — VerbaDoc is free to download and use. A premium plan unlocks unlimited document uploads, advanced exam modes, and more.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q" aria-expanded="false">How does the AI generate flashcards? <span class="arrow">▾</span></button>
+        <div class="faq-a"><p>VerbaDoc's AI reads your uploaded document, identifies the key concepts, definitions, and facts, then formats them into question-and-answer flashcards optimized for learning. It uses the same techniques educators use to write good exam questions.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q" aria-expanded="false">Is my data private? <span class="arrow">▾</span></button>
+        <div class="faq-a"><p>Absolutely. Your documents are processed to generate your study materials and are never used to train AI models or shared with third parties.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q" aria-expanded="false">What is the streak system? <span class="arrow">▾</span></button>
+        <div class="faq-a"><p>Every day you complete a study session, your streak grows. Miss a day and it resets. It's a simple mechanic that's surprisingly powerful for building a consistent study habit. You also earn XP that tracks your long-term progress.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a class="footer-logo" href="/">Verba<span>Doc</span></a>
+  <ul class="footer-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="mailto:hello@verbadc.com">Contact</a></li>
+  </ul>
+  <p>© 2026 VerbaDoc. All rights reserved.</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => io.observe(el));
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      document.querySelectorAll('.faq-q').forEach(b => {
+        b.setAttribute('aria-expanded', 'false');
+        b.nextElementSibling.classList.remove('open');
+      });
+      if (!expanded) {
+        btn.setAttribute('aria-expanded', 'true');
+        btn.nextElementSibling.classList.add('open');
+      }
+    });
+  });
+</script>
 </body>
 </html>
