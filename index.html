@@ -381,8 +381,8 @@
     <strong>The problem:</strong> Most flashcard apps make you create cards one by one. VerbaDoc does the heavy lifting. Upload your textbook chapter, lecture notes, or exam study guide. Get a full practice exam and flashcard deck back instantly.
   </div>
   
-  <form class="email-form" id="waitlist-form">
-    <input type="email" placeholder="your@email.com" required/>
+  <form class="email-form" action="https://formspree.io/f/xeevyzlv" method="POST">
+    <input type="email" name="email" placeholder="your@email.com" required/>
     <button type="submit">Get early access</button>
   </form>
   <div class="form-note">We'll email you when VerbaDoc launches. No spam, unsubscribe anytime.</div>
@@ -497,16 +497,6 @@
 </footer>
 
 <script>
-  // Email form
-  document.getElementById('waitlist-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = e.target.querySelector('input[type="email"]').value;
-    // Replace with your own backend or email service
-    console.log('Email submitted:', email);
-    alert('Thanks! Check your email for next steps.');
-    e.target.reset();
-  });
-  
   // FAQ accordion
   document.querySelectorAll('.faq-q').forEach(btn => {
     btn.addEventListener('click', () => {
