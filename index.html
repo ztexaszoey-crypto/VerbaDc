@@ -3,53 +3,23 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VerbaDoc – Upload a PDF, get flashcards and an exam in 30 seconds</title>
-  <meta name="description" content="Stop spending hours making flashcards from your textbooks and notes. VerbaDoc turns any PDF, textbook chapter, or lecture notes into instant practice exams and flashcards. For students who want to actually remember what they read."/>
-  <meta name="keywords" content="flashcards from PDF, turn notes into flashcards, AI study app, study material generator, exam prep"/>
-  <meta property="og:title" content="VerbaDoc – Turn any PDF into flashcards and an exam in 30 seconds"/>
-  <meta property="og:description" content="Stop manually making flashcards. Upload your textbook or notes. Get practice exams and flashcards instantly."/>
-  <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://verbadc.com"/>
-  <meta name="twitter:card" content="summary"/>
+  <title>VerbaDoc – Study like your exam already exists</title>
+  <meta name="description" content="VerbaDoc. For students who want to actually remember what they read."/>
   <meta name="robots" content="index, follow"/>
   <link rel="canonical" href="https://verbadc.com"/>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "VerbaDoc",
-    "description": "Turn any PDF, textbook, or notes into flashcards and practice exams.",
-    "applicationCategory": "EducationApplication",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "url": "https://verbadc.com"
-  }
-  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
-    :root {
-      --teal: #18917a;
-      --teal-dark: #0d5c4a;
-      --ink: #1a1a1a;
-      --muted: #666;
-      --light: #f5f5f5;
-      --white: #fff;
-    }
-    
     body {
       font-family: 'Inter', sans-serif;
-      color: var(--ink);
-      background: var(--white);
+      background: #fff;
+      color: #1a1a1a;
       line-height: 1.6;
     }
     
-    /* ── NAV ── */
+    /* NAV */
     nav {
       position: fixed;
       top: 0;
@@ -59,89 +29,112 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1rem 2.5rem;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid #eee;
+      padding: 1.25rem 2rem;
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
     }
     
     .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
       font-weight: 700;
-      font-size: 1.3rem;
-      color: var(--teal);
-      text-decoration: none;
-      letter-spacing: -0.5px;
+      font-size: 1.2rem;
+      color: #1a1a1a;
     }
     
-    .nav-email {
-      background: var(--teal);
+    .nav-logo-icon {
+      width: 32px;
+      height: 32px;
+    }
+    
+    .nav-cta {
+      background: #18917a;
       color: white;
-      padding: 0.6rem 1.5rem;
-      border-radius: 6px;
+      padding: 0.6rem 1.4rem;
+      border-radius: 4px;
       text-decoration: none;
-      font-weight: 500;
-      font-size: 0.95rem;
+      font-weight: 600;
+      font-size: 0.9rem;
       transition: background 0.2s;
+      border: none;
+      cursor: pointer;
     }
     
-    .nav-email:hover {
-      background: var(--teal-dark);
+    .nav-cta:hover {
+      background: #0d5c4a;
     }
     
-    /* ── HERO ── */
+    /* HERO */
     .hero {
-      padding: 10rem 2rem 6rem;
-      max-width: 900px;
+      padding: 8rem 2rem 6rem;
+      max-width: 1000px;
       margin: 0 auto;
-      text-align: center;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    
+    .hero-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    
+    .hero-logo-icon {
+      width: 48px;
+      height: 48px;
+    }
+    
+    .hero-logo-text {
+      font-family: 'Fraunces', serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #1a1a1a;
     }
     
     h1 {
-      font-size: clamp(2.2rem, 5vw, 3.5rem);
-      font-weight: 700;
-      line-height: 1.15;
-      margin-bottom: 1.5rem;
-      color: var(--ink);
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      font-weight: 900;
+      line-height: 1.1;
+      color: #1a1a1a;
     }
     
-    .hero-sub {
-      font-size: 1.1rem;
-      color: var(--muted);
-      margin-bottom: 3rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.8;
+    h1 em {
+      font-style: normal;
+      color: #18917a;
     }
     
-    .hero-problem {
-      background: var(--light);
-      border-left: 4px solid var(--teal);
-      padding: 1.5rem;
-      border-radius: 4px;
-      margin: 2rem auto 3rem;
-      max-width: 600px;
-      text-align: left;
-      font-size: 0.95rem;
-      color: var(--muted);
+    .hero-subtext {
+      font-size: 1rem;
+      color: #666;
+      max-width: 400px;
+      line-height: 1.7;
     }
     
-    /* ── EMAIL FORM ── */
+    /* EMAIL FORM */
     .email-form {
       display: flex;
-      gap: 0.5rem;
-      max-width: 500px;
-      margin: 2rem auto;
-      flex-wrap: wrap;
-      justify-content: center;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
     }
     
     .email-form input {
-      flex: 1;
-      min-width: 250px;
-      padding: 0.85rem 1.25rem;
-      border: 1px solid #ddd;
-      border-radius: 6px;
+      padding: 0.9rem 1.2rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 4px;
       font-size: 1rem;
       font-family: inherit;
       transition: border-color 0.2s;
@@ -149,15 +142,15 @@
     
     .email-form input:focus {
       outline: none;
-      border-color: var(--teal);
+      border-color: #18917a;
     }
     
     .email-form button {
-      background: var(--teal);
+      background: #18917a;
       color: white;
       border: none;
-      padding: 0.85rem 2rem;
-      border-radius: 6px;
+      padding: 0.9rem 1.2rem;
+      border-radius: 4px;
       font-weight: 600;
       font-size: 1rem;
       cursor: pointer;
@@ -165,200 +158,61 @@
     }
     
     .email-form button:hover {
-      background: var(--teal-dark);
+      background: #0d5c4a;
     }
     
     .form-note {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: #999;
+      margin-top: 0.5rem;
     }
     
-    /* ── HOW IT WORKS (simple) ── */
-    .how {
-      background: var(--light);
-      padding: 4rem 2rem;
-      margin-top: 4rem;
-    }
-    
-    .how .section-inner {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    
-    .how h2 {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
-    
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-    }
-    
-    .step {
-      padding: 2rem 1.5rem;
-      background: white;
-      border-radius: 8px;
-      border: 1px solid #eee;
-    }
-    
-    .step-num {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--teal);
-      margin-bottom: 0.5rem;
-    }
-    
-    .step h3 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-    
-    .step p {
-      font-size: 0.95rem;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-    
-    /* ── WHY SECTION ── */
-    .why {
-      padding: 4rem 2rem;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    
-    .why h2 {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
-    
-    .why-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-      list-style: none;
-    }
-    
-    .why-item {
-      padding: 1.5rem;
-    }
-    
-    .why-item h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-    
-    .why-item p {
-      font-size: 0.9rem;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-    
-    /* ── FAQ ── */
-    .faq {
-      padding: 4rem 2rem;
-      background: var(--light);
-    }
-    
-    .faq .section-inner {
-      max-width: 700px;
-      margin: 0 auto;
-    }
-    
-    .faq h2 {
-      text-align: center;
-      margin-bottom: 2.5rem;
-    }
-    
-    .faq-list {
+    /* MASCOT SIDE */
+    .hero-mascot {
       display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    
-    .faq-item {
-      background: white;
-      border: 1px solid #eee;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    
-    .faq-q {
-      width: 100%;
-      text-align: left;
-      padding: 1.25rem 1.5rem;
-      font-family: inherit;
-      font-size: 1rem;
-      font-weight: 600;
-      background: none;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
-      color: var(--ink);
     }
     
-    .faq-q:hover {
-      background: #fafafa;
+    .mascot-image {
+      width: 100%;
+      max-width: 320px;
+      height: auto;
+      display: block;
     }
     
-    .faq-arrow {
-      transition: transform 0.25s;
-      color: var(--teal);
-    }
-    
-    .faq-q[aria-expanded="true"] .faq-arrow {
-      transform: rotate(180deg);
-    }
-    
-    .faq-a {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s;
-    }
-    
-    .faq-a.open {
-      max-height: 500px;
-    }
-    
-    .faq-a p {
-      padding: 0 1.5rem 1.25rem;
-      font-size: 0.95rem;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-    
-    /* ── FOOTER ── */
+    /* FOOTER */
     footer {
-      background: var(--ink);
-      color: rgba(255, 255, 255, 0.6);
+      border-top: 1px solid #e0e0e0;
       padding: 2rem;
       text-align: center;
       font-size: 0.85rem;
+      color: #999;
     }
     
-    /* ── RESPONSIVE ── */
+    /* RESPONSIVE */
     @media (max-width: 768px) {
       nav {
         padding: 1rem 1.25rem;
       }
       
       .hero {
+        grid-template-columns: 1fr;
         padding: 6rem 1.5rem 4rem;
+        gap: 2rem;
+        min-height: auto;
+      }
+      
+      .hero-mascot {
+        order: -1;
+      }
+      
+      h1 {
+        font-size: 2rem;
       }
       
       .email-form {
-        flex-direction: column;
-      }
-      
-      .email-form input,
-      .email-form button {
-        width: 100%;
+        max-width: 100%;
       }
     }
   </style>
@@ -367,150 +221,67 @@
 
 <!-- NAV -->
 <nav>
-  <a class="nav-logo" href="/">VerbaDoc</a>
-  <a class="nav-email" href="#waitlist">Join waitlist</a>
+  <a class="nav-logo" href="/">
+    <svg class="nav-logo-icon" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+      <rect width="128" height="128" rx="24" fill="#18917a"/>
+      <circle cx="40" cy="50" r="14" fill="white"/>
+      <circle cx="42" cy="50" r="10" fill="#1a1a1a"/>
+      <circle cx="45" cy="46" r="3" fill="white"/>
+      <circle cx="88" cy="50" r="14" fill="white"/>
+      <circle cx="90" cy="50" r="10" fill="#1a1a1a"/>
+      <circle cx="93" cy="46" r="3" fill="white"/>
+      <ellipse cx="64" cy="75" rx="20" ry="18" fill="#c89c54"/>
+      <path d="M 50 80 Q 64 90 78 80" stroke="#8b6f47" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="100" cy="35" r="8" fill="#f5c800"/>
+    </svg>
+    VerbaDoc
+  </a>
+  <button class="nav-cta" onclick="document.querySelector('.email-form').scrollIntoView({behavior: 'smooth'})">
+    Join waitlist
+  </button>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <h1>Upload a PDF. Get flashcards and an exam in 30 seconds.</h1>
-  
-  <p class="hero-sub">You have a 300-page textbook chapter. Making flashcards manually takes 2 hours. VerbaDoc does it in 30 seconds.</p>
-  
-  <div class="hero-problem">
-    <strong>The problem:</strong> Most flashcard apps make you create cards one by one. VerbaDoc does the heavy lifting. Upload your textbook chapter, lecture notes, or exam study guide. Get a full practice exam and flashcard deck back instantly.
+  <div class="hero-content">
+    <div class="hero-logo">
+      <svg class="hero-logo-icon" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+        <rect width="128" height="128" rx="24" fill="#18917a"/>
+        <circle cx="40" cy="50" r="14" fill="white"/>
+        <circle cx="42" cy="50" r="10" fill="#1a1a1a"/>
+        <circle cx="45" cy="46" r="3" fill="white"/>
+        <circle cx="88" cy="50" r="14" fill="white"/>
+        <circle cx="90" cy="50" r="10" fill="#1a1a1a"/>
+        <circle cx="93" cy="46" r="3" fill="white"/>
+        <ellipse cx="64" cy="75" rx="20" ry="18" fill="#c89c54"/>
+        <path d="M 50 80 Q 64 90 78 80" stroke="#8b6f47" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle cx="100" cy="35" r="8" fill="#f5c800"/>
+      </svg>
+      <span class="hero-logo-text">VerbaDoc</span>
+    </div>
+    
+    <h1>Study like your exam <em>already exists.</em></h1>
+    
+    <p class="hero-subtext">
+      Upload what you need to learn. VerbaDoc does the rest. No busywork. No fake progress. Just actual retention.
+    </p>
+    
+    <form class="email-form" action="https://formspree.io/f/xeevyzlv" method="POST">
+      <input type="email" name="email" placeholder="your@email.com" required/>
+      <button type="submit">Get early access</button>
+      <div class="form-note">Early access. No spam. Ever.</div>
+    </form>
   </div>
   
-  <form class="email-form" action="https://formspree.io/f/xeevyzlv" method="POST">
-    <input type="email" name="email" placeholder="your@email.com" required/>
-    <button type="submit">Get early access</button>
-  </form>
-  <div class="form-note">We'll email you when VerbaDoc launches. No spam, unsubscribe anytime.</div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="how">
-  <div class="section-inner">
-    <h2>How it works</h2>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <h3>Upload your document</h3>
-        <p>Drop in any PDF, textbook chapter, lecture slides, or paste your notes. We accept everything.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <h3>AI builds your study set</h3>
-        <p>Our AI reads your content and generates flashcards, multiple-choice questions, and practice exams.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <h3>Study and track progress</h3>
-        <p>Practice daily. Track what you've mastered. Focus on what you actually need to review.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- WHY VERBADC -->
-<section class="why">
-  <h2>Why students love VerbaDoc</h2>
-  <ul class="why-list">
-    <li class="why-item">
-      <h3>It actually works with your real materials</h3>
-      <p>Not generic flashcard decks made by strangers. Your questions and exams come from your actual professor's PDFs.</p>
-    </li>
-    <li class="why-item">
-      <h3>Saves hours of busy work</h3>
-      <p>Stop copying definitions and formatting questions. VerbaDoc does it instantly.</p>
-    </li>
-    <li class="why-item">
-      <h3>Designed for iOS</h3>
-      <p>Built for students on the go. Study on your phone, not in a browser tab.</p>
-    </li>
-    <li class="why-item">
-      <h3>Your notes stay private</h3>
-      <p>We never train on your documents or share them with anyone. What you upload stays yours.</p>
-    </li>
-    <li class="why-item">
-      <h3>Streak system keeps you consistent</h3>
-      <p>Study every day. Build your streak. One missed day resets it. It works.</p>
-    </li>
-    <li class="why-item">
-      <h3>It's free to try</h3>
-      <p>No credit card. No account setup. Just upload a PDF and see what you get.</p>
-    </li>
-  </ul>
-</section>
-
-<!-- FAQ -->
-<section class="faq">
-  <div class="section-inner">
-    <h2>Questions?</h2>
-    <div class="faq-list">
-      <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">
-          What documents can I upload?
-          <span class="faq-arrow">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>PDFs, images of handwritten notes, lecture slides, textbook chapters, or plain text. Anything you study with.</p>
-        </div>
-      </div>
-      
-      <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">
-          When does VerbaDoc launch?
-          <span class="faq-arrow">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>We're launching soon. Join the waitlist to get early access and be among the first students to try it.</p>
-        </div>
-      </div>
-      
-      <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">
-          How much does it cost?
-          <span class="faq-arrow">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>Free to try. Upload a document, generate a study set, and see what you think. Premium plans coming at launch.</p>
-        </div>
-      </div>
-      
-      <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">
-          Is my data private?
-          <span class="faq-arrow">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>Yes. Your documents are only used to generate your study materials. We never train our AI on your uploads or share them with anyone.</p>
-        </div>
-      </div>
-    </div>
+  <div class="hero-mascot">
+    <img class="mascot-image" src="data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='256' height='256' rx='64' fill='%2318917a'/%3E%3Cellipse cx='86' cy='90' r='28' fill='%238b6f47'/%3E%3Cellipse cx='82' cy='88' r='20' fill='%23c89c54'/%3E%3Cellipse cx='170' cy='90' r='28' fill='%238b6f47'/%3E%3Cellipse cx='174' cy='88' r='20' fill='%23c89c54'/%3E%3Cellipse cx='100' cy='100' r='30' fill='white'/%3E%3Ccircle cx='100' cy='100' r='22' fill='%231a1a1a'/%3E%3Ccircle cx='106' cy='94' r='6' fill='white'/%3E%3Cellipse cx='156' cy='100' r='30' fill='white'/%3E%3Ccircle cx='156' cy='100' r='22' fill='%231a1a1a'/%3E%3Ccircle cx='162' cy='94' r='6' fill='white'/%3E%3Cellipse cx='128' cy='155' r='45' ry='40' fill='%23c89c54'/%3E%3Cpath d='M 105 165 Q 128 185 151 165' stroke='%238b6f47' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='200' cy='60' r='16' fill='%23f5c800'/%3E%3C/svg%3E" alt="VerbaDoc mascot"/>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <p>© 2026 VerbaDoc. Made for students who want to actually remember what they read.</p>
+  <p>© 2026 VerbaDoc. Built for students who want to actually remember what they read.</p>
 </footer>
 
-<script>
-  // FAQ accordion
-  document.querySelectorAll('.faq-q').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const expanded = btn.getAttribute('aria-expanded') === 'true';
-      document.querySelectorAll('.faq-q').forEach(b => {
-        b.setAttribute('aria-expanded', 'false');
-        b.nextElementSibling.classList.remove('open');
-      });
-      if (!expanded) {
-        btn.setAttribute('aria-expanded', 'true');
-        btn.nextElementSibling.classList.add('open');
-      }
-    });
-  });
-</script>
 </body>
 </html>
