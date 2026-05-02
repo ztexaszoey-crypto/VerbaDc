@@ -5,91 +5,162 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>VerbaDoc – upload your notes. stop making flashcards manually.</title>
   <meta name="description" content="You have a test tomorrow and you're cooked. VerbaDoc turns your PDF into flashcards and practice questions in seconds. No busywork. Just studying."/>
-  <meta name="keywords" content="AI flashcards from PDF, turn notes into flashcards app, study app iPhone, PDF to flashcard, AI study tool, VerbaDoc"/>
-  <meta property="og:title" content="VerbaDoc - upload your notes. get your flashcards."/>
-  <meta property="og:description" content="You have a test tomorrow and you're cooked. VerbaDoc turns your PDF into flashcards and practice questions in seconds."/>
+  <meta name="keywords" content="AI flashcards from PDF, turn notes into flashcards, study app iPhone, PDF to flashcard, VerbaDoc"/>
+  <meta property="og:title" content="VerbaDoc – upload your notes. get your flashcards."/>
+  <meta property="og:description" content="You have a test tomorrow and you're cooked. VerbaDoc turns your PDF into flashcards in seconds."/>
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="https://verbadc.com"/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="robots" content="index, follow"/>
   <link rel="canonical" href="https://verbadc.com"/>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"MobileApplication","name":"VerbaDoc","description":"Turn any PDF or notes into flashcards and practice exams instantly. Built for students who have a test tomorrow.","operatingSystem":"iOS","applicationCategory":"EducationApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://verbadc.com"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"MobileApplication","name":"VerbaDoc","description":"Turn any PDF into flashcards and practice exams. Built for students who have a test tomorrow.","operatingSystem":"iOS","applicationCategory":"EducationApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://verbadc.com"}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
 
   <style>
     :root {
-      --bg:     #f5f0e8;
-      --ink:    #1c1409;
-      --teal:   #0f7c67;
-      --teal2:  #0a5245;
-      --brown:  #9b6343;
-      --cream:  #faecd4;
-      --duck:   #f5c800;
-      --muted:  #6b5742;
-      --card:   #fff8ef;
-      --border: rgba(28,20,9,0.10);
+      --bg:    #f5f0e8;
+      --ink:   #1c1409;
+      --teal:  #0f7c67;
+      --teal2: #0a5245;
+      --brown: #9b6343;
+      --cream: #faecd4;
+      --duck:  #f5c800;
+      --muted: #6b5742;
+      --card:  #fff8ef;
+      --brd:   rgba(28,20,9,.10);
+
+      /* spring easings — the anti-AI secret weapon */
+      --spring:       cubic-bezier(.34,1.56,.64,1);   /* overshoot + settle */
+      --spring-soft:  cubic-bezier(.22,1,.36,1);       /* fast in, gentle settle */
+      --spring-hard:  cubic-bezier(.5,1.8,.6,1);       /* big pop */
+      --snap:         cubic-bezier(.4,0,.2,1);
     }
+
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
     body{background:var(--bg);color:var(--ink);font-family:'Syne',sans-serif;overflow-x:hidden;cursor:none}
 
-    /* cursor */
-    .cursor{width:16px;height:16px;background:var(--teal);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s;mix-blend-mode:multiply}
-    .cursor.big{width:48px;height:48px;background:var(--duck)}
-
-    /* ── LOGO TYPE ── always full "VerbaDoc" */
-    .logo-type {
-      font-family:'Instrument Serif',serif;
-      font-size:1.45rem;
-      color:var(--ink);
-      text-decoration:none;
-      letter-spacing:-.01em;
+    /* ── CURSOR ── */
+    .cursor{
+      width:14px;height:14px;background:var(--teal);
+      border-radius:50%;position:fixed;top:0;left:0;
+      pointer-events:none;z-index:9999;
+      transform:translate(-50%,-50%);
+      transition:width .25s var(--spring),height .25s var(--spring),background .2s;
+      mix-blend-mode:multiply;
     }
-    .logo-type .v{color:var(--ink)}
-    .logo-type .erba{color:var(--ink)}
+    .cursor.big{width:44px;height:44px;background:var(--duck)}
+    .cursor.click{width:8px;height:8px}
+
+    /* ── LOGO ── */
+    .logo-type{font-family:'Instrument Serif',serif;font-size:1.45rem;color:var(--ink);text-decoration:none;letter-spacing:-.01em;display:inline-block;transition:transform .3s var(--spring)}
+    .logo-type:hover{transform:scale(1.05)}
     .logo-type .Doc{color:var(--teal);font-style:italic}
 
-    /* nav */
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:1.25rem 2.5rem;display:flex;justify-content:space-between;align-items:center}
-    .nav-pill{background:var(--ink);color:var(--bg);font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;padding:.55rem 1.3rem;border-radius:50px;transition:background .2s}
-    .nav-pill:hover{background:var(--teal)}
+    /* ── NAV ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:1.25rem 2.5rem;display:flex;justify-content:space-between;align-items:center;transition:background .3s,backdrop-filter .3s}
+    nav.scrolled{background:rgba(245,240,232,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--brd)}
+    .nav-pill{
+      background:var(--ink);color:var(--bg);font-size:.78rem;font-weight:800;
+      letter-spacing:.06em;text-transform:uppercase;text-decoration:none;
+      padding:.55rem 1.3rem;border-radius:50px;
+      transition:background .2s,transform .25s var(--spring),box-shadow .2s;
+      display:inline-block;
+    }
+    .nav-pill:hover{background:var(--teal);transform:scale(1.06);box-shadow:0 4px 16px rgba(15,124,103,.25)}
+    .nav-pill:active{transform:scale(.95)}
 
-    /* hero */
+    /* ── HERO ── */
     .hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:7rem 4rem 4rem;gap:3rem;position:relative;overflow:hidden}
     .hero-bg-text{position:absolute;font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(90px,16vw,210px);color:rgba(15,124,103,.05);bottom:-2rem;left:-1rem;white-space:nowrap;pointer-events:none;z-index:0;line-height:1;user-select:none}
     .hero-left{position:relative;z-index:1}
     .hero-right{position:relative;z-index:1;display:flex;justify-content:center;align-items:center}
 
-    .hero-eyebrow{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--teal);border:1.5px solid var(--teal);padding:.3rem .9rem;border-radius:4px;margin-bottom:1.6rem;opacity:0;animation:rise .5s .1s ease forwards}
-    h1{font-family:'Instrument Serif',serif;font-size:clamp(2.5rem,4vw,4.4rem);line-height:1.08;letter-spacing:-.02em;margin-bottom:1.4rem;opacity:0;animation:rise .5s .2s ease forwards}
+    /* hero text — staggered spring entrances, NOT uniform */
+    .hero-eyebrow{
+      display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.15em;
+      text-transform:uppercase;color:var(--teal);border:1.5px solid var(--teal);
+      padding:.3rem .9rem;border-radius:4px;margin-bottom:1.6rem;
+      opacity:0;animation:popIn .5s .08s var(--spring) forwards;
+    }
+    h1{
+      font-family:'Instrument Serif',serif;font-size:clamp(2.5rem,4vw,4.4rem);
+      line-height:1.08;letter-spacing:-.02em;margin-bottom:1.4rem;
+      opacity:0;animation:riseSpring .6s .18s var(--spring-soft) forwards;
+    }
     h1 em{font-style:italic;color:var(--teal)}
-    .hero-truth{font-size:1rem;line-height:1.8;color:var(--muted);max-width:420px;margin-bottom:2.2rem;opacity:0;animation:rise .5s .3s ease forwards}
+    .hero-truth{
+      font-size:1rem;line-height:1.8;color:var(--muted);max-width:420px;margin-bottom:2.2rem;
+      opacity:0;animation:riseSpring .6s .32s var(--spring-soft) forwards;
+    }
     .hero-truth strong{color:var(--ink)}
 
-    /* form */
-    .wform{display:flex;gap:.6rem;flex-wrap:wrap;opacity:0;animation:rise .5s .4s ease forwards}
-    .winput{flex:1;min-width:190px;padding:.8rem 1.2rem;border:2px solid var(--ink);border-radius:8px;background:var(--card);font-family:'Syne',sans-serif;font-size:.95rem;color:var(--ink);outline:none;transition:border-color .2s}
+    /* ── FORM ── */
+    .wform{display:flex;gap:.6rem;flex-wrap:wrap;opacity:0;animation:riseSpring .5s .44s var(--spring-soft) forwards}
+    .winput{
+      flex:1;min-width:190px;padding:.8rem 1.2rem;
+      border:2px solid var(--ink);border-radius:8px;
+      background:var(--card);font-family:'Syne',sans-serif;font-size:.95rem;color:var(--ink);
+      outline:none;transition:border-color .2s,box-shadow .2s,transform .2s;
+    }
     .winput::placeholder{color:var(--muted);opacity:.65}
-    .winput:focus{border-color:var(--teal)}
-    .wbtn{background:var(--teal);color:#fff;border:2px solid var(--teal);padding:.8rem 1.5rem;border-radius:8px;font-family:'Syne',sans-serif;font-size:.88rem;font-weight:800;cursor:pointer;letter-spacing:.03em;transition:background .2s,transform .15s}
-    .wbtn:hover{background:var(--teal2);transform:translateY(-1px)}
+    .winput:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(15,124,103,.12);transform:translateY(-1px)}
+    .wbtn{
+      background:var(--teal);color:#fff;border:2px solid var(--teal);
+      padding:.8rem 1.5rem;border-radius:8px;font-family:'Syne',sans-serif;
+      font-size:.88rem;font-weight:800;cursor:pointer;letter-spacing:.03em;
+      transition:background .2s,transform .25s var(--spring),box-shadow .2s;
+      position:relative;overflow:hidden;
+    }
+    .wbtn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.15);opacity:0;transition:opacity .15s}
+    .wbtn:hover{background:var(--teal2);transform:scale(1.05) translateY(-1px);box-shadow:0 6px 20px rgba(15,124,103,.3)}
+    .wbtn:hover::after{opacity:1}
+    .wbtn:active{transform:scale(.96) translateY(1px)}
+    .wbtn.loading{opacity:.7;pointer-events:none}
     .fnote{width:100%;font-size:.72rem;color:var(--muted);margin-top:.4rem;opacity:.75}
-    .suc{display:none;padding:.8rem 1.2rem;background:#d4f5ec;color:var(--teal2);border-radius:8px;font-weight:800;font-size:.88rem;width:100%}
+    .form-success{display:none;padding:.8rem 1.2rem;background:#d4f5ec;color:var(--teal2);border-radius:8px;font-weight:800;font-size:.88rem;width:100%;animation:popIn .4s var(--spring)}
+    .form-error{display:none;padding:.8rem 1.2rem;background:#fde8e8;color:#b91c1c;border-radius:8px;font-weight:700;font-size:.85rem;width:100%;animation:shake .4s var(--snap)}
 
-    /* mascot */
-    .mascot-wrap{position:relative;opacity:0;animation:rise .6s .5s ease forwards}
-    .mascot-wrap svg.capy{width:min(340px,78vw);filter:drop-shadow(0 20px 44px rgba(15,124,103,.22));animation:bob 4s ease-in-out infinite}
-    .bubble{position:absolute;top:-24px;right:-8px;background:var(--ink);color:var(--bg);font-family:'Instrument Serif',serif;font-style:italic;font-size:.9rem;padding:.5rem 1rem;border-radius:14px 14px 14px 4px;white-space:nowrap;animation:bob 4s .6s ease-in-out infinite;z-index:10}
+    /* ── MASCOT ── */
+    .mascot-wrap{position:relative;opacity:0;animation:riseSpring .7s .55s var(--spring) forwards}
+    .capy-svg{
+      width:min(340px,78vw);
+      filter:drop-shadow(0 20px 44px rgba(15,124,103,.22));
+      /* idle bob — variable speed so it doesn't feel mechanical */
+      animation:idleBob 3.8s ease-in-out infinite;
+      transform-origin:center bottom;
+      cursor:pointer;
+      transition:filter .3s;
+    }
+    .capy-svg:hover{filter:drop-shadow(0 28px 56px rgba(15,124,103,.35)) brightness(1.04)}
+    /* on click the capybara wiggles */
+    .capy-svg.wiggle{animation:wigglePop .5s var(--spring) forwards}
+
+    .bubble{
+      position:absolute;top:-28px;right:-8px;
+      background:var(--ink);color:var(--bg);
+      font-family:'Instrument Serif',serif;font-style:italic;font-size:.9rem;
+      padding:.5rem 1rem;border-radius:14px 14px 14px 4px;
+      white-space:nowrap;z-index:10;
+      /* slightly different bob from the mascot */
+      animation:bubbleBob 4.4s .3s ease-in-out infinite;
+    }
     .bubble::after{content:'';position:absolute;bottom:-8px;left:14px;border:8px solid transparent;border-top-color:var(--ink);border-bottom:0}
 
-    /* floating chips — no emojis, use small SVG icons */
-    .chip{position:absolute;background:var(--card);border:1.5px solid var(--border);border-radius:50px;padding:.45rem .9rem;font-size:.72rem;font-weight:800;color:var(--ink);box-shadow:0 4px 12px rgba(0,0,0,.07);white-space:nowrap;display:flex;align-items:center;gap:.4rem}
+    /* chips */
+    .chip{
+      position:absolute;background:var(--card);border:1.5px solid var(--brd);
+      border-radius:50px;padding:.45rem .9rem;font-size:.72rem;font-weight:800;
+      color:var(--ink);box-shadow:0 4px 12px rgba(0,0,0,.07);
+      white-space:nowrap;display:flex;align-items:center;gap:.4rem;
+    }
     .chip .hi{color:var(--teal)}
-    .chip-a{bottom:14px;left:-24px;animation:bob 5s 1s ease-in-out infinite}
-    .chip-b{bottom:90px;right:-16px;animation:bob 4.5s 1.6s ease-in-out infinite}
+    /* each chip has its own distinct drift — not in sync */
+    .chip-a{bottom:14px;left:-24px;animation:driftA 5.2s 1.1s ease-in-out infinite}
+    .chip-b{bottom:90px;right:-16px;animation:driftB 4.6s 1.8s ease-in-out infinite}
 
-    /* sections */
+    /* ── SECTIONS ── */
     .section{padding:6rem 4rem;position:relative}
     .inner{max-width:1100px;margin:0 auto}
     .ltag{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
@@ -97,107 +168,255 @@
     h2 em{font-style:italic;color:var(--teal)}
     .sdesc{font-size:1rem;color:var(--muted);line-height:1.78;max-width:520px;margin-bottom:3rem}
 
-    /* how */
+    /* ── HOW IT WORKS ── */
     .how{background:var(--ink)}
     .how .ltag{color:rgba(255,255,255,.35)}
     .how h2{color:#fff}
     .how .sdesc{color:rgba(255,255,255,.5)}
     .how-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1.5px solid rgba(255,255,255,.08);border-radius:20px;overflow:hidden}
-    .how-step{padding:2.5rem 2rem;border-right:1.5px solid rgba(255,255,255,.08);position:relative;overflow:hidden;transition:background .25s}
+    .how-step{
+      padding:2.5rem 2rem;border-right:1.5px solid rgba(255,255,255,.08);
+      position:relative;overflow:hidden;
+      transition:background .3s;
+    }
     .how-step:last-child{border-right:none}
-    .how-step:hover{background:rgba(255,255,255,.04)}
+    .how-step:hover{background:rgba(255,255,255,.05)}
+    /* step illustration bounces in individually with staggered spring — not uniform */
+    .how-step .step-ill{
+      margin-bottom:1.25rem;
+      transition:transform .35s var(--spring);
+    }
+    .how-step:hover .step-ill{transform:scale(1.12) rotate(-3deg)}
     .sn{font-family:'Instrument Serif',serif;font-style:italic;font-size:3.5rem;color:rgba(255,255,255,.07);position:absolute;top:.5rem;right:1rem;line-height:1}
-    .step-ill{margin-bottom:1.25rem}  /* illustration wrapper */
     .how-step h3{font-size:1.05rem;font-weight:800;color:#fff;margin-bottom:.55rem}
     .how-step p{font-size:.88rem;color:rgba(255,255,255,.48);line-height:1.72}
     .htag{display:inline-block;margin-top:1rem;background:var(--duck);color:var(--ink);font-size:.66rem;font-weight:800;padding:.2rem .6rem;border-radius:50px;letter-spacing:.06em;text-transform:uppercase}
 
-    /* real talk */
+    /* ── REAL TALK ── */
     .real{background:var(--cream)}
     .real-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
     .rquote{font-family:'Instrument Serif',serif;font-size:clamp(1.5rem,2.4vw,2.1rem);line-height:1.45;font-style:italic;color:var(--ink)}
     .rattr{display:block;margin-top:1.25rem;font-family:'Syne',sans-serif;font-style:normal;font-size:.75rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
     .rlist{list-style:none;display:flex;flex-direction:column;gap:1.1rem}
-    .ritem{display:flex;gap:.9rem;align-items:flex-start;padding:1.1rem 1.25rem;border-radius:14px;background:rgba(255,255,255,.55);border:1px solid var(--border);transition:transform .2s,box-shadow .2s}
-    .ritem:hover{transform:translateX(5px);box-shadow:-4px 0 0 var(--teal)}
-    .ritem-icon{flex-shrink:0;margin-top:2px}
+    .ritem{
+      display:flex;gap:.9rem;align-items:flex-start;
+      padding:1.1rem 1.25rem;border-radius:14px;
+      background:rgba(255,255,255,.55);border:1px solid var(--brd);
+      transition:transform .3s var(--spring),box-shadow .3s,background .2s;
+    }
+    .ritem:hover{transform:translateX(6px) scale(1.01);box-shadow:-4px 0 0 var(--teal),0 8px 24px rgba(0,0,0,.06);background:rgba(255,255,255,.85)}
+    .ritem-icon{flex-shrink:0;margin-top:2px;transition:transform .4s var(--spring)}
+    .ritem:hover .ritem-icon{transform:scale(1.2) rotate(-5deg)}
     .ritem h4{font-size:.92rem;font-weight:800;margin-bottom:.2rem}
     .ritem p{font-size:.83rem;color:var(--muted);line-height:1.65}
 
-    /* demo */
+    /* ── DEMO ── */
     .demo-section{background:var(--bg)}
     .demo-wrap{display:grid;grid-template-columns:1fr 1.1fr;gap:4rem;align-items:center}
-    .demo-phone{background:var(--ink);border-radius:34px;padding:2rem 1.4rem;box-shadow:0 28px 70px rgba(15,20,20,.25);max-width:268px;margin:0 auto}
+    .demo-phone{
+      background:var(--ink);border-radius:34px;padding:2rem 1.4rem;
+      box-shadow:0 28px 70px rgba(15,20,20,.25);max-width:268px;margin:0 auto;
+      transition:transform .4s var(--spring),box-shadow .4s;
+    }
+    .demo-phone:hover{transform:translateY(-8px) rotate(.5deg);box-shadow:0 40px 90px rgba(15,20,20,.32)}
     .demo-phone::before{content:'';display:block;width:72px;height:5px;background:rgba(255,255,255,.12);border-radius:3px;margin:0 auto 1.4rem}
     .pdoc{font-size:.62rem;color:rgba(255,255,255,.3);margin-bottom:.9rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700}
     .pcard{background:var(--card);border-radius:14px;padding:1.1rem;margin-bottom:.75rem}
     .pqlabel{font-size:.58rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:.45rem}
     .pq{font-family:'Instrument Serif',serif;font-size:.95rem;line-height:1.4;color:var(--ink);margin-bottom:.7rem}
     .popts{display:flex;flex-direction:column;gap:.35rem}
-    .popt{padding:.38rem .7rem;border-radius:7px;font-size:.75rem;color:var(--muted);background:rgba(0,0,0,.04)}
+    .popt{padding:.38rem .7rem;border-radius:7px;font-size:.75rem;color:var(--muted);background:rgba(0,0,0,.04);transition:transform .2s var(--spring)}
+    .popt:hover{transform:translateX(3px)}
     .popt.win{background:#d4f5ec;color:#0a5245;font-weight:700}
     .pstreak{background:var(--teal);border-radius:12px;padding:.9rem;display:flex;justify-content:space-between;align-items:center}
     .sdays{display:flex;gap:.28rem}
-    .sday{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:rgba(255,255,255,.55);font-weight:700}
+    .sday{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:rgba(255,255,255,.55);font-weight:700;transition:transform .3s var(--spring)}
     .sday.on{background:var(--duck);color:var(--ink)}
+    .sday.on:hover{transform:scale(1.25)}
     .pxp{font-family:'Instrument Serif',serif;font-style:italic;font-size:1.05rem;color:var(--duck)}
     .dcopy h2{margin-bottom:1rem}
     .dcopy p{font-size:.98rem;color:var(--muted);line-height:1.78;margin-bottom:1.3rem}
     .dcopy strong{color:var(--ink)}
 
-    /* about / founder */
+    /* ── ABOUT ── */
     .about{background:var(--ink);padding:6rem 4rem}
     .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
     .about .ltag{color:rgba(255,255,255,.35)}
     .about h2{color:#fff;margin-bottom:1rem}
-    .about p{font-size:.98rem;color:rgba(255,255,255,.58);line-height:1.82;margin-bottom:1.1rem}
+    .about p{font-size:.98rem;color:rgba(255,255,255,.55);line-height:1.82;margin-bottom:1.1rem}
     .about p strong{color:rgba(255,255,255,.88)}
-    .about-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:2rem;display:flex;flex-direction:column;gap:1rem}
+    .about-card{
+      background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+      border-radius:20px;padding:2rem;display:flex;flex-direction:column;gap:1.25rem;
+      transition:background .3s,transform .4s var(--spring);
+    }
+    .about-card:hover{background:rgba(255,255,255,.09);transform:translateY(-4px)}
     .about-card-top{display:flex;align-items:center;gap:1rem}
-    .founder-avatar{width:52px;height:52px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-style:italic;font-size:1.3rem;color:#fff;flex-shrink:0}
     .founder-name{font-weight:800;font-size:.95rem;color:#fff}
-    .founder-role{font-size:.78rem;color:rgba(255,255,255,.45);margin-top:.15rem}
-    .founder-quote{font-family:'Instrument Serif',serif;font-style:italic;font-size:1.05rem;line-height:1.6;color:rgba(255,255,255,.75)}
+    .founder-role{font-size:.78rem;color:rgba(255,255,255,.4);margin-top:.15rem}
+    .founder-quote{font-family:'Instrument Serif',serif;font-style:italic;font-size:1.05rem;line-height:1.6;color:rgba(255,255,255,.72)}
 
-    /* big waitlist */
+    /* ── WAITLIST SECTION ── */
     .wlist-section{background:var(--teal);padding:7rem 4rem;text-align:center;position:relative;overflow:hidden}
     .wlist-section::before{content:'study';position:absolute;font-family:'Instrument Serif',serif;font-style:italic;font-size:18vw;color:rgba(255,255,255,.055);bottom:-3rem;left:50%;transform:translateX(-50%);white-space:nowrap;pointer-events:none;user-select:none}
     .wlist-section h2{color:#fff;margin-bottom:.75rem}
-    .wlist-section .sub{color:rgba(255,255,255,.68);font-size:1rem;margin-bottom:2.25rem;max-width:460px;margin-left:auto;margin-right:auto}
+    .wlist-sub{color:rgba(255,255,255,.68);font-size:1rem;margin-bottom:2.25rem;max-width:460px;margin-left:auto;margin-right:auto}
     .bigform{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
-    .biginput{padding:.88rem 1.35rem;border-radius:10px;border:2px solid rgba(255,255,255,.22);outline:none;font-family:'Syne',sans-serif;font-size:.95rem;background:rgba(255,255,255,.13);color:#fff;min-width:230px;transition:border-color .2s}
+    .biginput{
+      padding:.88rem 1.35rem;border-radius:10px;border:2px solid rgba(255,255,255,.22);
+      outline:none;font-family:'Syne',sans-serif;font-size:.95rem;
+      background:rgba(255,255,255,.13);color:#fff;min-width:230px;
+      transition:border-color .2s,transform .2s,background .2s;
+    }
     .biginput::placeholder{color:rgba(255,255,255,.48)}
-    .biginput:focus{border-color:var(--duck)}
-    .bigbtn{background:var(--duck);color:var(--ink);padding:.88rem 1.9rem;border-radius:10px;border:none;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;cursor:pointer;letter-spacing:.03em;transition:transform .15s,box-shadow .2s;box-shadow:0 4px 20px rgba(245,200,0,.4)}
-    .bigbtn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(245,200,0,.55)}
+    .biginput:focus{border-color:var(--duck);transform:translateY(-1px);background:rgba(255,255,255,.18)}
+    .bigbtn{
+      background:var(--duck);color:var(--ink);padding:.88rem 1.9rem;border-radius:10px;
+      border:none;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;
+      cursor:pointer;letter-spacing:.03em;
+      transition:transform .3s var(--spring),box-shadow .25s;
+      box-shadow:0 4px 20px rgba(245,200,0,.4);
+    }
+    .bigbtn:hover{transform:scale(1.07) translateY(-2px);box-shadow:0 10px 32px rgba(245,200,0,.55)}
+    .bigbtn:active{transform:scale(.95);box-shadow:0 2px 8px rgba(245,200,0,.3)}
+    .bigbtn.loading{opacity:.7;pointer-events:none}
+    .big-success{display:none;margin-top:1.5rem;color:var(--duck);font-weight:800;font-size:1rem;animation:popIn .5s var(--spring)}
+    .big-error{display:none;margin-top:1rem;color:#ffcccc;font-size:.9rem;font-weight:700;animation:shake .4s var(--snap)}
 
-    /* faq */
+    /* ── XP BURST (reward animation) ── */
+    .xp-burst{
+      position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+      font-family:'Instrument Serif',serif;font-style:italic;
+      font-size:2.5rem;font-weight:700;color:var(--duck);
+      pointer-events:none;z-index:999;
+      opacity:0;
+    }
+    .xp-burst.go{animation:xpPop .8s var(--spring) forwards}
+
+    /* ── FAQ ── */
     .faq-section{background:var(--bg);padding:6rem 4rem}
     .faq-inner{max-width:660px;margin:0 auto}
     .faq-inner h2{margin-bottom:2.5rem}
-    .fitem{border-bottom:1.5px solid var(--border);padding:1.2rem 0}
-    .fq{width:100%;background:none;border:none;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:var(--ink);padding:0;gap:1rem}
-    .fq .arr{color:var(--teal);font-size:.78rem;transition:transform .25s;flex-shrink:0}
-    .fq[aria-expanded="true"] .arr{transform:rotate(180deg)}
-    .fbody{max-height:0;overflow:hidden;transition:max-height .35s ease}
+    .fitem{border-bottom:1.5px solid var(--brd);padding:1.2rem 0}
+    .fq{
+      width:100%;background:none;border:none;text-align:left;cursor:pointer;
+      display:flex;justify-content:space-between;align-items:center;
+      font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:var(--ink);
+      padding:0;gap:1rem;transition:color .2s;
+    }
+    .fq:hover{color:var(--teal)}
+    .fq .arr{
+      color:var(--teal);font-size:.78rem;flex-shrink:0;
+      display:inline-block;
+      transition:transform .35s var(--spring);
+    }
+    .fq[aria-expanded="true"] .arr{transform:rotate(180deg) scale(1.2)}
+    .fbody{max-height:0;overflow:hidden;transition:max-height .4s var(--spring-soft)}
     .fbody.open{max-height:280px}
     .fbody p{padding:.7rem 0 .25rem;font-size:.92rem;color:var(--muted);line-height:1.78}
 
-    /* footer */
+    /* ── FOOTER ── */
     footer{background:var(--ink);padding:2.5rem 4rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
-    .flogo{font-family:'Instrument Serif',serif;font-size:1.25rem;color:rgba(255,255,255,.65);text-decoration:none;letter-spacing:-.01em}
+    .flogo{font-family:'Instrument Serif',serif;font-size:1.25rem;color:rgba(255,255,255,.65);text-decoration:none;letter-spacing:-.01em;transition:color .2s}
+    .flogo:hover{color:#fff}
     .flogo .fDoc{color:var(--duck);font-style:italic}
     footer p{font-size:.78rem;color:rgba(255,255,255,.28)}
     .flink{color:rgba(255,255,255,.28);text-decoration:none;font-size:.78rem;transition:color .2s}
     .flink:hover{color:#fff}
 
-    /* animations */
-    @keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-    @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-    .reveal{opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease}
-    .reveal.on{opacity:1;transform:none}
+    /* ── KEYFRAMES ── */
 
-    /* responsive */
+    /* popIn: fast scale from 0.7, overshoot to 1.05, settle */
+    @keyframes popIn{
+      0%{opacity:0;transform:scale(.7)}
+      60%{opacity:1;transform:scale(1.05)}
+      80%{transform:scale(.97)}
+      100%{opacity:1;transform:scale(1)}
+    }
+
+    /* riseSpring: comes up from below with a slight overshoot */
+    @keyframes riseSpring{
+      0%{opacity:0;transform:translateY(28px)}
+      65%{opacity:1;transform:translateY(-4px)}
+      100%{opacity:1;transform:translateY(0)}
+    }
+
+    /* idleBob: NOT perfectly symmetric — eases in/out at different rates */
+    @keyframes idleBob{
+      0%{transform:translateY(0) rotate(0deg)}
+      30%{transform:translateY(-9px) rotate(.4deg)}
+      55%{transform:translateY(-12px) rotate(-.2deg)}
+      75%{transform:translateY(-6px) rotate(.3deg)}
+      100%{transform:translateY(0) rotate(0deg)}
+    }
+
+    /* bubble drifts at a different rhythm to the mascot */
+    @keyframes bubbleBob{
+      0%{transform:translateY(0)}
+      40%{transform:translateY(-7px)}
+      70%{transform:translateY(-10px)}
+      100%{transform:translateY(0)}
+    }
+
+    /* chips: each has an asymmetric drift — never in sync with each other */
+    @keyframes driftA{
+      0%{transform:translateY(0) rotate(0deg)}
+      35%{transform:translateY(-8px) rotate(.5deg)}
+      65%{transform:translateY(-5px) rotate(-.3deg)}
+      100%{transform:translateY(0) rotate(0deg)}
+    }
+    @keyframes driftB{
+      0%{transform:translateY(0) rotate(0deg)}
+      25%{transform:translateY(-6px) rotate(-.4deg)}
+      60%{transform:translateY(-10px) rotate(.3deg)}
+      100%{transform:translateY(0) rotate(0deg)}
+    }
+
+    /* wigglePop: capybara when clicked */
+    @keyframes wigglePop{
+      0%{transform:scale(1) rotate(0deg)}
+      20%{transform:scale(1.08) rotate(-4deg)}
+      40%{transform:scale(1.05) rotate(3deg)}
+      60%{transform:scale(1.03) rotate(-2deg)}
+      80%{transform:scale(1.01) rotate(1deg)}
+      100%{transform:scale(1) rotate(0deg)}
+    }
+
+    /* shake: for form errors */
+    @keyframes shake{
+      0%,100%{transform:translateX(0)}
+      20%{transform:translateX(-8px)}
+      40%{transform:translateX(8px)}
+      60%{transform:translateX(-5px)}
+      80%{transform:translateX(5px)}
+    }
+
+    /* xpPop: burst up and fade */
+    @keyframes xpPop{
+      0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}
+      30%{opacity:1;transform:translate(-50%,-80%) scale(1.2)}
+      60%{opacity:1;transform:translate(-50%,-120%) scale(1)}
+      100%{opacity:0;transform:translate(-50%,-160%) scale(.9)}
+    }
+
+    /* ── SCROLL REVEAL — varied per element type ── */
+    /* headings: spring up */
+    .rv-h{opacity:0;transform:translateY(22px);transition:opacity .55s var(--spring-soft),transform .55s var(--spring-soft)}
+    .rv-h.on{opacity:1;transform:none}
+
+    /* cards: pop in with slight scale */
+    .rv-card{opacity:0;transform:scale(.95) translateY(18px);transition:opacity .5s var(--spring),transform .5s var(--spring)}
+    .rv-card.on{opacity:1;transform:none}
+
+    /* list items: slide in from left, stagger applied via JS */
+    .rv-left{opacity:0;transform:translateX(-20px);transition:opacity .45s var(--spring-soft),transform .45s var(--spring-soft)}
+    .rv-left.on{opacity:1;transform:none}
+
+    /* text blocks: gentle fade up */
+    .rv-p{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+    .rv-p.on{opacity:1;transform:none}
+
+    /* ── RESPONSIVE ── */
     @media(max-width:860px){
       .hero{grid-template-columns:1fr;padding:6rem 1.5rem 4rem;text-align:center}
       .hero-truth{margin-left:auto;margin-right:auto}
@@ -216,10 +435,12 @@
 </head>
 <body>
 
+<!-- XP burst element (reused) -->
+<div class="xp-burst" id="xpBurst">+40 XP</div>
 <div class="cursor" id="cursor"></div>
 
 <!-- ── NAV ── -->
-<nav>
+<nav id="nav">
   <a class="logo-type" href="/">Verba<span class="Doc">Doc</span></a>
   <a class="nav-pill" href="#waitlist">Get early access</a>
 </nav>
@@ -231,22 +452,20 @@
   <div class="hero-left">
     <div class="hero-eyebrow">iOS App · Coming Soon</div>
     <h1>studying already sucks.<br/><em>don't spend 3 hours</em><br/>making Quizlet sets too.</h1>
-    <p class="hero-truth">Upload your PDF. VerbaDoc reads it and spits out flashcards and practice questions in <strong>under 30 seconds.</strong> No copy-paste. No formatting. Just studying.</p>
+    <p class="hero-truth">Upload your PDF. VerbaDoc reads it and builds flashcards and practice questions in <strong>under 30 seconds.</strong> No copy-paste. No formatting. Just studying.</p>
     <form class="wform" id="heroForm">
       <input class="winput" type="email" placeholder="your@email.com" required/>
       <button class="wbtn" type="submit">Join waitlist →</button>
       <span class="fnote">No spam. No newsletter. One email when we launch.</span>
-      <div class="suc" id="heroSuc">you're on the list. see you at launch.</div>
+      <div class="form-success" id="heroSuc">you're on the list. see you at launch.</div>
+      <div class="form-error" id="heroErr">something went wrong — try again or email us at hello@verbadc.com</div>
     </form>
   </div>
 
   <div class="hero-right">
     <div class="mascot-wrap">
-      <!-- speech bubble — no emoji, just text -->
       <div class="bubble">i read it so you don't have to</div>
-
-      <!-- Full capybara mascot SVG (v5) -->
-      <svg class="capy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" aria-label="VerbaDoc mascot: a chill capybara with a duck on its head">
+      <svg class="capy-svg" id="capySvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" aria-label="VerbaDoc mascot: a chill capybara with a duck on its head" role="img">
         <defs>
           <linearGradient id="cbg" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#18917a"/><stop offset="100%" stop-color="#0b5e4a"/></linearGradient>
           <radialGradient id="cbod" cx="32%" cy="26%" r="68%"><stop offset="0%" stop-color="#cf9060"/><stop offset="100%" stop-color="#7c4a22"/></radialGradient>
@@ -283,14 +502,14 @@
         <circle cx="583" cy="198" r="9" fill="#1a0c04"/><circle cx="580" cy="195" r="3.5" fill="white"/>
         <ellipse cx="714" cy="238" rx="20" ry="12" fill="#a87800" transform="rotate(-28,714,238)"/>
       </svg>
-
-      <!-- chips: tiny SVG icons instead of emojis -->
+      <!-- chips with inline SVG icons, no emojis -->
       <div class="chip chip-a">
-        <!-- lightning bolt -->
         <svg width="12" height="14" viewBox="0 0 12 14" fill="none"><path d="M7 1L1 8h5l-1 5 6-7H6L7 1z" fill="#0f7c67"/></svg>
         <span><span class="hi">30 sec</span> avg</span>
       </div>
       <div class="chip chip-b">
+        <svg width="11" height="14" viewBox="0 0 11 14" fill="none"><path d="M5.5 13C3 13 1 11.2 1 9c0-2 1.5-3.5 2-5 .5 1 .5 2 1.5 2.5C4 4.5 5.5 2 5.5 1c1 1.5 1 3 2 3.5C8.5 3 9 2 9.5 2.5 10.5 4 10 6 10 7c0 3.3-2 6-4.5 6z" fill="#0f7c67"/></svg>
+        <span><span class="hi">streak</span> system</span>
       </div>
     </div>
   </div>
@@ -299,87 +518,66 @@
 <!-- ── HOW IT WORKS ── -->
 <section class="section how" id="how">
   <div class="inner">
-    <p class="ltag reveal">How it works</p>
-    <h2 class="reveal" style="color:#fff">three steps.<br/><em style="color:var(--duck)">genuinely just three.</em></h2>
-    <p class="sdesc reveal">No onboarding. No tutorial. No getting-started checklist. Just this:</p>
-    <div class="how-grid reveal">
-
-      <div class="how-step">
+    <p class="ltag rv-h">How it works</p>
+    <h2 class="rv-h" style="color:#fff">three steps.<br/><em style="color:var(--duck)">genuinely just three.</em></h2>
+    <p class="sdesc rv-p">No onboarding. No tutorial. No getting-started checklist:</p>
+    <div class="how-grid">
+      <div class="how-step rv-card">
         <span class="sn">1</span>
-        <!-- mini capybara holding doc illustration -->
         <div class="step-ill">
-          <svg width="48" height="44" viewBox="0 0 48 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- doc -->
+          <svg width="48" height="44" viewBox="0 0 48 44" fill="none">
             <rect x="26" y="6" width="18" height="22" rx="3" fill="#faecd4"/>
             <rect x="29" y="11" width="12" height="1.5" rx=".75" fill="#9b6343"/>
             <rect x="29" y="15" width="12" height="1.5" rx=".75" fill="#9b6343"/>
             <rect x="29" y="19" width="8" height="1.5" rx=".75" fill="#9b6343"/>
-            <!-- little capy head -->
             <ellipse cx="16" cy="22" rx="12" ry="11" fill="#cf9060"/>
-            <!-- snout -->
             <rect x="9" y="27" width="14" height="8" rx="4" fill="#faecd4"/>
-            <!-- eyes -->
             <circle cx="13" cy="21" r="3" fill="white"/><circle cx="13" cy="21" r="2.2" fill="#1a0c04"/><circle cx="14.2" cy="20" r=".7" fill="white"/>
             <circle cx="20" cy="21" r="3" fill="white"/><circle cx="20" cy="21" r="2.2" fill="#1a0c04"/><circle cx="21.2" cy="20" r=".7" fill="white"/>
-            <!-- arm reaching to doc -->
             <path d="M 26 29 Q 28 30 30 28" stroke="#cf9060" stroke-width="2.5" stroke-linecap="round" fill="none"/>
           </svg>
         </div>
         <h3>drop your PDF</h3>
-        <p>Notes, textbook chapters, lecture slides, handwritten photos — anything you'd normally have to read cover to cover the night before your exam.</p>
+        <p>Notes, textbook chapters, lecture slides, handwritten photos — anything you'd normally read cover to cover the night before your exam.</p>
       </div>
-
-      <div class="how-step">
+      <div class="how-step rv-card">
         <span class="sn">2</span>
-        <!-- capybara with sparkles / thinking -->
         <div class="step-ill">
-          <svg width="48" height="44" viewBox="0 0 48 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- capy head -->
+          <svg width="48" height="44" viewBox="0 0 48 44" fill="none">
             <ellipse cx="22" cy="24" rx="13" ry="12" fill="#cf9060"/>
-            <!-- snout -->
             <rect x="14" y="29" width="16" height="9" rx="4.5" fill="#faecd4"/>
-            <!-- eyes — closed/thinking squint -->
             <path d="M16 23 Q18 21 20 23" stroke="#1a0c04" stroke-width="1.8" stroke-linecap="round" fill="none"/>
             <path d="M24 23 Q26 21 28 23" stroke="#1a0c04" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-            <!-- sparkle stars -->
-            <line x1="36" y1="10" x2="36" y2="16" stroke="var(--duck)" stroke-width="2" stroke-linecap="round"/>
-            <line x1="33" y1="13" x2="39" y2="13" stroke="var(--duck)" stroke-width="2" stroke-linecap="round"/>
-            <line x1="40" y1="18" x2="40" y2="22" stroke="var(--duck)" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="38" y1="20" x2="42" y2="20" stroke="var(--duck)" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="8" y1="8" x2="8" y2="12" stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="6" y1="10" x2="10" y2="10" stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="36" y1="10" x2="36" y2="16" stroke="#f5c800" stroke-width="2" stroke-linecap="round"/>
+            <line x1="33" y1="13" x2="39" y2="13" stroke="#f5c800" stroke-width="2" stroke-linecap="round"/>
+            <line x1="40" y1="18" x2="40" y2="22" stroke="#f5c800" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="38" y1="20" x2="42" y2="20" stroke="#f5c800" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="8" y1="8" x2="8" y2="12" stroke="rgba(255,255,255,.35)" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="6" y1="10" x2="10" y2="10" stroke="rgba(255,255,255,.35)" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </div>
-        <h3>AI reads it for you</h3>
-        <p>VerbaDoc extracts the key concepts, definitions, and likely exam questions from your document. Under 30 seconds, start to finish.</p>
-        <span class="htag">the magic part</span>
+        <h3>VerbaDoc reads it</h3>
+        <p>Pulls the key concepts, definitions, and likely exam questions out of your document. Under 30 seconds, start to finish.</p>
+        <span class="htag">the actual magic part</span>
       </div>
-
-      <div class="how-step">
+      <div class="how-step rv-card">
         <span class="sn">3</span>
-        <!-- capybara with duck, looking happy, checkmark -->
         <div class="step-ill">
-          <svg width="48" height="44" viewBox="0 0 48 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- capy head -->
+          <svg width="48" height="44" viewBox="0 0 48 44" fill="none">
             <ellipse cx="20" cy="26" rx="13" ry="12" fill="#cf9060"/>
-            <!-- snout -->
             <rect x="12" y="31" width="16" height="9" rx="4.5" fill="#faecd4"/>
-            <!-- happy eyes -->
             <circle cx="16" cy="24" r="3" fill="white"/><circle cx="16" cy="24" r="2.2" fill="#1a0c04"/><circle cx="17.2" cy="23" r=".7" fill="white"/>
             <circle cx="24" cy="24" r="3" fill="white"/><circle cx="24" cy="24" r="2.2" fill="#1a0c04"/><circle cx="25.2" cy="23" r=".7" fill="white"/>
-            <!-- mini duck on head -->
             <circle cx="28" cy="14" r="5" fill="#f5c800"/>
             <ellipse cx="23" cy="16" r="1.8" fill="#e07800"/>
             <circle cx="25" cy="13" r="1.4" fill="#1a0c04"/><circle cx="24.5" cy="12.5" r=".5" fill="white"/>
-            <!-- checkmark -->
             <circle cx="40" cy="12" r="7" fill="#d4f5ec"/>
             <path d="M36.5 12 L39 14.5 L43.5 9" stroke="#0a5245" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
           </svg>
         </div>
         <h3>actually study</h3>
-        <p>Practice with your generated cards. Build a streak. Take a practice exam. Go to bed knowing you actually studied instead of just re-reading the same page six times.</p>
+        <p>Work through your generated cards, build a streak, take a practice exam. Go to bed knowing you actually studied instead of just highlighting everything yellow.</p>
       </div>
-
     </div>
   </div>
 </section>
@@ -388,128 +586,113 @@
 <section class="section real" id="why">
   <div class="inner">
     <div class="real-grid">
-      <div class="reveal">
+      <div class="rv-h">
         <blockquote class="rquote">
           "I have a test tomorrow and I'm cooked."
-          <span class="rattr">— literally every student ever</span>
+          <span class="rattr">— literally every student, every semester</span>
         </blockquote>
       </div>
       <ul class="rlist">
-        <li class="ritem reveal">
-          <div class="ritem-icon">
-            <!-- target -->
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="10" stroke="#0f7c67" stroke-width="1.5"/><circle cx="11" cy="11" r="6" stroke="#0f7c67" stroke-width="1.5"/><circle cx="11" cy="11" r="2.5" fill="#0f7c67"/></svg>
-          </div>
-          <div><h4>Your material, not strangers' notes</h4><p>Every question comes from your teacher's actual PDF, not a random Quizlet deck some sophomore made in 2019 for a different class.</p></div>
+        <li class="ritem rv-left">
+          <div class="ritem-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="10" stroke="#0f7c67" stroke-width="1.5"/><circle cx="11" cy="11" r="6" stroke="#0f7c67" stroke-width="1.5"/><circle cx="11" cy="11" r="2.5" fill="#0f7c67"/></svg></div>
+          <div><h4>Your material, not strangers' notes</h4><p>Every question comes from your professor's actual PDF — not a random Quizlet deck some sophomore made in 2019 for a different class.</p></div>
         </li>
-        <li class="ritem reveal">
-          <div class="ritem-icon">
-            <!-- lightning -->
-            <svg width="18" height="22" viewBox="0 0 18 22" fill="none"><path d="M10 1L1 13h7l-1 8 10-12h-7L10 1z" fill="#0f7c67"/></svg>
-          </div>
-          <div><h4>From panic to practice in 30 seconds</h4><p>Upload. Wait a moment. Study. quick setup. create an account, upload your notes, and get started. That's the whole workflow.</p></div>
+        <li class="ritem rv-left">
+          <div class="ritem-icon"><svg width="18" height="22" viewBox="0 0 18 22" fill="none"><path d="M10 1L1 13h7l-1 8 10-12h-7L10 1z" fill="#0f7c67"/></svg></div>
+          <div><h4>From panic to practice in 30 seconds</h4><p>Upload. Wait a moment. Study. That's it. No account setup rabbit holes, no formatting, no busywork.</p></div>
         </li>
-        <li class="ritem reveal">
-          <div class="ritem-icon">
-            <!-- lock -->
-            <svg width="18" height="22" viewBox="0 0 18 22" fill="none"><rect x="2" y="9" width="14" height="12" rx="3" stroke="#0f7c67" stroke-width="1.5"/><path d="M5 9V6a4 4 0 018 0v3" stroke="#0f7c67" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="15" r="1.5" fill="#0f7c67"/></svg>
-          </div>
-          <div><h4>Your notes stay yours</h4><p>We never train on your documents. Never share them. They generate your study set and that's it.</p></div>
+        <li class="ritem rv-left">
+          <div class="ritem-icon"><svg width="18" height="22" viewBox="0 0 18 22" fill="none"><path d="M9 21C5 21 2 17.8 2 14c0-3.5 2.5-6 3.5-9C6.5 7 6.5 9 8 10c-.5-4 2-7 2-9 1.5 2.5 1.5 5 3 5.5C14 5 14.5 3.5 15 4.5 16.5 7 16 10 16 12c0 5.5-3 9-7 9z" fill="#0f7c67"/></svg></div>
+          <div><h4>Streaks that are psychologically evil</h4><p>Designed specifically so you don't want to break it. That's not an accident. That's the entire point.</p></div>
+        </li>
+        <li class="ritem rv-left">
+          <div class="ritem-icon"><svg width="18" height="22" viewBox="0 0 18 22" fill="none"><rect x="2" y="9" width="14" height="12" rx="3" stroke="#0f7c67" stroke-width="1.5"/><path d="M5 9V6a4 4 0 018 0v3" stroke="#0f7c67" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="15" r="1.5" fill="#0f7c67"/></svg></div>
+          <div><h4>Your notes stay yours</h4><p>Never trained on. Never shared. They generate your study set, then that's it.</p></div>
         </li>
       </ul>
     </div>
   </div>
 </section>
 
-
-<div class="demo-phone reveal">
-  <div class="pdoc">bio_chapter7.pdf · 48 cards</div>
-
-  <!-- 1. QUESTION -->
-  <div class="pcard">
-    <div class="pqlabel">Question</div>
-    <div class="pq">
-      During oxidative phosphorylation, what is the primary role of the proton gradient?
+<!-- ── DEMO ── -->
+<section class="section demo-section">
+  <div class="inner">
+    <div class="demo-wrap">
+      <div class="demo-phone rv-card" id="demoPhone">
+        <div class="pdoc">bio_chapter7.pdf · 48 cards</div>
+        <div class="pcard">
+          <div class="pqlabel">Practice Question</div>
+          <div class="pq">Which organelle produces ATP in eukaryotic cells?</div>
+          <div class="popts">
+            <div class="popt">A. Nucleus</div>
+            <div class="popt win">B. Mitochondria ✓</div>
+            <div class="popt">C. Ribosome</div>
+            <div class="popt">D. Golgi</div>
+          </div>
+        </div>
+        <div class="pstreak" id="streakRow">
+          <div class="sdays">
+            <div class="sday on">M</div><div class="sday on">T</div><div class="sday on">W</div>
+            <div class="sday on">T</div><div class="sday on">F</div>
+            <div class="sday">S</div><div class="sday">S</div>
+          </div>
+          <div class="pxp" id="xpLabel">+40 XP</div>
+        </div>
+      </div>
+      <div class="dcopy rv-p">
+        <p class="ltag">what it looks like</p>
+        <h2>a practice exam from <em>your own notes.</em></h2>
+        <p>Quizlet makes you do the work. ChatGPT makes you prompt it. VerbaDoc hands you the flashcards so you can use the actual hour you have left before your exam.</p>
+        <p><strong>No account needed to try it. One upload, done.</strong></p>
+        <a href="#waitlist" class="wbtn" style="display:inline-block;text-decoration:none;margin-top:.75rem">Get early access →</a>
+      </div>
     </div>
   </div>
+</section>
 
-  <!-- 2. ANSWER STATE -->
-  <div class="pcard">
-    <div class="pqlabel">Your Answer</div>
-    <div class="popt win">B. Drives ATP synthase to generate ATP ✓</div>
-  </div>
-
-  <!-- 3. AI TUTOR EXPLANATION -->
-  <div class="pcard">
-    <div class="pqlabel">AI Tutor</div>
-    <div class="pq" style="font-size:.85rem">
-      The proton gradient stores energy across the membrane. ATP synthase uses that energy like a turbine to produce ATP.
-    </div>
-  </div>
-
-  <!-- PROGRESS -->
-  <div class="pstreak">
-    <div class="sdays">
-      <div class="sday on">M</div><div class="sday on">T</div><div class="sday on">W</div>
-      <div class="sday on">T</div><div class="sday on">F</div>
-      <div class="sday">S</div><div class="sday">S</div>
-    </div>
-    <div class="pxp">+40 XP</div>
-  </div>
-</div>
-<!-- ── ABOUT / FOUNDER ── -->
+<!-- ── ABOUT ── -->
 <section class="about" id="about">
   <div class="about-inner">
     <div>
-<p class="ltag reveal">About VerbaDoc</p>
-
-<h2 class="reveal">
-  built because studying takes way too long.
-</h2>
-
-<p class="reveal">
-  this started because turning lecture notes into something usable before a test always took forever.
-</p>
-
-<p class="reveal">
-  so VerbaDoc just takes your notes and turns them into flashcards and practice questions you can actually study from.
-</p>
-
-<p class="reveal">
-  it’s not trying to change education or anything. it just saves time before exams.
-</p>
-    <div class="about-card reveal">
-      <!-- mini mascot in the card -->
-      <svg width="80" height="80" viewBox="0 0 1024 1024" style="border-radius:16px;flex-shrink:0" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="abg" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#18917a"/><stop offset="100%" stop-color="#0b5e4a"/></linearGradient>
-          <radialGradient id="abod" cx="32%" cy="26%" r="68%"><stop offset="0%" stop-color="#cf9060"/><stop offset="100%" stop-color="#7c4a22"/></radialGradient>
-          <radialGradient id="asnout" cx="36%" cy="22%" r="64%"><stop offset="0%" stop-color="#faecd4"/><stop offset="100%" stop-color="#d4a86c"/></radialGradient>
-          <radialGradient id="aduck" cx="30%" cy="22%" r="65%"><stop offset="0%" stop-color="#ffe566"/><stop offset="100%" stop-color="#c88e00"/></radialGradient>
-        </defs>
-        <rect width="1024" height="1024" rx="220" fill="url(#abg)"/>
-        <ellipse cx="514" cy="798" rx="314" ry="224" fill="#5a3214"/><ellipse cx="510" cy="782" rx="304" ry="214" fill="url(#abod)"/>
-        <ellipse cx="510" cy="930" rx="300" ry="110" fill="#4a2810"/>
-        <rect x="218" y="222" width="592" height="510" rx="130" fill="#5a3214"/>
-        <rect x="224" y="210" width="576" height="496" rx="120" fill="url(#abod)"/>
-        <ellipse cx="268" cy="356" rx="50" ry="42" fill="#5a3214"/><ellipse cx="264" cy="350" rx="36" ry="30" fill="#9b6030"/>
-        <ellipse cx="762" cy="356" rx="50" ry="42" fill="#5a3214"/><ellipse cx="758" cy="350" rx="36" ry="30" fill="#9b6030"/>
-        <rect x="292" y="600" width="444" height="256" rx="108" fill="#8a5428"/>
-        <rect x="302" y="585" width="424" height="242" rx="102" fill="url(#asnout)"/>
-        <ellipse cx="438" cy="728" rx="14" ry="11" fill="#7a4020"/><ellipse cx="588" cy="728" rx="14" ry="11" fill="#7a4020"/>
-        <path d="M 418 762 Q 464 808 514 784 Q 564 808 610 762" stroke="#7a4020" stroke-width="28" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="384" cy="408" r="82" fill="white"/><circle cx="388" cy="414" r="66" fill="#1a0c04"/><circle cx="424" cy="376" r="22" fill="white"/>
-        <circle cx="642" cy="408" r="82" fill="white"/><circle cx="646" cy="414" r="66" fill="#1a0c04"/><circle cx="682" cy="376" r="22" fill="white"/>
-        <ellipse cx="670" cy="262" rx="58" ry="42" fill="#0b5e4a"/><ellipse cx="666" cy="250" rx="54" ry="38" fill="url(#aduck)"/>
-        <circle cx="604" cy="210" r="40" fill="url(#aduck)"/>
-        <ellipse cx="566" cy="214" rx="23" ry="12" fill="#e07800"/>
-        <circle cx="583" cy="198" r="9" fill="#1a0c04"/><circle cx="580" cy="195" r="3.5" fill="white"/>
-      </svg>
-      <div>
-        <div class="founder-name">VerbaDoc</div>
-        <div class="founder-role">Built by a student  · 2026</div>
+      <p class="ltag rv-h">About VerbaDoc</p>
+      <h2 class="rv-h">built because <em style="color:var(--duck)">we were cooked</em> too.</h2>
+      <p class="rv-p">VerbaDoc started as a real frustration — spending hours turning lecture notes into something usable before a test, and still walking in underprepared. The notes were there. The time wasn't.</p>
+      <p class="rv-p">The solution wasn't a fancier Quizlet. It was something that <strong>did the boring part for you</strong> — so you spend your actual study time studying, not formatting question cards at midnight.</p>
+      <p class="rv-p">Built by a student, for students. No VC pitches. No "revolutionizing education." Just a capybara, a duck, and a genuine hatred of wasted study hours.</p>
+    </div>
+    <div class="about-card rv-card">
+      <div class="about-card-top">
+        <svg width="52" height="52" viewBox="0 0 1024 1024" style="border-radius:12px;flex-shrink:0" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="abg2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#18917a"/><stop offset="100%" stop-color="#0b5e4a"/></linearGradient>
+            <radialGradient id="abod2" cx="32%" cy="26%" r="68%"><stop offset="0%" stop-color="#cf9060"/><stop offset="100%" stop-color="#7c4a22"/></radialGradient>
+            <radialGradient id="asnout2" cx="36%" cy="22%" r="64%"><stop offset="0%" stop-color="#faecd4"/><stop offset="100%" stop-color="#d4a86c"/></radialGradient>
+            <radialGradient id="aduck2" cx="30%" cy="22%" r="65%"><stop offset="0%" stop-color="#ffe566"/><stop offset="100%" stop-color="#c88e00"/></radialGradient>
+          </defs>
+          <rect width="1024" height="1024" rx="220" fill="url(#abg2)"/>
+          <ellipse cx="514" cy="798" rx="314" ry="224" fill="#5a3214"/><ellipse cx="510" cy="782" rx="304" ry="214" fill="url(#abod2)"/>
+          <ellipse cx="510" cy="930" rx="300" ry="110" fill="#4a2810"/>
+          <rect x="218" y="222" width="592" height="510" rx="130" fill="#5a3214"/>
+          <rect x="224" y="210" width="576" height="496" rx="120" fill="url(#abod2)"/>
+          <ellipse cx="268" cy="356" rx="50" ry="42" fill="#5a3214"/><ellipse cx="264" cy="350" rx="36" ry="30" fill="#9b6030"/>
+          <ellipse cx="762" cy="356" rx="50" ry="42" fill="#5a3214"/><ellipse cx="758" cy="350" rx="36" ry="30" fill="#9b6030"/>
+          <rect x="292" y="600" width="444" height="256" rx="108" fill="#8a5428"/>
+          <rect x="302" y="585" width="424" height="242" rx="102" fill="url(#asnout2)"/>
+          <ellipse cx="438" cy="728" rx="14" ry="11" fill="#7a4020"/><ellipse cx="588" cy="728" rx="14" ry="11" fill="#7a4020"/>
+          <path d="M 418 762 Q 464 808 514 784 Q 564 808 610 762" stroke="#7a4020" stroke-width="28" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="384" cy="408" r="82" fill="white"/><circle cx="388" cy="414" r="66" fill="#1a0c04"/><circle cx="424" cy="376" r="22" fill="white"/>
+          <circle cx="642" cy="408" r="82" fill="white"/><circle cx="646" cy="414" r="66" fill="#1a0c04"/><circle cx="682" cy="376" r="22" fill="white"/>
+          <ellipse cx="670" cy="262" rx="58" ry="42" fill="#0b5e4a"/><ellipse cx="666" cy="250" rx="54" ry="38" fill="url(#aduck2)"/>
+          <circle cx="604" cy="210" r="40" fill="url(#aduck2)"/>
+          <ellipse cx="566" cy="214" rx="23" ry="12" fill="#e07800"/>
+          <circle cx="583" cy="198" r="9" fill="#1a0c04"/><circle cx="580" cy="195" r="3.5" fill="white"/>
+        </svg>
+        <div>
+          <div class="founder-name">VerbaDoc</div>
+          <div class="founder-role">Built by a student · iOS · 2026</div>
+        </div>
       </div>
-      <div class="founder-quote">"I built the thing I was mad didn't exist. A study tool that actually does the boring part for you."</div>
+      <div class="founder-quote">"I built the thing I was mad didn't exist. A study tool that does the boring part for you."</div>
     </div>
   </div>
 </section>
@@ -517,13 +700,14 @@
 <!-- ── BIG WAITLIST ── -->
 <section class="wlist-section" id="waitlist">
   <div style="position:relative;z-index:1">
-    <h2>want in before everyone else?</h2>
-    <p class="sub">Drop your email. One email when we launch. No newsletter, no spam, no "check out our latest blog post."</p>
+    <h2 class="rv-h">want in before everyone else?</h2>
+    <p class="wlist-sub rv-p">Drop your email. One email when we launch — no newsletter, no spam, no "check out our latest blog post."</p>
     <form class="bigform" id="bigForm">
-      <input class="biginput" type="email" placeholder="hello@verbadc.com" required/>
+      <input class="biginput" type="email" placeholder="your@email.com" required/>
       <button class="bigbtn" type="submit">Get early access</button>
     </form>
-    <p id="bigSuc" style="display:none;margin-top:1.25rem;color:var(--duck);font-weight:800;font-size:1rem">you're on the list. we'll email you first.</p>
+    <p class="big-success" id="bigSuc">you're on the list. we'll email you first.</p>
+    <p class="big-error" id="bigErr">something went wrong — try again or email hello@verbadc.com</p>
   </div>
 </section>
 
@@ -532,25 +716,25 @@
   <div class="faq-inner">
     <p class="ltag">FAQ</p>
     <h2>quick answers</h2>
-    <div class="fitem reveal">
+    <div class="fitem rv-p">
       <button class="fq" aria-expanded="false">What file types work? <span class="arr">▾</span></button>
       <div class="fbody"><p>PDFs, images of handwritten notes, and plain text. If you can read it, VerbaDoc can study it.</p></div>
     </div>
-    <div class="fitem reveal">
+    <div class="fitem rv-p">
       <button class="fq" aria-expanded="false">Is VerbaDoc free? <span class="arr">▾</span></button>
-      <div class="fbody"><p>Free while we’re in early access. We’ll introduce paid plans later, but waitlist users get the best pricing when that happens.</p></div>
+      <div class="fbody"><p>Free while we're in early access. When paid plans come in later, waitlist users get the best pricing — that's the trade for trusting us early.</p></div>
     </div>
-    <div class="fitem reveal">
+    <div class="fitem rv-p">
       <button class="fq" aria-expanded="false">How is this different from just asking ChatGPT? <span class="arr">▾</span></button>
-      <div class="fbody"><p>ChatGPT can do this, if you know how to prompt it, paste your entire document, format the output, then study from a chat window. VerbaDoc does all of that automatically, with a proper study interface, streak tracking, and XP. It's the difference between a kitchen and a meal that's already cooked.</p></div>
+      <div class="fbody"><p>ChatGPT can do this — if you know how to prompt it, paste your whole document, format the output, then study from a chat window. VerbaDoc does all that automatically, with a proper study interface, streaks, and XP built in. It's the difference between a kitchen and a meal that's already on the table.</p></div>
     </div>
-    <div class="fitem reveal">
+    <div class="fitem rv-p">
       <button class="fq" aria-expanded="false">When does VerbaDoc launch? <span class="arr">▾</span></button>
-      <div class="fbody"><p>Soon. Join the waitlist and you'll be first to know, and get early access pricing before it goes public.</p></div>
+      <div class="fbody"><p>Soon. Join the waitlist and you'll hear first — and get early access pricing before it goes public.</p></div>
     </div>
-    <div class="fitem reveal">
+    <div class="fitem rv-p">
       <button class="fq" aria-expanded="false">What's with the capybara and the duck? <span class="arr">▾</span></button>
-      <div class="fbody"><p>Capybaras are famously the chillest animals alive. Every other animal likes them. They never seem stressed. VerbaDoc aspires to that energy: calm, useful, and somehow best friends with a duck. The duck does not have a formal role but is present at all times.</p></div>
+      <div class="fbody"><p>Capybaras are famously the chillest animals alive. Every other animal likes them. They never seem stressed. VerbaDoc aspires to that energy: calm, actually useful, and somehow best friends with a duck. The duck has no formal role but is present at all times.</p></div>
     </div>
   </div>
 </section>
@@ -563,56 +747,157 @@
 </footer>
 
 <script>
-  // cursor
-  const cur=document.getElementById('cursor');
-  document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px'});
-  document.querySelectorAll('a,button,input').forEach(el=>{
+(function(){
+
+  // ── CURSOR ──
+  const cur = document.getElementById('cursor');
+  let mx=0,my=0,cx=0,cy=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+  // smooth cursor follow — slightly laggy for personality
+  function tickCursor(){
+    cx+=(mx-cx)*.18; cy+=(my-cy)*.18;
+    cur.style.left=cx+'px'; cur.style.top=cy+'px';
+    requestAnimationFrame(tickCursor);
+  }
+  tickCursor();
+  document.querySelectorAll('a,button,input,.capy-svg').forEach(el=>{
     el.addEventListener('mouseenter',()=>cur.classList.add('big'));
     el.addEventListener('mouseleave',()=>cur.classList.remove('big'));
   });
+  document.addEventListener('mousedown',()=>{cur.classList.add('click')});
+  document.addEventListener('mouseup',()=>{cur.classList.remove('click')});
 
-  // scroll reveal
-  const io=new IntersectionObserver(entries=>{
-    entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('on'),i*65);io.unobserve(e.target)}});
-  },{threshold:.08});
-  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  // ── NAV SCROLL ──
+  const nav=document.getElementById('nav');
+  window.addEventListener('scroll',()=>{
+    nav.classList.toggle('scrolled',window.scrollY>40);
+  },{passive:true});
 
-  // faq
+  // ── CAPYBARA CLICK WIGGLE + XP burst ──
+  const capy = document.getElementById('capySvg');
+  const xpBurst = document.getElementById('xpBurst');
+  capy.addEventListener('click',()=>{
+    capy.classList.remove('wiggle');
+    void capy.offsetWidth; // reflow to restart
+    capy.classList.add('wiggle');
+    // XP burst
+    xpBurst.classList.remove('go');
+    void xpBurst.offsetWidth;
+    xpBurst.classList.add('go');
+    capy.addEventListener('animationend',()=>capy.classList.remove('wiggle'),{once:true});
+  });
+
+  // ── SCROLL REVEAL — varied per class, staggered by position ──
+  function makeObserver(selector,delay=0){
+    const els=document.querySelectorAll(selector);
+    const io=new IntersectionObserver(entries=>{
+      entries.forEach((e,i)=>{
+        if(e.isIntersecting){
+          // stagger: add small random-ish offset per element index, not uniform
+          const jitter = [0,55,30,80,20,65,10,45][i%8];
+          setTimeout(()=>e.target.classList.add('on'), delay + jitter);
+          io.unobserve(e.target);
+        }
+      });
+    },{threshold:.1});
+    els.forEach(el=>io.observe(el));
+  }
+  makeObserver('.rv-h', 0);
+  makeObserver('.rv-card', 60);
+  makeObserver('.rv-left', 40);
+  makeObserver('.rv-p', 20);
+
+  // ── FAQ ──
   document.querySelectorAll('.fq').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const open=btn.getAttribute('aria-expanded')==='true';
-      document.querySelectorAll('.fq').forEach(b=>{b.setAttribute('aria-expanded','false');b.nextElementSibling.classList.remove('open')});
-      if(!open){btn.setAttribute('aria-expanded','true');btn.nextElementSibling.classList.add('open')}
+      document.querySelectorAll('.fq').forEach(b=>{
+        b.setAttribute('aria-expanded','false');
+        b.nextElementSibling.classList.remove('open');
+      });
+      if(!open){
+        btn.setAttribute('aria-expanded','true');
+        btn.nextElementSibling.classList.add('open');
+      }
     });
   });
 
-  // ── FORM HANDLER ──
-  // Replace the fetch URL with your Formspree endpoint:
-  // 1. Go to https://formspree.io → create free account → new form
-  // 2. Copy your form ID and replace YOUR_FORM_ID below
-  function wire(formId, sucId) {
-    document.getElementById(formId).addEventListener('submit', async e => {
+  // ── FORM HANDLER (proper error/success states) ──
+  // SETUP: replace YOUR_FORM_ID with your Formspree ID
+  // → go to formspree.io → free account → new form → copy the ID
+  const FORMSPREE_ID = 'https://formspree.io/f/xeevyzlv';
+
+  async function submitForm(formId, sucId, errId){
+    const form = document.getElementById(formId);
+    const suc  = document.getElementById(sucId);
+    const err  = document.getElementById(errId);
+    const btn  = form.querySelector('button[type=submit]');
+
+    form.addEventListener('submit', async e=>{
       e.preventDefault();
-      const form = e.target;
+      // hide any prior messages
+      suc.style.display='none';
+      err.style.display='none';
+      // loading state
+      btn.classList.add('loading');
+      btn.textContent='sending…';
+
       const data = new FormData(form);
+
       try {
-        const res = await fetch('https://formspree.io/f/xeevyzlv', {
-          method: 'POST', body: data,
-          headers: { 'Accept': 'application/json' }
+        const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`,{
+          method:'POST', body:data,
+          headers:{'Accept':'application/json'}
         });
-        if (res.ok) {
-          form.style.display = 'none';
-          document.getElementById(sucId).style.display = 'block';
+
+        if(res.ok){
+          // genuine success
+          form.style.display='none';
+          suc.style.display='block';
+          // trigger XP burst as reward
+          xpBurst.classList.remove('go');
+          void xpBurst.offsetWidth;
+          xpBurst.classList.add('go');
+        } else {
+          // server returned error (wrong setup, spam block, etc.)
+          btn.classList.remove('loading');
+          btn.textContent = formId==='heroForm' ? 'Join waitlist →' : 'Get early access';
+          err.style.display='block';
         }
-      } catch {
-        // fallback: just show success anyway for now
-        form.style.display = 'none';
-        document.getElementById(sucId).style.display = 'block';
+      } catch(_){
+        // network failure — don't fake success
+        btn.classList.remove('loading');
+        btn.textContent = formId==='heroForm' ? 'Join waitlist →' : 'Get early access';
+        err.style.display='block';
       }
     });
   }
-  wire('heroForm','heroSuc');
-  wire('bigForm','bigSuc');
+
+  submitForm('heroForm','heroSuc','heroErr');
+  submitForm('bigForm','bigSuc','bigErr');
+
+  // ── STREAK DAYS: bounce in one by one on scroll ──
+  const streakRow = document.getElementById('streakRow');
+  if(streakRow){
+    const sio = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          const days = streakRow.querySelectorAll('.sday.on');
+          days.forEach((d,i)=>{
+            d.style.transform='scale(0)';
+            setTimeout(()=>{
+              d.style.transition=`transform .4s cubic-bezier(.34,1.56,.64,1)`;
+              d.style.transform='scale(1)';
+            }, i * 90 + 200);
+          });
+          sio.unobserve(e.target);
+        }
+      });
+    },{threshold:.5});
+    sio.observe(streakRow);
+  }
+
+})();
 </script>
 </body>
 </html>
