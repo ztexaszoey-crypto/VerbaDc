@@ -91,7 +91,6 @@
     .chip{position:absolute;background:var(--card);border:1.5px solid var(--brd);border-radius:50px;padding:.45rem .9rem;font-size:.72rem;font-weight:800;color:var(--ink);box-shadow:0 4px 12px rgb[...]
     .chip .hi{color:var(--teal)}
     .chip-a{bottom:14px;left:-24px;animation:driftA 5.2s 1.1s ease-in-out infinite}
-    .chip-b{bottom:90px;right:-16px;animation:driftB 4.6s 1.8s ease-in-out infinite}
 
     /* xp burst */
     .xp-burst{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Instrument Serif',serif;font-style:italic;font-size:2.5rem;color:var(--duck);pointer-events:none;z-index:9[...]
@@ -209,7 +208,6 @@
     @keyframes idleBob{0%{transform:translateY(0) rotate(0deg)}30%{transform:translateY(-9px) rotate(.4deg)}55%{transform:translateY(-12px) rotate(-.2deg)}75%{transform:translateY(-6px) rotate(.3[...]
     @keyframes bubbleBob{0%{transform:translateY(0)}40%{transform:translateY(-7px)}70%{transform:translateY(-10px)}100%{transform:translateY(0)}}
     @keyframes driftA{0%{transform:translateY(0) rotate(0deg)}35%{transform:translateY(-8px) rotate(.5deg)}65%{transform:translateY(-5px) rotate(-.3deg)}100%{transform:translateY(0) rotate(0deg)}[...]
-    @keyframes driftB{0%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-6px) rotate(-.4deg)}60%{transform:translateY(-10px) rotate(.3deg)}100%{transform:translateY(0) rotate(0deg)[...]
     @keyframes wigglePop{0%{transform:scale(1) rotate(0deg)}20%{transform:scale(1.08) rotate(-4deg)}40%{transform:scale(1.05) rotate(3deg)}60%{transform:scale(1.03) rotate(-2deg)}80%{transform:sc[...]
     @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
     @keyframes xpPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}30%{opacity:1;transform:translate(-50%,-80%) scale(1.2)}60%{opacity:1;transform:translate(-50%,-120%) scale(1)}100%{opac[...]
@@ -236,7 +234,7 @@
       .real-grid,.demo-wrap,.about-inner{grid-template-columns:1fr;gap:2.5rem}
       .section,.faq-section,.wlist-section,.about{padding:4rem 1.5rem}
       footer{padding:2rem 1.5rem;flex-direction:column;text-align:center}
-      .chip-a,.chip-b{display:none}
+      .chip-a{display:none}
       nav{padding:1rem 1.5rem}
     }
   </style>
