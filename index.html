@@ -1,267 +1,754 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VerbaDoc — write clearer docs, faster</title>
-  <meta name="description" content="VerbaDoc helps teams write clearer docs faster with focused prompts, clean structure, and reusable templates." />
-  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VerbaDoc — Clear docs, faster</title>
+  <meta
+    name="description"
+    content="VerbaDoc helps teams write clear, consistent documentation faster."
+  />
   <style>
     :root {
-      --paper-cream: #f6f0e4;
-      --paper-panel: #fffaf1;
-      --ink-charcoal: #2a241d;
-      --ink-cocoa: #5e4c3a;
-      --marker-orange: #f5823a;
-      --soft-border: #d8c7ad;
-      --soft-shadow: 0 10px 24px rgba(42, 36, 29, 0.08);
-      --radius-lg: 24px;
-      --radius-md: 16px;
-      --radius-pill: 999px;
-      --space-1: 0.5rem;
-      --space-2: 0.75rem;
-      --space-3: 1rem;
-      --space-4: 1.5rem;
-      --space-5: 2rem;
-      --space-6: 3rem;
-      --space-7: 4rem;
-      --text-xs: 0.875rem;
-      --text-sm: 1rem;
-      --text-md: 1.125rem;
-      --text-lg: clamp(1.8rem, 4vw, 2.7rem);
-      --text-xl: clamp(2.2rem, 6vw, 4rem);
+      /* Duolingo-inspired Tokens */
+      --color-eager-green: #58cc02;
+      --color-storybook-green: #d7ffb8;
+      --color-spark-blue: #1cb0f6;
+      --color-fresh-leaf: #a5ed6e;
+      --color-night-ink: #000437;
+      --color-paper-white: #ffffff;
+      --color-charcoal: #4b4b4b;
+      --color-pencil-gray: #777777;
+      --color-faded-gray: #afafaf;
+
+      /* Notebook accents from style #1 */
+      --color-marker-orange: #ff6f1e;
+      --color-notebook-brown: #b57a52;
+      --color-notebook-brown-dark: #9c6643;
+      --color-label-paper: #fffefc;
+
+      /* Typography */
+      --font-feather: "Nunito", "Avenir Next", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
+      --font-duolingo-sans: "Inter", "Nunito Sans", "Segoe UI", Roboto, Arial, sans-serif;
+
+      /* Scale */
+      --text-caption: 13px;
+      --text-nav-label: 15px;
+      --text-body: 17px;
+      --text-subheading: 19px;
+      --text-heading-sm: 32px;
+      --text-heading: 48px;
+      --text-display: 64px;
+
+      --leading-caption: 1.23;
+      --leading-nav-label: 1.33;
+      --leading-body: 1.45;
+      --leading-subheading: 1.4;
+      --leading-heading: 1.2;
+      --leading-display: 1.2;
+
+      --tracking-nav-label: 0.055em;
+      --tracking-display: -0.02em;
+
+      --font-weight-medium: 500;
+      --font-weight-bold: 700;
+      --font-weight-black: 800;
+
+      /* Spacing */
+      --spacing-8: 8px;
+      --spacing-12: 12px;
+      --spacing-16: 16px;
+      --spacing-24: 24px;
+      --spacing-32: 32px;
+      --spacing-40: 40px;
+      --spacing-48: 48px;
+      --spacing-64: 64px;
+      --spacing-80: 80px;
+      --spacing-96: 96px;
+
+      /* Layout */
+      --page-max-width: 1200px;
+      --radius-xl: 12px;
+      --radius-2xl: 18px;
+
+      /* Borders/shadows */
+      --border-thick: 2px;
+      --hero-shadow: 0 12px 0 rgba(0, 0, 0, 0.08);
+      --card-shadow: 0 6px 0 rgba(0, 0, 0, 0.06);
+      --focus-ring: 0 0 0 4px rgba(28, 176, 246, 0.22);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
+    html,
     body {
       margin: 0;
-      font-family: "Trebuchet MS", "Avenir Next", Avenir, "Segoe UI", sans-serif;
-      color: var(--ink-charcoal);
-      background: var(--paper-cream);
-      line-height: 1.55;
+      padding: 0;
+      background: var(--color-paper-white);
+      color: var(--color-charcoal);
+      font-family: var(--font-duolingo-sans);
+      line-height: var(--leading-body);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
 
-    .page {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: var(--space-4);
+    img {
+      max-width: 100%;
+      display: block;
     }
 
-    header {
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(100% - 32px, var(--page-max-width));
+      margin-inline: auto;
+    }
+
+    .site-header {
+      padding: var(--spacing-16) 0;
+      border-bottom: 1px solid #f0f0f0;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(6px);
+    }
+
+    .header-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: var(--space-3);
-      margin-bottom: var(--space-6);
-      padding-top: var(--space-3);
+      justify-content: space-between;
+      gap: var(--spacing-16);
     }
 
     .brand {
-      font-weight: 800;
-      letter-spacing: 0.03em;
-      font-size: var(--text-md);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: var(--font-weight-black);
+      color: var(--color-charcoal);
+      font-size: 20px;
     }
 
-    .pill-btn {
-      display: inline-block;
-      border: 2px solid var(--ink-charcoal);
-      border-radius: var(--radius-pill);
-      background: transparent;
-      color: var(--ink-charcoal);
-      text-decoration: none;
-      font-weight: 700;
-      padding: 0.72rem 1.2rem;
-      font-size: var(--text-xs);
-      letter-spacing: 0.02em;
+    .brand-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: var(--border-thick) solid var(--color-charcoal);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      background: #fff;
+      transform: rotate(-8deg);
     }
 
-    .pill-btn:hover,
-    .pill-btn:focus-visible {
-      background: var(--marker-orange);
-      border-color: var(--marker-orange);
-      color: #fff;
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-12);
+    }
+
+    .lang-pill {
+      border: var(--border-thick) solid var(--color-faded-gray);
+      color: var(--color-pencil-gray);
+      border-radius: var(--radius-xl);
+      padding: 10px 14px;
+      font-size: var(--text-nav-label);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: var(--tracking-nav-label);
+      text-transform: uppercase;
+      line-height: 1;
+      background: #fff;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-xl);
+      font-size: var(--text-nav-label);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: var(--tracking-nav-label);
+      text-transform: uppercase;
+      line-height: 1;
+      padding: 12px 18px;
+      transition: transform 120ms ease, filter 120ms ease, box-shadow 120ms ease;
+      cursor: pointer;
+    }
+
+    .btn:focus-visible,
+    .lang-pill:focus-visible {
       outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.02);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary {
+      background: var(--color-eager-green);
+      color: #fff;
+      border: none;
+    }
+
+    .btn-secondary {
+      border: var(--border-thick) solid var(--color-faded-gray);
+      color: var(--color-spark-blue);
+      background: #fff;
     }
 
     .hero {
-      position: relative;
+      padding: var(--spacing-48) 0 var(--spacing-80);
+    }
+
+    .hero-grid {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: var(--space-5);
+      grid-template-columns: 1.05fr 0.95fr;
       align-items: center;
-      margin-bottom: var(--space-7);
+      gap: var(--spacing-40);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: var(--spacing-16);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-spark-blue);
+      font-size: var(--text-caption);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .hero h1 {
-      font-size: var(--text-xl);
-      line-height: 1.08;
-      margin: 0 0 var(--space-3);
-      text-transform: lowercase;
-      letter-spacing: -0.02em;
-    }
-
-    .hero p {
-      margin: 0 0 var(--space-4);
-      color: var(--ink-cocoa);
-      font-size: var(--text-md);
-      max-width: 36ch;
-    }
-
-    .hero-card {
-      background: var(--paper-panel);
-      border: 1px solid var(--soft-border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--soft-shadow);
-      padding: var(--space-5);
-    }
-
-    .hero-card h2 {
-      margin: 0 0 var(--space-2);
-      font-size: var(--text-lg);
-      text-transform: lowercase;
-      line-height: 1.2;
-    }
-
-    .hero-card p {
       margin: 0;
-      color: var(--ink-cocoa);
-      font-size: var(--text-sm);
+      font-family: var(--font-feather);
+      font-size: clamp(36px, 5.5vw, var(--text-display));
+      line-height: var(--leading-display);
+      letter-spacing: var(--tracking-display);
+      color: var(--color-charcoal);
+    }
+
+    .hero h1 .green {
+      color: var(--color-eager-green);
+    }
+
+    .hero-copy {
+      margin: var(--spacing-24) 0;
+      max-width: 52ch;
+      color: var(--color-pencil-gray);
+      font-size: var(--text-body);
+    }
+
+    .hero-copy .em {
+      color: var(--color-charcoal);
+      font-weight: var(--font-weight-bold);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-12);
+      margin-bottom: var(--spacing-16);
+    }
+
+    .micro-note {
+      margin: 0;
+      color: var(--color-pencil-gray);
+      font-size: var(--text-caption);
+    }
+
+    /* Notebook hero card (infused from first style) */
+    .notebook-wrap {
+      position: relative;
+      min-height: 480px;
+      display: grid;
+      place-items: center;
     }
 
     .sticker {
       position: absolute;
-      font-size: var(--text-xs);
+      z-index: 4;
+      border: var(--border-thick) solid var(--color-charcoal);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: var(--font-weight-bold);
       background: #fff;
-      border: 1px solid var(--soft-border);
-      border-radius: var(--radius-pill);
-      padding: 0.35rem 0.75rem;
-      box-shadow: var(--soft-shadow);
-      transform: rotate(-8deg);
-      user-select: none;
+      color: var(--color-charcoal);
+      transform-origin: center;
+    }
+
+    .sticker.green {
+      background: var(--color-storybook-green);
+    }
+
+    .sticker.blue {
+      background: #e6f7ff;
+      color: #0879ad;
+    }
+
+    .sticker.one {
+      top: 34px;
+      right: 36px;
+      transform: rotate(11deg);
+    }
+
+    .sticker.two {
+      top: 88px;
+      left: 18px;
+      transform: rotate(-9deg);
+    }
+
+    .notebook {
+      width: min(430px, 100%);
+      aspect-ratio: 0.76 / 1;
+      border: var(--border-thick) solid var(--color-charcoal);
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--color-notebook-brown) 0%, var(--color-notebook-brown-dark) 100%);
+      box-shadow: var(--hero-shadow);
+      transform: rotate(-7deg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .notebook::before {
+      content: "";
+      position: absolute;
+      inset: 16px;
+      border: 2px dashed rgba(255, 255, 255, 0.25);
+      border-radius: 14px;
       pointer-events: none;
     }
 
-    .sticker-top { top: -0.9rem; right: 8%; }
-    .sticker-bottom { bottom: -1rem; left: 42%; transform: rotate(6deg); }
-
-    .features {
-      margin-bottom: var(--space-7);
+    .notebook-ribbon {
+      position: absolute;
+      width: 60px;
+      height: 10px;
+      right: 28px;
+      top: 28px;
+      border-radius: 999px;
+      background: #f4d35e;
+      border: 2px solid var(--color-charcoal);
+      transform: rotate(6deg);
     }
 
-    .features h2 {
-      margin: 0 0 var(--space-4);
-      text-transform: lowercase;
-      font-size: var(--text-lg);
+    .name-label {
+      position: absolute;
+      right: 26px;
+      bottom: 26px;
+      width: 230px;
+      background: var(--color-label-paper);
+      border: 2px solid var(--color-charcoal);
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: 0 3px 0 rgba(0, 0, 0, 0.08);
+      transform: rotate(3deg);
+      z-index: 3;
+    }
+
+    .label-title {
+      margin: 0 0 8px;
+      color: var(--color-charcoal);
+      font-family: var(--font-feather);
+      font-size: 20px;
       line-height: 1.15;
+      letter-spacing: -0.01em;
     }
 
-    .feature-grid {
+    .label-row {
+      margin: 2px 0;
+      font-size: 13px;
+      color: var(--color-pencil-gray);
+      font-weight: 600;
+    }
+
+    .sections {
+      padding-bottom: var(--spacing-80);
+    }
+
+    .section {
+      padding: var(--spacing-64) 0;
+      border-top: 1px solid #f2f2f2;
+    }
+
+    .section-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--space-3);
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-40);
+      align-items: center;
+    }
+
+    .section h2 {
+      margin: 0 0 var(--spacing-16);
+      font-family: var(--font-feather);
+      font-size: clamp(34px, 4.6vw, var(--text-heading));
+      line-height: var(--leading-heading);
+      letter-spacing: var(--tracking-display);
+      color: var(--color-eager-green);
+    }
+
+    .section p {
+      margin: 0;
+      max-width: 48ch;
+      color: var(--color-pencil-gray);
+      font-size: var(--text-body);
+    }
+
+    .feature-list {
+      display: grid;
+      gap: var(--spacing-12);
     }
 
     .feature-card {
-      background: var(--paper-panel);
-      border: 1px solid var(--soft-border);
-      border-radius: var(--radius-md);
-      box-shadow: var(--soft-shadow);
-      padding: var(--space-4);
+      border: var(--border-thick) solid var(--color-faded-gray);
+      border-radius: var(--radius-2xl);
+      padding: var(--spacing-16);
+      background: #fff;
+      box-shadow: var(--card-shadow);
     }
 
     .feature-card h3 {
-      margin: 0 0 var(--space-2);
-      font-size: 1.05rem;
-      text-transform: lowercase;
+      margin: 0 0 6px;
+      font-size: var(--text-subheading);
+      line-height: var(--leading-subheading);
+      color: var(--color-charcoal);
+      font-weight: var(--font-weight-bold);
     }
 
     .feature-card p {
       margin: 0;
-      color: var(--ink-cocoa);
-      font-size: var(--text-sm);
+      color: var(--color-pencil-gray);
+      font-size: 15px;
+      line-height: 1.45;
     }
 
-    footer {
-      background: var(--marker-orange);
-      color: #fff;
-      border-radius: var(--radius-md);
-      padding: var(--space-4);
+    .mini-visual {
+      border: var(--border-thick) solid var(--color-charcoal);
+      border-radius: 20px;
+      min-height: 280px;
+      background: #fbffef;
+      position: relative;
+      overflow: hidden;
+      padding: var(--spacing-24);
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: var(--space-3);
-      flex-wrap: wrap;
-      margin-bottom: var(--space-4);
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
     }
 
-    footer small {
-      opacity: 0.95;
+    .bubble {
+      width: fit-content;
+      max-width: 90%;
+      border: var(--border-thick) solid var(--color-charcoal);
+      border-radius: 16px;
+      padding: 10px 12px;
+      background: #fff;
+      font-size: 14px;
+      color: var(--color-charcoal);
       font-weight: 600;
     }
 
-    @media (max-width: 860px) {
-      .hero {
+    .bubble.green {
+      background: #ebffd9;
+      margin-left: auto;
+    }
+
+    .bubble.blue {
+      background: #e8f7ff;
+    }
+
+    .footer-band {
+      margin-top: var(--spacing-40);
+      background: var(--color-eager-green);
+      color: #fff;
+      padding: var(--spacing-48) 0;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr 1fr;
+      gap: var(--spacing-32);
+      align-items: start;
+    }
+
+    .footer-brand h3 {
+      margin: 0 0 10px;
+      font-family: var(--font-feather);
+      font-size: 36px;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .footer-brand p {
+      margin: 0;
+      color: var(--color-storybook-green);
+      max-width: 34ch;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .footer-col h4 {
+      margin: 0 0 12px;
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .footer-col a {
+      display: block;
+      margin: 7px 0;
+      color: var(--color-storybook-green);
+      font-size: 14px;
+    }
+
+    .footer-col a:hover {
+      text-decoration: underline;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      border: 0;
+      clip: rect(0 0 0 0);
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 1024px) {
+      .hero-grid,
+      .section-grid,
+      .footer-grid {
         grid-template-columns: 1fr;
       }
 
-      .feature-grid {
-        grid-template-columns: 1fr;
+      .notebook-wrap {
+        min-height: 420px;
       }
 
-      .sticker {
+      .notebook {
+        width: min(380px, 92%);
+        transform: rotate(-4deg);
+      }
+
+      .section {
+        padding: var(--spacing-48) 0;
+      }
+
+      .footer-band {
+        padding: var(--spacing-40) 0;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        width: min(100% - 20px, var(--page-max-width));
+      }
+
+      .site-header {
+        padding: 10px 0;
+      }
+
+      .brand {
+        font-size: 18px;
+      }
+
+      .brand-badge {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+      }
+
+      .lang-pill {
         display: none;
+      }
+
+      .btn {
+        padding: 11px 14px;
+        font-size: 13px;
+      }
+
+      .hero {
+        padding: var(--spacing-32) 0 var(--spacing-64);
+      }
+
+      .hero-copy {
+        font-size: 16px;
+      }
+
+      .notebook-wrap {
+        min-height: 360px;
+      }
+
+      .notebook {
+        width: min(320px, 92%);
+      }
+
+      .name-label {
+        width: 190px;
+        right: 16px;
+        bottom: 16px;
+      }
+
+      .label-title {
+        font-size: 17px;
+      }
+
+      .section h2 {
+        font-size: 34px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <header>
-      <div class="brand">verbadoc</div>
-      <a href="#waitlist" class="pill-btn">join waitlist</a>
-    </header>
+  <header class="site-header">
+    <div class="container header-row">
+      <a href="#" class="brand" aria-label="VerbaDoc home">
+        <span class="brand-badge">✍️</span>
+        <span>VerbaDoc</span>
+      </a>
 
-    <main>
-      <section class="hero" aria-labelledby="hero-title">
+      <div class="header-actions">
+        <button class="lang-pill" type="button" aria-label="Language selector">
+          English
+        </button>
+        <a class="btn btn-primary" href="#waitlist">Get started</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
         <div>
-          <h1 id="hero-title">meet verbadoc, your friendly docs writing sidekick</h1>
-          <p>write clearer docs faster with guided structure, consistent voice, and practical suggestions your team can actually ship.</p>
-          <a id="waitlist" href="mailto:hello@verbadc.com?subject=VerbaDoc%20Early%20Access" class="pill-btn">get early access</a>
+          <span class="eyebrow">clear docs. happy teams.</span>
+          <h1>
+            write better docs with
+            <span class="green">VerbaDoc</span>
+          </h1>
+
+          <p class="hero-copy">
+            VerbaDoc helps your team turn rough notes into clear, structured documentation —
+            faster drafts, consistent voice, and fewer “wait, what does this mean?” moments.
+            <span class="em">Ship docs people actually understand.</span>
+          </p>
+
+          <div class="hero-actions" id="waitlist">
+            <a class="btn btn-primary" href="#">Join waitlist</a>
+            <a class="btn btn-secondary" href="#features">See how it works</a>
+          </div>
+
+          <p class="micro-note">Early access rolling out in waves.</p>
         </div>
 
-        <aside class="hero-card" aria-label="value summary">
-          <h2>from rough notes to polished docs</h2>
-          <p>drop in bullet points, meeting notes, or half-finished drafts and let VerbaDoc help shape them into readable, reusable documentation.</p>
-        </aside>
+        <div class="notebook-wrap" aria-hidden="true">
+          <span class="sticker green one">new ✨</span>
+          <span class="sticker blue two">docs, but fun</span>
 
-        <span class="sticker sticker-top" aria-hidden="true">new</span>
-        <span class="sticker sticker-bottom" aria-hidden="true">schoolyard style</span>
-      </section>
+          <div class="notebook">
+            <div class="notebook-ribbon"></div>
 
-      <section class="features" aria-labelledby="features-title">
-        <h2 id="features-title">why teams keep verbadoc open</h2>
-        <div class="feature-grid">
-          <article class="feature-card">
-            <h3>clear first drafts</h3>
-            <p>start with strong outlines and sections that reduce rewrite loops.</p>
-          </article>
-          <article class="feature-card">
-            <h3>faster editing passes</h3>
-            <p>tighten wording and remove ambiguity without losing your intent.</p>
-          </article>
-          <article class="feature-card">
-            <h3>consistent team voice</h3>
-            <p>keep docs aligned across product notes, guides, and handoff pages.</p>
-          </article>
+            <div class="name-label">
+              <p class="label-title">VerbaDoc</p>
+              <p class="label-row">Project: API onboarding</p>
+              <p class="label-row">Status: ready to publish</p>
+              <p class="label-row">Tone: clear + concise</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="sections" id="features">
+      <section class="section">
+        <div class="container section-grid">
+          <div>
+            <h2>free up writing time.</h2>
+            <p>
+              Start with your notes, ticket context, or rough bullets. VerbaDoc helps shape the first draft
+              so your team spends less time formatting and more time improving the message.
+            </p>
+          </div>
+
+          <div class="mini-visual" aria-hidden="true">
+            <div class="bubble blue">input: rough release notes</div>
+            <div class="bubble green">output: clear docs draft ✅</div>
+            <div class="bubble blue">consistent sections + tone</div>
+          </div>
         </div>
       </section>
-    </main>
 
-    <footer>
-      <strong>verbadoc</strong>
-      <small>writing clearer docs faster, one page at a time.</small>
-    </footer>
-  </div>
+      <section class="section">
+        <div class="container section-grid">
+          <div class="feature-list">
+            <article class="feature-card">
+              <h3>draft faster</h3>
+              <p>Turn scattered notes into structured documentation in minutes.</p>
+            </article>
+            <article class="feature-card">
+              <h3>stay consistent</h3>
+              <p>Keep terminology, voice, and formatting aligned across every page.</p>
+            </article>
+            <article class="feature-card">
+              <h3>publish with confidence</h3>
+              <p>Catch unclear wording early so readers get the point the first time.</p>
+            </article>
+          </div>
+
+          <div>
+            <h2>simple, playful, effective.</h2>
+            <p>
+              Built for fast-moving teams who still care about quality writing. VerbaDoc keeps your docs clean,
+              useful, and easy to maintain without slowing your workflow down.
+            </p>
+            <p style="margin-top:16px;">
+              <a href="#" style="color: var(--color-spark-blue); font-weight: 700;">
+                explore early access →
+              </a>
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer-band">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <h3>VerbaDoc</h3>
+        <p>
+          Better docs, less chaos. Write clearly, move faster, help everyone stay aligned.
+        </p>
+      </div>
+
+      <nav class="footer-col" aria-label="Product links">
+        <h4>Product</h4>
+        <a href="#">Features</a>
+        <a href="#">Use cases</a>
+        <a href="#">Pricing</a>
+      </nav>
+
+      <nav class="footer-col" aria-label="Company links">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+        <a href="#">Privacy</a>
+      </nav>
+    </div>
+  </footer>
 </body>
 </html>
