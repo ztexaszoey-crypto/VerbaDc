@@ -3,43 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VerbaDoc — lock in your study flow</title>
-  <meta name="description" content="Upload notes, make flashcards, deep explain anything, and get homework help with Verba." />
+  <title>VerbaDoc — turn notes into better study tools</title>
+  <meta name="description" content="Upload notes, generate flashcards, get deep explanations, and study with VerbaDoc." />
   <style>
     :root {
-      /* Duolingo-ish core */
       --green: #58cc02;
       --green-soft: #d7ffb8;
       --blue: #1cb0f6;
-      --leaf: #a5ed6e;
-      --ink: #000437;
       --white: #ffffff;
       --charcoal: #4b4b4b;
       --gray: #777777;
       --gray-fade: #afafaf;
 
-      /* Notebook vibes */
-      --orange: #ff6f1e;
       --book-1: #b57a52;
       --book-2: #9c6643;
       --label: #fffefc;
 
-      /* Typography */
       --font-display: "Nunito", "Avenir Next", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
       --font-body: "Inter", "Nunito Sans", "Segoe UI", Roboto, Arial, sans-serif;
 
-      /* Sizing */
       --r: 12px;
       --r2: 18px;
       --r3: 22px;
       --b: 2px;
       --max: 1200px;
 
-      /* Space */
       --s8: 8px; --s12: 12px; --s16: 16px; --s20: 20px; --s24: 24px; --s32: 32px;
       --s40: 40px; --s48: 48px; --s64: 64px; --s80: 80px; --s96: 96px;
 
-      /* FX */
       --shadow-card: 0 6px 0 rgba(0,0,0,.06);
       --shadow-pop: 0 10px 0 rgba(0,0,0,.08);
       --shadow-book: 0 14px 0 rgba(0,0,0,.10);
@@ -47,7 +38,7 @@
     }
 
     * { box-sizing: border-box; }
-    html, body { margin:0; padding:0; }
+    html, body { margin: 0; padding: 0; }
     body {
       font-family: var(--font-body);
       color: var(--charcoal);
@@ -56,149 +47,94 @@
       overflow-x: hidden;
       scroll-behavior: smooth;
     }
+
     a { color: inherit; text-decoration: none; }
-    img, svg { display:block; max-width:100%; }
+    .container { width: min(100% - 32px, var(--max)); margin-inline: auto; }
 
-    .container { width:min(100% - 32px, var(--max)); margin-inline:auto; }
-
-    /* ---------- Progress Bar ---------- */
     .progress {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 5px;
-      z-index: 9999;
-      background: transparent;
+      position: fixed; top: 0; left: 0; width: 100%; height: 5px; z-index: 9999;
     }
     .progress > span {
-      display:block;
-      width: 0%;
-      height:100%;
+      display: block; width: 0%; height: 100%;
       background: linear-gradient(90deg, var(--green), var(--blue));
-      box-shadow: 0 0 12px rgba(88,204,2,.5);
+      box-shadow: 0 0 12px rgba(88,204,2,.45);
       transition: width .08s linear;
     }
 
-    /* ---------- Animations ---------- */
     @keyframes fadeUp {
-      from { opacity:0; transform: translateY(18px); }
-      to { opacity:1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     @keyframes floaty {
-      0%,100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
-      50% { transform: translateY(-8px) rotate(var(--rot, 0deg)); }
-    }
-    @keyframes wiggle {
-      0%,100% { transform: rotate(0deg); }
-      25% { transform: rotate(2deg); }
-      75% { transform: rotate(-2deg); }
+      0%,100% { transform: translateY(0) rotate(var(--rot,0deg)); }
+      50% { transform: translateY(-8px) rotate(var(--rot,0deg)); }
     }
     @keyframes pulse {
       0%,100% { box-shadow: 0 0 0 0 rgba(88,204,2,.35); }
       70% { box-shadow: 0 0 0 14px rgba(88,204,2,0); }
     }
-    @keyframes slideMarquee {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
+    @keyframes shine {
+      0%,65% { transform: translateX(-120%); }
+      100% { transform: translateX(130%); }
     }
 
-    .reveal { opacity:0; transform: translateY(16px); }
+    .reveal { opacity: 0; transform: translateY(16px); }
     .reveal.in { animation: fadeUp .7s ease forwards; }
-    .delay-1 { animation-delay: .08s !important; }
-    .delay-2 { animation-delay: .16s !important; }
-    .delay-3 { animation-delay: .24s !important; }
 
-    /* ---------- Header ---------- */
     .header {
-      position: sticky; top:0; z-index:200;
+      position: sticky; top: 0; z-index: 200;
       border-bottom: 1px solid #f0f0f0;
       background: rgba(255,255,255,.92);
       backdrop-filter: blur(8px);
     }
     .header-row {
-      display:flex; align-items:center; justify-content:space-between; gap: var(--s12);
+      display: flex; align-items: center; justify-content: space-between; gap: var(--s12);
       padding: 12px 0;
     }
     .brand {
-      display:inline-flex; align-items:center; gap:10px;
+      display: inline-flex; align-items: center; gap: 10px;
       font-size: 20px; font-weight: 800;
     }
     .badge {
-      width: 34px; height: 34px;
-      display:grid; place-items:center;
-      border: var(--b) solid var(--charcoal);
-      border-radius: 10px;
-      background:#fff;
+      width: 34px; height: 34px; display: grid; place-items: center;
+      border: var(--b) solid var(--charcoal); border-radius: 10px; background: #fff;
       transform: rotate(-8deg);
-      transition: transform .2s ease;
+      font-size: 15px; font-weight: 800;
     }
-    .brand:hover .badge { transform: rotate(-8deg) scale(1.04); }
 
-    .header-actions { display:flex; align-items:center; gap: var(--s12); }
-
+    .header-actions { display: flex; align-items: center; gap: var(--s12); }
     .pill {
-      border: var(--b) solid var(--gray-fade);
-      border-radius: var(--r);
-      padding: 10px 14px;
-      background:#fff;
-      color: var(--gray);
-      font-size: 13px; font-weight: 700;
-      letter-spacing: .055em; text-transform: uppercase;
+      border: var(--b) solid var(--gray-fade); border-radius: var(--r);
+      padding: 10px 14px; background: #fff; color: var(--gray);
+      font-size: 13px; font-weight: 700; letter-spacing: .055em; text-transform: uppercase;
       line-height: 1;
     }
 
     .btn {
-      display:inline-flex; align-items:center; justify-content:center;
-      border-radius: var(--r);
-      padding: 12px 16px;
-      font-size: 13px; font-weight: 700;
-      letter-spacing: .055em; text-transform: uppercase;
-      line-height:1;
-      transition: .16s ease;
-      cursor: pointer;
-      user-select:none;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: var(--r); padding: 12px 16px;
+      font-size: 13px; font-weight: 700; letter-spacing: .055em; text-transform: uppercase;
+      transition: .16s ease; cursor: pointer;
+      line-height: 1;
     }
     .btn:hover { transform: translateY(-1px); }
-    .btn:active { transform: translateY(0); }
-    .btn:focus-visible, .pill:focus-visible, .chip:focus-visible, input:focus-visible {
-      outline:none; box-shadow: var(--ring);
-    }
-    .btn-green {
-      border: none;
-      color:#fff;
-      background: var(--green);
-      animation: pulse 2.25s infinite;
-    }
-    .btn-ghost {
-      border: var(--b) solid var(--gray-fade);
-      background:#fff;
-      color: var(--blue);
-    }
+    .btn:focus-visible, .pill:focus-visible { outline: none; box-shadow: var(--ring); }
 
-    /* ---------- Hero ---------- */
-    .hero {
-      padding: var(--s48) 0 var(--s64);
-      position: relative;
-      overflow: clip;
-    }
+    .btn-green { border: none; color: #fff; background: var(--green); animation: pulse 2.3s infinite; }
+    .btn-ghost { border: var(--b) solid var(--gray-fade); background: #fff; color: var(--blue); }
+
+    .hero { padding: var(--s48) 0 var(--s64); position: relative; overflow: clip; }
     .hero-grid {
-      display:grid;
-      grid-template-columns: 1.06fr .94fr;
-      gap: var(--s40);
-      align-items: center;
-      position: relative;
-      z-index: 2;
+      display: grid; grid-template-columns: 1.06fr .94fr;
+      gap: var(--s40); align-items: center; position: relative; z-index: 2;
     }
-
     .eyebrow {
-      display:inline-block;
-      margin-bottom: var(--s16);
-      color: var(--blue);
-      font-size: 12px; font-weight: 700;
+      display: inline-block; margin-bottom: var(--s16);
+      color: var(--blue); font-size: 12px; font-weight: 700;
       text-transform: uppercase; letter-spacing: .08em;
     }
-
     h1 {
-      margin:0;
+      margin: 0;
       font-family: var(--font-display);
       font-size: clamp(38px, 6vw, 68px);
       line-height: 1.1;
@@ -207,7 +143,6 @@
       max-width: 13ch;
     }
     .green { color: var(--green); }
-
     .hero-copy {
       margin: var(--s24) 0;
       color: var(--gray);
@@ -216,196 +151,125 @@
     }
     .hero-copy b { color: var(--charcoal); }
 
-    .hero-actions { display:flex; flex-wrap:wrap; gap: var(--s12); margin-bottom: var(--s12); }
-    .micro { margin:0; color: var(--gray); font-size:13px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: var(--s12); margin-bottom: var(--s12); }
+    .micro { margin: 0; color: var(--gray); font-size: 13px; }
 
-    .hero-chips {
-      display:flex; flex-wrap:wrap; gap: 8px;
-      margin-top: var(--s16);
-    }
+    .hero-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: var(--s16); }
     .chip {
       border: var(--b) solid #dbeef8;
-      background: #f4fbff;
-      color: #0e86be;
-      border-radius: 999px;
-      padding: 6px 10px;
+      background: #f4fbff; color: #0e86be;
+      border-radius: 999px; padding: 6px 10px;
       font-size: 12px; font-weight: 700;
-      letter-spacing: .02em;
     }
 
-    /* Decorative floating blobs */
     .blob {
-      position:absolute; border-radius:50%;
-      pointer-events:none; filter: blur(1px);
-      opacity:.22; z-index:1;
+      position: absolute; border-radius: 50%; pointer-events: none; opacity: .2; z-index: 1;
       animation: floaty 5s ease-in-out infinite;
     }
-    .blob.b1 { width:180px;height:180px; background: #dcffc4; top: 40px; right: -30px; --rot: 6deg; }
-    .blob.b2 { width:120px;height:120px; background: #d8f2ff; left: -50px; top: 200px; --rot: -5deg; animation-delay:.5s; }
-    .blob.b3 { width:90px;height:90px; background: #ffe7d7; right: 24%; top: 380px; --rot: 8deg; animation-delay: .9s; }
+    .blob.b1 { width: 180px; height: 180px; background: #dcffc4; top: 40px; right: -30px; --rot: 6deg; }
+    .blob.b2 { width: 120px; height: 120px; background: #d8f2ff; left: -50px; top: 200px; --rot: -5deg; animation-delay: .5s; }
+    .blob.b3 { width: 90px; height: 90px; background: #ffe7d7; right: 24%; top: 380px; --rot: 8deg; animation-delay: .9s; }
 
-    /* Notebook module */
     .book-wrap {
-      position:relative;
-      min-height: 500px;
-      display:grid; place-items:center;
-      perspective: 1100px;
+      position: relative; min-height: 500px; display: grid; place-items: center; perspective: 1100px;
     }
-
     .sticker {
-      position:absolute; z-index:5;
-      border: var(--b) solid var(--charcoal);
-      border-radius: 999px;
-      background:#fff;
-      padding: 6px 12px;
-      font-size:12px; font-weight:700;
-      line-height:1;
+      position: absolute; z-index: 5;
+      border: var(--b) solid var(--charcoal); border-radius: 999px;
+      background: #fff; padding: 6px 12px;
+      font-size: 12px; font-weight: 700;
       animation: floaty 2.8s ease-in-out infinite;
-      --rot: 8deg;
       box-shadow: var(--shadow-card);
     }
     .sticker.one { top: 30px; right: 32px; background: var(--green-soft); --rot: 12deg; }
-    .sticker.two { top: 88px; left: 14px; background: #e6f7ff; color:#0879ad; --rot: -10deg; animation-delay:.35s; }
-    .sticker.three { bottom: 34px; left: 24px; background: #fff4e7; color:#b35512; --rot: 9deg; animation-delay:.7s; }
+    .sticker.two { top: 88px; left: 14px; background: #e6f7ff; color: #0879ad; --rot: -10deg; animation-delay: .35s; }
+    .sticker.three { bottom: 34px; left: 24px; background: #fff4e7; color: #b35512; --rot: 9deg; animation-delay: .7s; }
 
     .book {
-      width:min(435px, 100%);
+      width: min(435px, 100%);
       aspect-ratio: .76 / 1;
-      position:relative;
-      transform-style: preserve-3d;
+      position: relative;
       border: var(--b) solid var(--charcoal);
       border-radius: 22px;
       background: linear-gradient(135deg, var(--book-1), var(--book-2));
       box-shadow: var(--shadow-book);
       transform: rotate(-6deg) rotateX(0deg) rotateY(0deg);
-      transition: transform .2s ease, box-shadow .2s ease;
-      overflow:hidden;
+      transition: transform .2s ease;
+      overflow: hidden;
       will-change: transform;
     }
     .book::before {
-      content:"";
-      position:absolute; inset:16px;
-      border:2px dashed rgba(255,255,255,.26);
+      content: "";
+      position: absolute; inset: 16px;
+      border: 2px dashed rgba(255,255,255,.26);
       border-radius: 14px;
     }
     .book::after {
-      content:"";
-      position:absolute;
-      inset:0;
+      content: "";
+      position: absolute; inset: 0;
       background: linear-gradient(120deg, rgba(255,255,255,0) 15%, rgba(255,255,255,.14) 35%, rgba(255,255,255,0) 55%);
       transform: translateX(-120%);
       animation: shine 3.8s ease-in-out infinite;
     }
-    @keyframes shine {
-      0%, 65% { transform: translateX(-120%); }
-      100% { transform: translateX(130%); }
-    }
-
     .ribbon {
-      position:absolute; right:26px; top:24px;
-      width:60px; height:10px;
-      border:2px solid var(--charcoal);
-      border-radius:999px;
-      background:#f4d35e;
+      position: absolute; right: 26px; top: 24px;
+      width: 60px; height: 10px;
+      border: 2px solid var(--charcoal); border-radius: 999px;
+      background: #f4d35e;
       transform: rotate(6deg);
     }
-
     .label {
-      position:absolute; right:20px; bottom:20px; z-index:4;
-      width:238px;
-      background: var(--label);
-      border:2px solid var(--charcoal);
-      border-radius:10px;
-      padding:12px;
+      position: absolute; right: 20px; bottom: 20px; z-index: 4;
+      width: 238px; background: var(--label);
+      border: 2px solid var(--charcoal); border-radius: 10px;
+      padding: 12px;
       box-shadow: 0 3px 0 rgba(0,0,0,.08);
       transform: rotate(3deg);
     }
     .label h3 {
-      margin:0 0 8px;
+      margin: 0 0 8px;
       font-family: var(--font-display);
-      font-size:20px; line-height:1.08;
-      letter-spacing:-.01em;
+      font-size: 20px; line-height: 1.08;
     }
-    .label p {
-      margin:2px 0;
-      color: var(--gray);
-      font-size: 13px;
-      font-weight: 600;
-    }
+    .label p { margin: 2px 0; color: var(--gray); font-size: 13px; font-weight: 600; }
 
-    /* capybara mascot */
     .capy {
-      position:absolute;
-      right: -4px;
-      bottom: -8px;
-      width: 145px;
-      z-index: 6;
+      position: absolute; right: 0; bottom: -8px; width: 145px; z-index: 6;
       filter: drop-shadow(0 5px 0 rgba(0,0,0,.09));
       animation: floaty 3s ease-in-out infinite;
       --rot: -3deg;
     }
-    .capy .wave {
-      transform-origin: 80% 25%;
-      animation: wiggle 1.5s ease-in-out infinite;
-    }
 
-    /* ---------- Marquee strip ---------- */
-    .marquee-wrap {
-      border-top:1px solid #f1f1f1;
-      border-bottom:1px solid #f1f1f1;
-      background: #fcfffb;
-      overflow: hidden;
-    }
-    .marquee {
-      display:flex;
-      width: max-content;
-      gap: 18px;
-      padding: 12px 0;
-      animation: slideMarquee 22s linear infinite;
-    }
-    .pill-item {
-      border:2px solid #d8edd0;
-      background:#fff;
-      border-radius:999px;
-      padding: 7px 12px;
-      font-size: 12px;
-      font-weight: 700;
-      color: #4f8f26;
-      white-space: nowrap;
-    }
-
-    /* ---------- Sections ---------- */
     .section {
       padding: var(--s64) 0;
       border-top: 1px solid #f2f2f2;
     }
     .section h2 {
-      margin:0 0 var(--s16);
+      margin: 0 0 var(--s16);
       font-family: var(--font-display);
       font-size: clamp(32px, 5vw, 50px);
-      line-height:1.12;
-      letter-spacing:-.02em;
+      line-height: 1.12;
+      letter-spacing: -.02em;
       color: var(--green);
     }
     .section p.lead {
-      margin:0;
+      margin: 0;
       color: var(--gray);
-      font-size:17px;
+      font-size: 17px;
       max-width: 62ch;
     }
 
     .feature-grid {
       margin-top: var(--s32);
-      display:grid;
+      display: grid;
       grid-template-columns: 1fr 1fr;
       gap: var(--s24);
     }
-
     .card {
       border: var(--b) solid var(--gray-fade);
       border-radius: var(--r3);
       padding: var(--s24);
-      background:#fff;
+      background: #fff;
       box-shadow: var(--shadow-card);
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
@@ -415,53 +279,41 @@
       box-shadow: var(--shadow-pop);
     }
     .card h3 {
-      margin:0 0 12px;
+      margin: 0 0 12px;
       font-size: 24px;
-      line-height:1.2;
+      line-height: 1.2;
       font-weight: 800;
-      letter-spacing:-.01em;
       font-family: var(--font-display);
       color: var(--charcoal);
     }
 
-    .checklist { margin:0; padding:0; list-style:none; display:grid; gap:10px; }
+    .checklist { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
     .checklist li {
-      display:flex; align-items:flex-start; gap:10px;
-      color: var(--gray);
-      font-size:16px; line-height:1.35;
+      display: flex; align-items: flex-start; gap: 10px;
+      color: var(--gray); font-size: 16px; line-height: 1.35;
     }
     .check {
       width: 21px; height: 21px; flex: 0 0 21px;
-      border-radius: 6px;
-      border:2px solid var(--gray-fade);
-      display:grid; place-items:center;
-      margin-top:2px;
-      font-size:12px;
-      color:var(--green);
-      background:#fff;
-      transition:.16s ease;
-    }
-    .checklist li:hover .check {
-      border-color: var(--green);
-      background:#eeffdf;
-      transform: scale(1.04);
+      border-radius: 6px; border: 2px solid var(--gray-fade);
+      display: grid; place-items: center; margin-top: 2px;
+      font-size: 12px; color: var(--green); background: #fff;
     }
 
     .tag {
-      display:inline-flex;
+      display: inline-flex;
       margin-top: 14px;
-      border:2px solid #bfe9fc;
-      background:#f3fbff;
+      border: 2px solid #bfe9fc;
+      background: #f3fbff;
       color: #0f88c1;
-      border-radius:999px;
+      border-radius: 999px;
       padding: 6px 10px;
-      font-size:12px;
-      font-weight:700;
+      font-size: 12px;
+      font-weight: 700;
     }
 
     .split {
       margin-top: var(--s32);
-      display:grid;
+      display: grid;
       grid-template-columns: .95fr 1.05fr;
       gap: var(--s24);
       align-items: stretch;
@@ -470,46 +322,46 @@
     .mock-chat {
       border: var(--b) solid var(--charcoal);
       border-radius: 22px;
-      background:#fbffef;
+      background: #fbffef;
       padding: var(--s20);
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      gap:10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
       min-height: 290px;
       box-shadow: var(--shadow-card);
     }
     .bubble {
-      max-width:90%;
-      border:2px solid var(--charcoal);
+      max-width: 92%;
+      border: 2px solid var(--charcoal);
       border-radius: 16px;
       padding: 10px 12px;
       font-size: 14px;
       font-weight: 600;
-      background:#fff;
+      background: #fff;
+      color: var(--charcoal);
     }
-    .bubble.right { margin-left:auto; background:#eaffd9; }
-    .bubble.blue { background:#e8f7ff; color:#0f709b; }
+    .bubble.right { margin-left: auto; background: #eaffd9; }
+    .bubble.blue { background: #e8f7ff; color: #0f709b; }
 
     .stats {
       border: var(--b) solid #dfe9da;
       border-radius: 22px;
-      background:#fff;
+      background: #fff;
       padding: var(--s20);
-      display:grid; gap:12px;
+      display: grid; gap: 12px;
       box-shadow: var(--shadow-card);
     }
     .stat {
-      border:2px solid #eef3ea;
+      border: 2px solid #eef3ea;
       border-radius: 14px;
       padding: 10px 12px;
-      display:flex; justify-content:space-between; align-items:center; gap:10px;
-      font-size:14px;
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      font-size: 14px;
     }
     .stat b { color: var(--charcoal); }
-    .stat span { color:#5f9e35; font-weight:700; }
+    .stat span { color: #5f9e35; font-weight: 700; }
 
-    /* ---------- CTA Band ---------- */
     .cta-band {
       margin-top: var(--s48);
       border-top: 1px solid #ecf5e6;
@@ -518,65 +370,58 @@
       padding: var(--s40) 0;
     }
     .cta-inner {
-      display:flex; flex-wrap:wrap;
-      align-items:center; justify-content:space-between; gap: var(--s16);
+      display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: space-between; gap: var(--s16);
     }
     .cta-inner h3 {
-      margin:0;
+      margin: 0;
       font-family: var(--font-display);
       font-size: clamp(26px, 4vw, 40px);
-      line-height:1.14;
-      letter-spacing:-.02em;
+      line-height: 1.14;
+      letter-spacing: -.02em;
       color: var(--charcoal);
     }
     .cta-inner h3 .g { color: var(--green); }
 
-    /* ---------- Footer ---------- */
     .footer {
-      margin-top: 0;
       background: var(--green);
-      color:#fff;
+      color: #fff;
       padding: var(--s48) 0;
     }
     .footer-grid {
-      display:grid;
+      display: grid;
       grid-template-columns: 1.2fr 1fr 1fr;
       gap: var(--s24);
     }
     .footer h3 {
-      margin:0 0 10px;
+      margin: 0 0 10px;
       font-family: var(--font-display);
-      font-size: 34px; line-height:1.08;
-      letter-spacing:-.02em;
+      font-size: 34px; line-height: 1.08;
+      letter-spacing: -.02em;
     }
-    .footer p { margin:0; color: var(--green-soft); max-width:35ch; font-size:15px; }
-    .footer h4 { margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.08em; }
-    .footer a { display:block; margin:6px 0; color: var(--green-soft); font-size:14px; }
+    .footer p { margin: 0; color: var(--green-soft); max-width: 35ch; font-size: 15px; }
+    .footer h4 { margin: 0 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; }
+    .footer a { display: block; margin: 6px 0; color: var(--green-soft); font-size: 14px; }
     .footer a:hover { text-decoration: underline; }
 
-    /* ---------- Responsive ---------- */
     @media (max-width: 1024px) {
       .hero-grid, .feature-grid, .split, .footer-grid { grid-template-columns: 1fr; }
       .book-wrap { min-height: 420px; }
-      .book { width:min(370px, 92%); transform: rotate(-4deg); }
+      .book { width: min(370px, 92%); transform: rotate(-4deg); }
       .capy { right: 10px; width: 128px; }
     }
-
     @media (max-width: 680px) {
-      .container { width:min(100% - 20px, var(--max)); }
-      .pill { display:none; }
+      .container { width: min(100% - 20px, var(--max)); }
+      .pill { display: none; }
       .hero { padding: var(--s32) 0 var(--s48); }
-      .hero-copy { font-size:16px; }
+      .hero-copy { font-size: 16px; }
       .book-wrap { min-height: 345px; }
-      .book { width:min(320px, 92%); }
-      .label { width: 190px; right:14px; bottom:14px; }
+      .book { width: min(320px, 92%); }
+      .label { width: 190px; right: 14px; bottom: 14px; }
       .label h3 { font-size: 17px; }
       .capy { width: 108px; right: -2px; bottom: -2px; }
-      .cta-inner { align-items:flex-start; }
-      .btn { padding: 11px 14px; font-size:12px; }
+      .btn { padding: 11px 14px; font-size: 12px; }
     }
-
-    /* Reduced motion respect */
     @media (prefers-reduced-motion: reduce) {
       * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
     }
@@ -588,12 +433,12 @@
   <header class="header">
     <div class="container header-row">
       <a href="#" class="brand" aria-label="VerbaDoc home">
-        <span class="badge">✍️</span>
+        <span class="badge">VD</span>
         <span>VerbaDoc</span>
       </a>
       <div class="header-actions">
         <button class="pill" type="button" aria-label="Language selector">English</button>
-        <a class="btn btn-green" href="#get-started">Get started</a>
+        <a class="btn btn-green waitlist-link" href="#waitlist">Get started</a>
       </div>
     </div>
   </header>
@@ -606,24 +451,20 @@
 
       <div class="container hero-grid">
         <div class="reveal">
-          <span class="eyebrow">study mode: locked in</span>
-          <h1>
-            your notes go in,
-            <span class="green">smart study tools</span>
-            come out.
-          </h1>
+          <span class="eyebrow">clear notes, faster learning</span>
+          <h1>your notes go in, <span class="green">smart study tools</span> come out.</h1>
           <p class="hero-copy">
-            VerbaDoc takes your class notes and turns them into actual useful stuff — flashcards,
-            deep explanations, tutor chat, and photo homework help. <b>less confusion, more W’s.</b>
+            VerbaDoc turns class notes into flashcards, guided explanations, and tutor support.
+            Build study materials quickly, keep quality high, and focus on understanding.
           </p>
 
-          <div class="hero-actions" id="get-started">
-            <a class="btn btn-green" href="#features">Try Verba</a>
+          <div class="hero-actions">
+            <a class="btn btn-green waitlist-link" href="#waitlist">Join waitlist</a>
             <a class="btn btn-ghost" href="#features">See features</a>
           </div>
-          <p class="micro">Built for students, study squads, and last-minute clutch sessions.</p>
+          <p class="micro">Built for students and teams who want a clean study workflow.</p>
 
-          <div class="hero-chips" aria-label="Feature quick tags">
+          <div class="hero-chips">
             <span class="chip">pdf upload</span>
             <span class="chip">ocr from photos</span>
             <span class="chip">flashcards</span>
@@ -632,10 +473,10 @@
           </div>
         </div>
 
-        <div class="book-wrap reveal delay-2">
-          <span class="sticker one">new ✨</span>
-          <span class="sticker two">notes → cards</span>
-          <span class="sticker three">study glow up</span>
+        <div class="book-wrap reveal">
+          <span class="sticker one">new</span>
+          <span class="sticker two">notes to cards</span>
+          <span class="sticker three">study glow-up</span>
 
           <div class="book" id="tiltBook">
             <div class="ribbon"></div>
@@ -643,85 +484,46 @@
               <h3>VerbaDoc</h3>
               <p>Class: Bio + Calc</p>
               <p>Mode: Exam prep</p>
-              <p>Status: locked in ✅</p>
+              <p>Status: Ready to review</p>
             </div>
           </div>
 
-          <!-- Capybara mascot -->
           <svg class="capy" viewBox="0 0 220 180" role="img" aria-label="Capybara mascot">
             <title>Capybara mascot</title>
-            <!-- body -->
             <ellipse cx="112" cy="98" rx="86" ry="54" fill="#b77c52" stroke="#4b4b4b" stroke-width="4"/>
-            <!-- belly -->
             <ellipse cx="116" cy="112" rx="46" ry="28" fill="#c8916a" opacity=".6"/>
-            <!-- ear -->
             <circle cx="62" cy="48" r="13" fill="#9f6845" stroke="#4b4b4b" stroke-width="4"/>
             <circle cx="62" cy="48" r="5" fill="#4b4b4b"/>
-            <!-- head -->
             <ellipse cx="74" cy="78" rx="40" ry="34" fill="#b77c52" stroke="#4b4b4b" stroke-width="4"/>
-            <!-- nose -->
             <ellipse cx="58" cy="92" rx="10" ry="8" fill="#8e5b3c"/>
-            <!-- eye -->
             <circle cx="83" cy="76" r="4.2" fill="#2f2f2f"/>
-            <!-- smile -->
             <path d="M68 98 Q78 104 88 98" fill="none" stroke="#4b4b4b" stroke-width="3" stroke-linecap="round"/>
-            <!-- paws -->
             <ellipse cx="132" cy="146" rx="16" ry="9" fill="#9f6845" stroke="#4b4b4b" stroke-width="3"/>
             <ellipse cx="166" cy="142" rx="15" ry="8" fill="#9f6845" stroke="#4b4b4b" stroke-width="3"/>
-
-            <!-- waving tiny board -->
-            <g class="wave">
-              <rect x="149" y="42" width="58" height="36" rx="10" fill="#ffffff" stroke="#4b4b4b" stroke-width="3"/>
-              <text x="178" y="64" text-anchor="middle" font-size="14" font-family="Inter, Arial" fill="#58cc02" font-weight="700">yo 👋</text>
-            </g>
           </svg>
         </div>
       </div>
     </section>
 
-    <div class="marquee-wrap" aria-hidden="true">
-      <div class="marquee">
-        <span class="pill-item">Upload PDF and extract text</span>
-        <span class="pill-item">Upload photo + OCR</span>
-        <span class="pill-item">Paste notes directly</span>
-        <span class="pill-item">Generate flashcards from notes</span>
-        <span class="pill-item">Regenerate flashcards anytime</span>
-        <span class="pill-item">Deep Explain any flashcard</span>
-        <span class="pill-item">AI Tutor chat with Verba</span>
-        <span class="pill-item">Photo homework help</span>
-
-        <span class="pill-item">Upload PDF and extract text</span>
-        <span class="pill-item">Upload photo + OCR</span>
-        <span class="pill-item">Paste notes directly</span>
-        <span class="pill-item">Generate flashcards from notes</span>
-        <span class="pill-item">Regenerate flashcards anytime</span>
-        <span class="pill-item">Deep Explain any flashcard</span>
-        <span class="pill-item">AI Tutor chat with Verba</span>
-        <span class="pill-item">Photo homework help</span>
-      </div>
-    </div>
-
     <section class="section" id="features">
       <div class="container">
         <div class="reveal">
-          <h2>everything you asked for. no fluff.</h2>
-          <p class="lead">
-            straight up: these are the core VerbaDoc features. paste, upload, generate, ask, understand, pass.
-          </p>
+          <h2>everything that matters, no fluff.</h2>
+          <p class="lead">Core VerbaDoc capabilities for input, extraction, and content generation.</p>
         </div>
 
         <div class="feature-grid">
-          <article class="card reveal delay-1">
+          <article class="card reveal">
             <h3>Input + Extraction</h3>
             <ul class="checklist">
               <li><span class="check">✓</span><span>Upload PDF and extract text</span></li>
               <li><span class="check">✓</span><span>Upload photo and extract text with OCR</span></li>
               <li><span class="check">✓</span><span>Paste notes directly as text</span></li>
             </ul>
-            <span class="tag">zero-friction input</span>
+            <span class="tag">fast setup</span>
           </article>
 
-          <article class="card reveal delay-2">
+          <article class="card reveal">
             <h3>Input + Content Creation</h3>
             <ul class="checklist">
               <li><span class="check">✓</span><span>Generate AI flashcards from notes</span></li>
@@ -730,35 +532,35 @@
               <li><span class="check">✓</span><span>AI Tutor chat with Verba</span></li>
               <li><span class="check">✓</span><span>Photo homework help in AI Tutor</span></li>
             </ul>
-            <span class="tag">notes → understanding pipeline</span>
+            <span class="tag">from notes to mastery</span>
           </article>
         </div>
 
         <div class="split">
-          <div class="mock-chat reveal delay-2">
-            <div class="bubble blue">“explain mitosis like i’m cramming in 15 mins”</div>
-            <div class="bubble right">bet. here’s the quick version + memory trick ✅</div>
-            <div class="bubble blue">“now make me flashcards from that”</div>
-            <div class="bubble right">done. 18 cards generated. wanna harder mode too?</div>
+          <div class="mock-chat reveal">
+            <div class="bubble blue">Student: Explain mitosis in simple steps with one memory trick.</div>
+            <div class="bubble right">Verba: Done. Four phases, one line each, plus a quick mnemonic and a practice question.</div>
+            <div class="bubble blue">Student: Now turn that into flashcards with easy and hard versions.</div>
+            <div class="bubble right">Verba: Generated. 12 core cards and 8 challenge cards, grouped by topic.</div>
           </div>
 
-          <div class="stats reveal delay-3">
-            <div class="stat"><b>PDF/Notes to flashcards</b><span>fast</span></div>
+          <div class="stats reveal">
+            <div class="stat"><b>PDF/notes to flashcards</b><span>fast</span></div>
             <div class="stat"><b>Photo homework support</b><span>built in</span></div>
-            <div class="stat"><b>Tutor chat follow-ups</b><span>unlimited vibe</span></div>
-            <div class="stat"><b>Regenerate by topic</b><span>1 click</span></div>
+            <div class="stat"><b>Tutor follow-up prompts</b><span>guided</span></div>
+            <div class="stat"><b>Regenerate by topic</b><span>one click</span></div>
             <div class="stat"><b>Deep Explain mode</b><span>for hard concepts</span></div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="cta-band">
+    <section class="cta-band" id="waitlist">
       <div class="container cta-inner">
-        <h3>ready to stop rereading and <span class="g">actually learn faster?</span></h3>
+        <h3>Ready to study with more clarity and <span class="g">less repetition?</span></h3>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <a class="btn btn-green" href="#">Join waitlist</a>
-          <a class="btn btn-ghost" href="#">Talk to team</a>
+          <a class="btn btn-green waitlist-link" href="#waitlist">Join waitlist</a>
+          <a class="btn btn-ghost" href="#">Contact team</a>
         </div>
       </div>
     </section>
@@ -768,7 +570,7 @@
     <div class="container footer-grid">
       <div>
         <h3>VerbaDoc</h3>
-        <p>study smarter. stay consistent. pass stuff without cooking your brain.</p>
+        <p>Clear study materials, consistent structure, better outcomes.</p>
       </div>
       <nav>
         <h4>Product</h4>
@@ -786,13 +588,26 @@
   </footer>
 
   <script>
-    // Progress bar
+    // 1) Set your real waitlist destination here once:
+    // Examples:
+    // const WAITLIST_URL = "https://formspree.io/f/xxxxxx";
+    // const WAITLIST_URL = "https://forms.gle/your-google-form-id";
+    // const WAITLIST_URL = "mailto:hello@verbadc.com?subject=Waitlist";
+    const WAITLIST_URL = "https://formspree.io/f/xeevyzlv";
+
+    // Wire all waitlist buttons
+    document.querySelectorAll(".waitlist-link").forEach((el) => {
+      el.setAttribute("href", WAITLIST_URL);
+      el.setAttribute("target", "_blank");
+      el.setAttribute("rel", "noopener noreferrer");
+    });
+
+    // Scroll progress bar
     const progressBar = document.getElementById("progressBar");
     const updateProgress = () => {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-      progressBar.style.width = pct + "%";
+      const top = window.scrollY || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.width = (height > 0 ? (top / height) * 100 : 0) + "%";
     };
     window.addEventListener("scroll", updateProgress, { passive: true });
     updateProgress();
@@ -809,30 +624,18 @@
     }, { threshold: 0.15 });
     reveals.forEach((el) => io.observe(el));
 
-    // Notebook tilt on mouse move
+    // Notebook tilt
     const book = document.getElementById("tiltBook");
     if (book && window.matchMedia("(pointer:fine)").matches) {
       const parent = book.parentElement;
-      let raf = null;
-      let rx = 0, ry = 0;
-
-      const setTilt = (x, y) => {
+      parent.addEventListener("mousemove", (e) => {
         const rect = parent.getBoundingClientRect();
-        const px = (x - rect.left) / rect.width;
-        const py = (y - rect.top) / rect.height;
-
-        ry = (px - 0.5) * 12;  // Y rotation
-        rx = (0.5 - py) * 10;  // X rotation
-        if (!raf) {
-          raf = requestAnimationFrame(() => {
-            book.style.transform =
-              `rotate(-6deg) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
-            raf = null;
-          });
-        }
-      };
-
-      parent.addEventListener("mousemove", (e) => setTilt(e.clientX, e.clientY));
+        const px = (e.clientX - rect.left) / rect.width;
+        const py = (e.clientY - rect.top) / rect.height;
+        const ry = (px - 0.5) * 12;
+        const rx = (0.5 - py) * 10;
+        book.style.transform = `rotate(-6deg) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+      });
       parent.addEventListener("mouseleave", () => {
         book.style.transform = "rotate(-6deg) rotateX(0deg) rotateY(0deg)";
       });
