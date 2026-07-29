@@ -3,746 +3,780 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VerbaDoc — Clear docs, faster</title>
-  <meta
-    name="description"
-    content="VerbaDoc helps teams write clear, consistent documentation faster."
-  />
+  <title>VerbaDoc — lock in your study flow</title>
+  <meta name="description" content="Upload notes, make flashcards, deep explain anything, and get homework help with Verba." />
   <style>
     :root {
-      /* Duolingo-inspired Tokens */
-      --color-eager-green: #58cc02;
-      --color-storybook-green: #d7ffb8;
-      --color-spark-blue: #1cb0f6;
-      --color-fresh-leaf: #a5ed6e;
-      --color-night-ink: #000437;
-      --color-paper-white: #ffffff;
-      --color-charcoal: #4b4b4b;
-      --color-pencil-gray: #777777;
-      --color-faded-gray: #afafaf;
+      /* Duolingo-ish core */
+      --green: #58cc02;
+      --green-soft: #d7ffb8;
+      --blue: #1cb0f6;
+      --leaf: #a5ed6e;
+      --ink: #000437;
+      --white: #ffffff;
+      --charcoal: #4b4b4b;
+      --gray: #777777;
+      --gray-fade: #afafaf;
 
-      /* Notebook accents from style #1 */
-      --color-marker-orange: #ff6f1e;
-      --color-notebook-brown: #b57a52;
-      --color-notebook-brown-dark: #9c6643;
-      --color-label-paper: #fffefc;
+      /* Notebook vibes */
+      --orange: #ff6f1e;
+      --book-1: #b57a52;
+      --book-2: #9c6643;
+      --label: #fffefc;
 
       /* Typography */
-      --font-feather: "Nunito", "Avenir Next", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
-      --font-duolingo-sans: "Inter", "Nunito Sans", "Segoe UI", Roboto, Arial, sans-serif;
+      --font-display: "Nunito", "Avenir Next", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
+      --font-body: "Inter", "Nunito Sans", "Segoe UI", Roboto, Arial, sans-serif;
 
-      /* Scale */
-      --text-caption: 13px;
-      --text-nav-label: 15px;
-      --text-body: 17px;
-      --text-subheading: 19px;
-      --text-heading-sm: 32px;
-      --text-heading: 48px;
-      --text-display: 64px;
+      /* Sizing */
+      --r: 12px;
+      --r2: 18px;
+      --r3: 22px;
+      --b: 2px;
+      --max: 1200px;
 
-      --leading-caption: 1.23;
-      --leading-nav-label: 1.33;
-      --leading-body: 1.45;
-      --leading-subheading: 1.4;
-      --leading-heading: 1.2;
-      --leading-display: 1.2;
+      /* Space */
+      --s8: 8px; --s12: 12px; --s16: 16px; --s20: 20px; --s24: 24px; --s32: 32px;
+      --s40: 40px; --s48: 48px; --s64: 64px; --s80: 80px; --s96: 96px;
 
-      --tracking-nav-label: 0.055em;
-      --tracking-display: -0.02em;
-
-      --font-weight-medium: 500;
-      --font-weight-bold: 700;
-      --font-weight-black: 800;
-
-      /* Spacing */
-      --spacing-8: 8px;
-      --spacing-12: 12px;
-      --spacing-16: 16px;
-      --spacing-24: 24px;
-      --spacing-32: 32px;
-      --spacing-40: 40px;
-      --spacing-48: 48px;
-      --spacing-64: 64px;
-      --spacing-80: 80px;
-      --spacing-96: 96px;
-
-      /* Layout */
-      --page-max-width: 1200px;
-      --radius-xl: 12px;
-      --radius-2xl: 18px;
-
-      /* Borders/shadows */
-      --border-thick: 2px;
-      --hero-shadow: 0 12px 0 rgba(0, 0, 0, 0.08);
-      --card-shadow: 0 6px 0 rgba(0, 0, 0, 0.06);
-      --focus-ring: 0 0 0 4px rgba(28, 176, 246, 0.22);
+      /* FX */
+      --shadow-card: 0 6px 0 rgba(0,0,0,.06);
+      --shadow-pop: 0 10px 0 rgba(0,0,0,.08);
+      --shadow-book: 0 14px 0 rgba(0,0,0,.10);
+      --ring: 0 0 0 4px rgba(28,176,246,.22);
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html,
+    * { box-sizing: border-box; }
+    html, body { margin:0; padding:0; }
     body {
-      margin: 0;
-      padding: 0;
-      background: var(--color-paper-white);
-      color: var(--color-charcoal);
-      font-family: var(--font-duolingo-sans);
-      line-height: var(--leading-body);
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
+      font-family: var(--font-body);
+      color: var(--charcoal);
+      background: var(--white);
+      line-height: 1.45;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+    a { color: inherit; text-decoration: none; }
+    img, svg { display:block; max-width:100%; }
+
+    .container { width:min(100% - 32px, var(--max)); margin-inline:auto; }
+
+    /* ---------- Progress Bar ---------- */
+    .progress {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 5px;
+      z-index: 9999;
+      background: transparent;
+    }
+    .progress > span {
+      display:block;
+      width: 0%;
+      height:100%;
+      background: linear-gradient(90deg, var(--green), var(--blue));
+      box-shadow: 0 0 12px rgba(88,204,2,.5);
+      transition: width .08s linear;
     }
 
-    img {
-      max-width: 100%;
-      display: block;
+    /* ---------- Animations ---------- */
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(18px); }
+      to { opacity:1; transform: translateY(0); }
+    }
+    @keyframes floaty {
+      0%,100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+      50% { transform: translateY(-8px) rotate(var(--rot, 0deg)); }
+    }
+    @keyframes wiggle {
+      0%,100% { transform: rotate(0deg); }
+      25% { transform: rotate(2deg); }
+      75% { transform: rotate(-2deg); }
+    }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(88,204,2,.35); }
+      70% { box-shadow: 0 0 0 14px rgba(88,204,2,0); }
+    }
+    @keyframes slideMarquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    .reveal { opacity:0; transform: translateY(16px); }
+    .reveal.in { animation: fadeUp .7s ease forwards; }
+    .delay-1 { animation-delay: .08s !important; }
+    .delay-2 { animation-delay: .16s !important; }
+    .delay-3 { animation-delay: .24s !important; }
 
-    .container {
-      width: min(100% - 32px, var(--page-max-width));
-      margin-inline: auto;
-    }
-
-    .site-header {
-      padding: var(--spacing-16) 0;
+    /* ---------- Header ---------- */
+    .header {
+      position: sticky; top:0; z-index:200;
       border-bottom: 1px solid #f0f0f0;
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(6px);
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(8px);
     }
-
     .header-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--spacing-16);
+      display:flex; align-items:center; justify-content:space-between; gap: var(--s12);
+      padding: 12px 0;
     }
-
     .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: var(--font-weight-black);
-      color: var(--color-charcoal);
-      font-size: 20px;
+      display:inline-flex; align-items:center; gap:10px;
+      font-size: 20px; font-weight: 800;
     }
-
-    .brand-badge {
-      width: 34px;
-      height: 34px;
+    .badge {
+      width: 34px; height: 34px;
+      display:grid; place-items:center;
+      border: var(--b) solid var(--charcoal);
       border-radius: 10px;
-      border: var(--border-thick) solid var(--color-charcoal);
-      display: grid;
-      place-items: center;
-      font-size: 18px;
-      background: #fff;
+      background:#fff;
       transform: rotate(-8deg);
+      transition: transform .2s ease;
     }
+    .brand:hover .badge { transform: rotate(-8deg) scale(1.04); }
 
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-12);
-    }
+    .header-actions { display:flex; align-items:center; gap: var(--s12); }
 
-    .lang-pill {
-      border: var(--border-thick) solid var(--color-faded-gray);
-      color: var(--color-pencil-gray);
-      border-radius: var(--radius-xl);
+    .pill {
+      border: var(--b) solid var(--gray-fade);
+      border-radius: var(--r);
       padding: 10px 14px;
-      font-size: var(--text-nav-label);
-      font-weight: var(--font-weight-bold);
-      letter-spacing: var(--tracking-nav-label);
-      text-transform: uppercase;
+      background:#fff;
+      color: var(--gray);
+      font-size: 13px; font-weight: 700;
+      letter-spacing: .055em; text-transform: uppercase;
       line-height: 1;
-      background: #fff;
     }
 
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--radius-xl);
-      font-size: var(--text-nav-label);
-      font-weight: var(--font-weight-bold);
-      letter-spacing: var(--tracking-nav-label);
-      text-transform: uppercase;
-      line-height: 1;
-      padding: 12px 18px;
-      transition: transform 120ms ease, filter 120ms ease, box-shadow 120ms ease;
+      display:inline-flex; align-items:center; justify-content:center;
+      border-radius: var(--r);
+      padding: 12px 16px;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: .055em; text-transform: uppercase;
+      line-height:1;
+      transition: .16s ease;
       cursor: pointer;
+      user-select:none;
     }
-
-    .btn:focus-visible,
-    .lang-pill:focus-visible {
-      outline: none;
-      box-shadow: var(--focus-ring);
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn:focus-visible, .pill:focus-visible, .chip:focus-visible, input:focus-visible {
+      outline:none; box-shadow: var(--ring);
     }
-
-    .btn:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.02);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    .btn-primary {
-      background: var(--color-eager-green);
-      color: #fff;
+    .btn-green {
       border: none;
+      color:#fff;
+      background: var(--green);
+      animation: pulse 2.25s infinite;
+    }
+    .btn-ghost {
+      border: var(--b) solid var(--gray-fade);
+      background:#fff;
+      color: var(--blue);
     }
 
-    .btn-secondary {
-      border: var(--border-thick) solid var(--color-faded-gray);
-      color: var(--color-spark-blue);
-      background: #fff;
-    }
-
+    /* ---------- Hero ---------- */
     .hero {
-      padding: var(--spacing-48) 0 var(--spacing-80);
+      padding: var(--s48) 0 var(--s64);
+      position: relative;
+      overflow: clip;
     }
-
     .hero-grid {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
+      display:grid;
+      grid-template-columns: 1.06fr .94fr;
+      gap: var(--s40);
       align-items: center;
-      gap: var(--spacing-40);
+      position: relative;
+      z-index: 2;
     }
 
     .eyebrow {
-      display: inline-block;
-      margin-bottom: var(--spacing-16);
-      font-weight: var(--font-weight-bold);
-      color: var(--color-spark-blue);
-      font-size: var(--text-caption);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      display:inline-block;
+      margin-bottom: var(--s16);
+      color: var(--blue);
+      font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .08em;
     }
 
-    .hero h1 {
-      margin: 0;
-      font-family: var(--font-feather);
-      font-size: clamp(36px, 5.5vw, var(--text-display));
-      line-height: var(--leading-display);
-      letter-spacing: var(--tracking-display);
-      color: var(--color-charcoal);
+    h1 {
+      margin:0;
+      font-family: var(--font-display);
+      font-size: clamp(38px, 6vw, 68px);
+      line-height: 1.1;
+      letter-spacing: -.02em;
+      color: var(--charcoal);
+      max-width: 13ch;
     }
-
-    .hero h1 .green {
-      color: var(--color-eager-green);
-    }
+    .green { color: var(--green); }
 
     .hero-copy {
-      margin: var(--spacing-24) 0;
-      max-width: 52ch;
-      color: var(--color-pencil-gray);
-      font-size: var(--text-body);
+      margin: var(--s24) 0;
+      color: var(--gray);
+      font-size: 17px;
+      max-width: 58ch;
+    }
+    .hero-copy b { color: var(--charcoal); }
+
+    .hero-actions { display:flex; flex-wrap:wrap; gap: var(--s12); margin-bottom: var(--s12); }
+    .micro { margin:0; color: var(--gray); font-size:13px; }
+
+    .hero-chips {
+      display:flex; flex-wrap:wrap; gap: 8px;
+      margin-top: var(--s16);
+    }
+    .chip {
+      border: var(--b) solid #dbeef8;
+      background: #f4fbff;
+      color: #0e86be;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: .02em;
     }
 
-    .hero-copy .em {
-      color: var(--color-charcoal);
-      font-weight: var(--font-weight-bold);
+    /* Decorative floating blobs */
+    .blob {
+      position:absolute; border-radius:50%;
+      pointer-events:none; filter: blur(1px);
+      opacity:.22; z-index:1;
+      animation: floaty 5s ease-in-out infinite;
     }
+    .blob.b1 { width:180px;height:180px; background: #dcffc4; top: 40px; right: -30px; --rot: 6deg; }
+    .blob.b2 { width:120px;height:120px; background: #d8f2ff; left: -50px; top: 200px; --rot: -5deg; animation-delay:.5s; }
+    .blob.b3 { width:90px;height:90px; background: #ffe7d7; right: 24%; top: 380px; --rot: 8deg; animation-delay: .9s; }
 
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--spacing-12);
-      margin-bottom: var(--spacing-16);
-    }
-
-    .micro-note {
-      margin: 0;
-      color: var(--color-pencil-gray);
-      font-size: var(--text-caption);
-    }
-
-    /* Notebook hero card (infused from first style) */
-    .notebook-wrap {
-      position: relative;
-      min-height: 480px;
-      display: grid;
-      place-items: center;
+    /* Notebook module */
+    .book-wrap {
+      position:relative;
+      min-height: 500px;
+      display:grid; place-items:center;
+      perspective: 1100px;
     }
 
     .sticker {
-      position: absolute;
-      z-index: 4;
-      border: var(--border-thick) solid var(--color-charcoal);
+      position:absolute; z-index:5;
+      border: var(--b) solid var(--charcoal);
       border-radius: 999px;
+      background:#fff;
       padding: 6px 12px;
-      font-size: 12px;
-      line-height: 1;
-      font-weight: var(--font-weight-bold);
-      background: #fff;
-      color: var(--color-charcoal);
-      transform-origin: center;
+      font-size:12px; font-weight:700;
+      line-height:1;
+      animation: floaty 2.8s ease-in-out infinite;
+      --rot: 8deg;
+      box-shadow: var(--shadow-card);
     }
+    .sticker.one { top: 30px; right: 32px; background: var(--green-soft); --rot: 12deg; }
+    .sticker.two { top: 88px; left: 14px; background: #e6f7ff; color:#0879ad; --rot: -10deg; animation-delay:.35s; }
+    .sticker.three { bottom: 34px; left: 24px; background: #fff4e7; color:#b35512; --rot: 9deg; animation-delay:.7s; }
 
-    .sticker.green {
-      background: var(--color-storybook-green);
+    .book {
+      width:min(435px, 100%);
+      aspect-ratio: .76 / 1;
+      position:relative;
+      transform-style: preserve-3d;
+      border: var(--b) solid var(--charcoal);
+      border-radius: 22px;
+      background: linear-gradient(135deg, var(--book-1), var(--book-2));
+      box-shadow: var(--shadow-book);
+      transform: rotate(-6deg) rotateX(0deg) rotateY(0deg);
+      transition: transform .2s ease, box-shadow .2s ease;
+      overflow:hidden;
+      will-change: transform;
     }
-
-    .sticker.blue {
-      background: #e6f7ff;
-      color: #0879ad;
-    }
-
-    .sticker.one {
-      top: 34px;
-      right: 36px;
-      transform: rotate(11deg);
-    }
-
-    .sticker.two {
-      top: 88px;
-      left: 18px;
-      transform: rotate(-9deg);
-    }
-
-    .notebook {
-      width: min(430px, 100%);
-      aspect-ratio: 0.76 / 1;
-      border: var(--border-thick) solid var(--color-charcoal);
-      border-radius: 20px;
-      background: linear-gradient(135deg, var(--color-notebook-brown) 0%, var(--color-notebook-brown-dark) 100%);
-      box-shadow: var(--hero-shadow);
-      transform: rotate(-7deg);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .notebook::before {
-      content: "";
-      position: absolute;
-      inset: 16px;
-      border: 2px dashed rgba(255, 255, 255, 0.25);
+    .book::before {
+      content:"";
+      position:absolute; inset:16px;
+      border:2px dashed rgba(255,255,255,.26);
       border-radius: 14px;
-      pointer-events: none;
+    }
+    .book::after {
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(120deg, rgba(255,255,255,0) 15%, rgba(255,255,255,.14) 35%, rgba(255,255,255,0) 55%);
+      transform: translateX(-120%);
+      animation: shine 3.8s ease-in-out infinite;
+    }
+    @keyframes shine {
+      0%, 65% { transform: translateX(-120%); }
+      100% { transform: translateX(130%); }
     }
 
-    .notebook-ribbon {
-      position: absolute;
-      width: 60px;
-      height: 10px;
-      right: 28px;
-      top: 28px;
-      border-radius: 999px;
-      background: #f4d35e;
-      border: 2px solid var(--color-charcoal);
+    .ribbon {
+      position:absolute; right:26px; top:24px;
+      width:60px; height:10px;
+      border:2px solid var(--charcoal);
+      border-radius:999px;
+      background:#f4d35e;
       transform: rotate(6deg);
     }
 
-    .name-label {
-      position: absolute;
-      right: 26px;
-      bottom: 26px;
-      width: 230px;
-      background: var(--color-label-paper);
-      border: 2px solid var(--color-charcoal);
-      border-radius: 10px;
-      padding: 12px;
-      box-shadow: 0 3px 0 rgba(0, 0, 0, 0.08);
+    .label {
+      position:absolute; right:20px; bottom:20px; z-index:4;
+      width:238px;
+      background: var(--label);
+      border:2px solid var(--charcoal);
+      border-radius:10px;
+      padding:12px;
+      box-shadow: 0 3px 0 rgba(0,0,0,.08);
       transform: rotate(3deg);
-      z-index: 3;
     }
-
-    .label-title {
-      margin: 0 0 8px;
-      color: var(--color-charcoal);
-      font-family: var(--font-feather);
-      font-size: 20px;
-      line-height: 1.15;
-      letter-spacing: -0.01em;
+    .label h3 {
+      margin:0 0 8px;
+      font-family: var(--font-display);
+      font-size:20px; line-height:1.08;
+      letter-spacing:-.01em;
     }
-
-    .label-row {
-      margin: 2px 0;
+    .label p {
+      margin:2px 0;
+      color: var(--gray);
       font-size: 13px;
-      color: var(--color-pencil-gray);
       font-weight: 600;
     }
 
-    .sections {
-      padding-bottom: var(--spacing-80);
+    /* capybara mascot */
+    .capy {
+      position:absolute;
+      right: -4px;
+      bottom: -8px;
+      width: 145px;
+      z-index: 6;
+      filter: drop-shadow(0 5px 0 rgba(0,0,0,.09));
+      animation: floaty 3s ease-in-out infinite;
+      --rot: -3deg;
+    }
+    .capy .wave {
+      transform-origin: 80% 25%;
+      animation: wiggle 1.5s ease-in-out infinite;
     }
 
-    .section {
-      padding: var(--spacing-64) 0;
-      border-top: 1px solid #f2f2f2;
-    }
-
-    .section-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--spacing-40);
-      align-items: center;
-    }
-
-    .section h2 {
-      margin: 0 0 var(--spacing-16);
-      font-family: var(--font-feather);
-      font-size: clamp(34px, 4.6vw, var(--text-heading));
-      line-height: var(--leading-heading);
-      letter-spacing: var(--tracking-display);
-      color: var(--color-eager-green);
-    }
-
-    .section p {
-      margin: 0;
-      max-width: 48ch;
-      color: var(--color-pencil-gray);
-      font-size: var(--text-body);
-    }
-
-    .feature-list {
-      display: grid;
-      gap: var(--spacing-12);
-    }
-
-    .feature-card {
-      border: var(--border-thick) solid var(--color-faded-gray);
-      border-radius: var(--radius-2xl);
-      padding: var(--spacing-16);
-      background: #fff;
-      box-shadow: var(--card-shadow);
-    }
-
-    .feature-card h3 {
-      margin: 0 0 6px;
-      font-size: var(--text-subheading);
-      line-height: var(--leading-subheading);
-      color: var(--color-charcoal);
-      font-weight: var(--font-weight-bold);
-    }
-
-    .feature-card p {
-      margin: 0;
-      color: var(--color-pencil-gray);
-      font-size: 15px;
-      line-height: 1.45;
-    }
-
-    .mini-visual {
-      border: var(--border-thick) solid var(--color-charcoal);
-      border-radius: 20px;
-      min-height: 280px;
-      background: #fbffef;
-      position: relative;
+    /* ---------- Marquee strip ---------- */
+    .marquee-wrap {
+      border-top:1px solid #f1f1f1;
+      border-bottom:1px solid #f1f1f1;
+      background: #fcfffb;
       overflow: hidden;
-      padding: var(--spacing-24);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 10px;
     }
-
-    .bubble {
-      width: fit-content;
-      max-width: 90%;
-      border: var(--border-thick) solid var(--color-charcoal);
-      border-radius: 16px;
-      padding: 10px 12px;
-      background: #fff;
-      font-size: 14px;
-      color: var(--color-charcoal);
-      font-weight: 600;
+    .marquee {
+      display:flex;
+      width: max-content;
+      gap: 18px;
+      padding: 12px 0;
+      animation: slideMarquee 22s linear infinite;
     }
-
-    .bubble.green {
-      background: #ebffd9;
-      margin-left: auto;
-    }
-
-    .bubble.blue {
-      background: #e8f7ff;
-    }
-
-    .footer-band {
-      margin-top: var(--spacing-40);
-      background: var(--color-eager-green);
-      color: #fff;
-      padding: var(--spacing-48) 0;
-    }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1.3fr 1fr 1fr;
-      gap: var(--spacing-32);
-      align-items: start;
-    }
-
-    .footer-brand h3 {
-      margin: 0 0 10px;
-      font-family: var(--font-feather);
-      font-size: 36px;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-    }
-
-    .footer-brand p {
-      margin: 0;
-      color: var(--color-storybook-green);
-      max-width: 34ch;
-      font-size: 15px;
-      line-height: 1.5;
-    }
-
-    .footer-col h4 {
-      margin: 0 0 12px;
-      font-size: 14px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #fff;
-    }
-
-    .footer-col a {
-      display: block;
-      margin: 7px 0;
-      color: var(--color-storybook-green);
-      font-size: 14px;
-    }
-
-    .footer-col a:hover {
-      text-decoration: underline;
-    }
-
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      margin: -1px;
-      padding: 0;
-      border: 0;
-      clip: rect(0 0 0 0);
-      overflow: hidden;
+    .pill-item {
+      border:2px solid #d8edd0;
+      background:#fff;
+      border-radius:999px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #4f8f26;
       white-space: nowrap;
     }
 
-    @media (max-width: 1024px) {
-      .hero-grid,
-      .section-grid,
-      .footer-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .notebook-wrap {
-        min-height: 420px;
-      }
-
-      .notebook {
-        width: min(380px, 92%);
-        transform: rotate(-4deg);
-      }
-
-      .section {
-        padding: var(--spacing-48) 0;
-      }
-
-      .footer-band {
-        padding: var(--spacing-40) 0;
-      }
+    /* ---------- Sections ---------- */
+    .section {
+      padding: var(--s64) 0;
+      border-top: 1px solid #f2f2f2;
+    }
+    .section h2 {
+      margin:0 0 var(--s16);
+      font-family: var(--font-display);
+      font-size: clamp(32px, 5vw, 50px);
+      line-height:1.12;
+      letter-spacing:-.02em;
+      color: var(--green);
+    }
+    .section p.lead {
+      margin:0;
+      color: var(--gray);
+      font-size:17px;
+      max-width: 62ch;
     }
 
-    @media (max-width: 640px) {
-      .container {
-        width: min(100% - 20px, var(--page-max-width));
-      }
+    .feature-grid {
+      margin-top: var(--s32);
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s24);
+    }
 
-      .site-header {
-        padding: 10px 0;
-      }
+    .card {
+      border: var(--b) solid var(--gray-fade);
+      border-radius: var(--r3);
+      padding: var(--s24);
+      background:#fff;
+      box-shadow: var(--shadow-card);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: #8fd95a;
+      box-shadow: var(--shadow-pop);
+    }
+    .card h3 {
+      margin:0 0 12px;
+      font-size: 24px;
+      line-height:1.2;
+      font-weight: 800;
+      letter-spacing:-.01em;
+      font-family: var(--font-display);
+      color: var(--charcoal);
+    }
 
-      .brand {
-        font-size: 18px;
-      }
+    .checklist { margin:0; padding:0; list-style:none; display:grid; gap:10px; }
+    .checklist li {
+      display:flex; align-items:flex-start; gap:10px;
+      color: var(--gray);
+      font-size:16px; line-height:1.35;
+    }
+    .check {
+      width: 21px; height: 21px; flex: 0 0 21px;
+      border-radius: 6px;
+      border:2px solid var(--gray-fade);
+      display:grid; place-items:center;
+      margin-top:2px;
+      font-size:12px;
+      color:var(--green);
+      background:#fff;
+      transition:.16s ease;
+    }
+    .checklist li:hover .check {
+      border-color: var(--green);
+      background:#eeffdf;
+      transform: scale(1.04);
+    }
 
-      .brand-badge {
-        width: 30px;
-        height: 30px;
-        font-size: 16px;
-      }
+    .tag {
+      display:inline-flex;
+      margin-top: 14px;
+      border:2px solid #bfe9fc;
+      background:#f3fbff;
+      color: #0f88c1;
+      border-radius:999px;
+      padding: 6px 10px;
+      font-size:12px;
+      font-weight:700;
+    }
 
-      .lang-pill {
-        display: none;
-      }
+    .split {
+      margin-top: var(--s32);
+      display:grid;
+      grid-template-columns: .95fr 1.05fr;
+      gap: var(--s24);
+      align-items: stretch;
+    }
 
-      .btn {
-        padding: 11px 14px;
-        font-size: 13px;
-      }
+    .mock-chat {
+      border: var(--b) solid var(--charcoal);
+      border-radius: 22px;
+      background:#fbffef;
+      padding: var(--s20);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:10px;
+      min-height: 290px;
+      box-shadow: var(--shadow-card);
+    }
+    .bubble {
+      max-width:90%;
+      border:2px solid var(--charcoal);
+      border-radius: 16px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 600;
+      background:#fff;
+    }
+    .bubble.right { margin-left:auto; background:#eaffd9; }
+    .bubble.blue { background:#e8f7ff; color:#0f709b; }
 
-      .hero {
-        padding: var(--spacing-32) 0 var(--spacing-64);
-      }
+    .stats {
+      border: var(--b) solid #dfe9da;
+      border-radius: 22px;
+      background:#fff;
+      padding: var(--s20);
+      display:grid; gap:12px;
+      box-shadow: var(--shadow-card);
+    }
+    .stat {
+      border:2px solid #eef3ea;
+      border-radius: 14px;
+      padding: 10px 12px;
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      font-size:14px;
+    }
+    .stat b { color: var(--charcoal); }
+    .stat span { color:#5f9e35; font-weight:700; }
 
-      .hero-copy {
-        font-size: 16px;
-      }
+    /* ---------- CTA Band ---------- */
+    .cta-band {
+      margin-top: var(--s48);
+      border-top: 1px solid #ecf5e6;
+      border-bottom: 1px solid #ecf5e6;
+      background: #f9fff4;
+      padding: var(--s40) 0;
+    }
+    .cta-inner {
+      display:flex; flex-wrap:wrap;
+      align-items:center; justify-content:space-between; gap: var(--s16);
+    }
+    .cta-inner h3 {
+      margin:0;
+      font-family: var(--font-display);
+      font-size: clamp(26px, 4vw, 40px);
+      line-height:1.14;
+      letter-spacing:-.02em;
+      color: var(--charcoal);
+    }
+    .cta-inner h3 .g { color: var(--green); }
 
-      .notebook-wrap {
-        min-height: 360px;
-      }
+    /* ---------- Footer ---------- */
+    .footer {
+      margin-top: 0;
+      background: var(--green);
+      color:#fff;
+      padding: var(--s48) 0;
+    }
+    .footer-grid {
+      display:grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: var(--s24);
+    }
+    .footer h3 {
+      margin:0 0 10px;
+      font-family: var(--font-display);
+      font-size: 34px; line-height:1.08;
+      letter-spacing:-.02em;
+    }
+    .footer p { margin:0; color: var(--green-soft); max-width:35ch; font-size:15px; }
+    .footer h4 { margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.08em; }
+    .footer a { display:block; margin:6px 0; color: var(--green-soft); font-size:14px; }
+    .footer a:hover { text-decoration: underline; }
 
-      .notebook {
-        width: min(320px, 92%);
-      }
+    /* ---------- Responsive ---------- */
+    @media (max-width: 1024px) {
+      .hero-grid, .feature-grid, .split, .footer-grid { grid-template-columns: 1fr; }
+      .book-wrap { min-height: 420px; }
+      .book { width:min(370px, 92%); transform: rotate(-4deg); }
+      .capy { right: 10px; width: 128px; }
+    }
 
-      .name-label {
-        width: 190px;
-        right: 16px;
-        bottom: 16px;
-      }
+    @media (max-width: 680px) {
+      .container { width:min(100% - 20px, var(--max)); }
+      .pill { display:none; }
+      .hero { padding: var(--s32) 0 var(--s48); }
+      .hero-copy { font-size:16px; }
+      .book-wrap { min-height: 345px; }
+      .book { width:min(320px, 92%); }
+      .label { width: 190px; right:14px; bottom:14px; }
+      .label h3 { font-size: 17px; }
+      .capy { width: 108px; right: -2px; bottom: -2px; }
+      .cta-inner { align-items:flex-start; }
+      .btn { padding: 11px 14px; font-size:12px; }
+    }
 
-      .label-title {
-        font-size: 17px;
-      }
-
-      .section h2 {
-        font-size: 34px;
-      }
+    /* Reduced motion respect */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
     }
   </style>
 </head>
 <body>
-  <header class="site-header">
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+  <header class="header">
     <div class="container header-row">
       <a href="#" class="brand" aria-label="VerbaDoc home">
-        <span class="brand-badge">✍️</span>
+        <span class="badge">✍️</span>
         <span>VerbaDoc</span>
       </a>
-
       <div class="header-actions">
-        <button class="lang-pill" type="button" aria-label="Language selector">
-          English
-        </button>
-        <a class="btn btn-primary" href="#waitlist">Get started</a>
+        <button class="pill" type="button" aria-label="Language selector">English</button>
+        <a class="btn btn-green" href="#get-started">Get started</a>
       </div>
     </div>
   </header>
 
   <main>
     <section class="hero">
-      <div class="container hero-grid">
-        <div>
-          <span class="eyebrow">clear docs. happy teams.</span>
-          <h1>
-            write better docs with
-            <span class="green">VerbaDoc</span>
-          </h1>
+      <span class="blob b1" aria-hidden="true"></span>
+      <span class="blob b2" aria-hidden="true"></span>
+      <span class="blob b3" aria-hidden="true"></span>
 
+      <div class="container hero-grid">
+        <div class="reveal">
+          <span class="eyebrow">study mode: locked in</span>
+          <h1>
+            your notes go in,
+            <span class="green">smart study tools</span>
+            come out.
+          </h1>
           <p class="hero-copy">
-            VerbaDoc helps your team turn rough notes into clear, structured documentation —
-            faster drafts, consistent voice, and fewer “wait, what does this mean?” moments.
-            <span class="em">Ship docs people actually understand.</span>
+            VerbaDoc takes your class notes and turns them into actual useful stuff — flashcards,
+            deep explanations, tutor chat, and photo homework help. <b>less confusion, more W’s.</b>
           </p>
 
-          <div class="hero-actions" id="waitlist">
-            <a class="btn btn-primary" href="#">Join waitlist</a>
-            <a class="btn btn-secondary" href="#features">See how it works</a>
+          <div class="hero-actions" id="get-started">
+            <a class="btn btn-green" href="#features">Try Verba</a>
+            <a class="btn btn-ghost" href="#features">See features</a>
           </div>
+          <p class="micro">Built for students, study squads, and last-minute clutch sessions.</p>
 
-          <p class="micro-note">Early access rolling out in waves.</p>
+          <div class="hero-chips" aria-label="Feature quick tags">
+            <span class="chip">pdf upload</span>
+            <span class="chip">ocr from photos</span>
+            <span class="chip">flashcards</span>
+            <span class="chip">deep explain</span>
+            <span class="chip">ai tutor</span>
+          </div>
         </div>
 
-        <div class="notebook-wrap" aria-hidden="true">
-          <span class="sticker green one">new ✨</span>
-          <span class="sticker blue two">docs, but fun</span>
+        <div class="book-wrap reveal delay-2">
+          <span class="sticker one">new ✨</span>
+          <span class="sticker two">notes → cards</span>
+          <span class="sticker three">study glow up</span>
 
-          <div class="notebook">
-            <div class="notebook-ribbon"></div>
-
-            <div class="name-label">
-              <p class="label-title">VerbaDoc</p>
-              <p class="label-row">Project: API onboarding</p>
-              <p class="label-row">Status: ready to publish</p>
-              <p class="label-row">Tone: clear + concise</p>
+          <div class="book" id="tiltBook">
+            <div class="ribbon"></div>
+            <div class="label">
+              <h3>VerbaDoc</h3>
+              <p>Class: Bio + Calc</p>
+              <p>Mode: Exam prep</p>
+              <p>Status: locked in ✅</p>
             </div>
+          </div>
+
+          <!-- Capybara mascot -->
+          <svg class="capy" viewBox="0 0 220 180" role="img" aria-label="Capybara mascot">
+            <title>Capybara mascot</title>
+            <!-- body -->
+            <ellipse cx="112" cy="98" rx="86" ry="54" fill="#b77c52" stroke="#4b4b4b" stroke-width="4"/>
+            <!-- belly -->
+            <ellipse cx="116" cy="112" rx="46" ry="28" fill="#c8916a" opacity=".6"/>
+            <!-- ear -->
+            <circle cx="62" cy="48" r="13" fill="#9f6845" stroke="#4b4b4b" stroke-width="4"/>
+            <circle cx="62" cy="48" r="5" fill="#4b4b4b"/>
+            <!-- head -->
+            <ellipse cx="74" cy="78" rx="40" ry="34" fill="#b77c52" stroke="#4b4b4b" stroke-width="4"/>
+            <!-- nose -->
+            <ellipse cx="58" cy="92" rx="10" ry="8" fill="#8e5b3c"/>
+            <!-- eye -->
+            <circle cx="83" cy="76" r="4.2" fill="#2f2f2f"/>
+            <!-- smile -->
+            <path d="M68 98 Q78 104 88 98" fill="none" stroke="#4b4b4b" stroke-width="3" stroke-linecap="round"/>
+            <!-- paws -->
+            <ellipse cx="132" cy="146" rx="16" ry="9" fill="#9f6845" stroke="#4b4b4b" stroke-width="3"/>
+            <ellipse cx="166" cy="142" rx="15" ry="8" fill="#9f6845" stroke="#4b4b4b" stroke-width="3"/>
+
+            <!-- waving tiny board -->
+            <g class="wave">
+              <rect x="149" y="42" width="58" height="36" rx="10" fill="#ffffff" stroke="#4b4b4b" stroke-width="3"/>
+              <text x="178" y="64" text-anchor="middle" font-size="14" font-family="Inter, Arial" fill="#58cc02" font-weight="700">yo 👋</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <div class="marquee-wrap" aria-hidden="true">
+      <div class="marquee">
+        <span class="pill-item">Upload PDF and extract text</span>
+        <span class="pill-item">Upload photo + OCR</span>
+        <span class="pill-item">Paste notes directly</span>
+        <span class="pill-item">Generate flashcards from notes</span>
+        <span class="pill-item">Regenerate flashcards anytime</span>
+        <span class="pill-item">Deep Explain any flashcard</span>
+        <span class="pill-item">AI Tutor chat with Verba</span>
+        <span class="pill-item">Photo homework help</span>
+
+        <span class="pill-item">Upload PDF and extract text</span>
+        <span class="pill-item">Upload photo + OCR</span>
+        <span class="pill-item">Paste notes directly</span>
+        <span class="pill-item">Generate flashcards from notes</span>
+        <span class="pill-item">Regenerate flashcards anytime</span>
+        <span class="pill-item">Deep Explain any flashcard</span>
+        <span class="pill-item">AI Tutor chat with Verba</span>
+        <span class="pill-item">Photo homework help</span>
+      </div>
+    </div>
+
+    <section class="section" id="features">
+      <div class="container">
+        <div class="reveal">
+          <h2>everything you asked for. no fluff.</h2>
+          <p class="lead">
+            straight up: these are the core VerbaDoc features. paste, upload, generate, ask, understand, pass.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="card reveal delay-1">
+            <h3>Input + Extraction</h3>
+            <ul class="checklist">
+              <li><span class="check">✓</span><span>Upload PDF and extract text</span></li>
+              <li><span class="check">✓</span><span>Upload photo and extract text with OCR</span></li>
+              <li><span class="check">✓</span><span>Paste notes directly as text</span></li>
+            </ul>
+            <span class="tag">zero-friction input</span>
+          </article>
+
+          <article class="card reveal delay-2">
+            <h3>Input + Content Creation</h3>
+            <ul class="checklist">
+              <li><span class="check">✓</span><span>Generate AI flashcards from notes</span></li>
+              <li><span class="check">✓</span><span>Regenerate flashcards for any document</span></li>
+              <li><span class="check">✓</span><span>Deep Explain on any flashcard</span></li>
+              <li><span class="check">✓</span><span>AI Tutor chat with Verba</span></li>
+              <li><span class="check">✓</span><span>Photo homework help in AI Tutor</span></li>
+            </ul>
+            <span class="tag">notes → understanding pipeline</span>
+          </article>
+        </div>
+
+        <div class="split">
+          <div class="mock-chat reveal delay-2">
+            <div class="bubble blue">“explain mitosis like i’m cramming in 15 mins”</div>
+            <div class="bubble right">bet. here’s the quick version + memory trick ✅</div>
+            <div class="bubble blue">“now make me flashcards from that”</div>
+            <div class="bubble right">done. 18 cards generated. wanna harder mode too?</div>
+          </div>
+
+          <div class="stats reveal delay-3">
+            <div class="stat"><b>PDF/Notes to flashcards</b><span>fast</span></div>
+            <div class="stat"><b>Photo homework support</b><span>built in</span></div>
+            <div class="stat"><b>Tutor chat follow-ups</b><span>unlimited vibe</span></div>
+            <div class="stat"><b>Regenerate by topic</b><span>1 click</span></div>
+            <div class="stat"><b>Deep Explain mode</b><span>for hard concepts</span></div>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="sections" id="features">
-      <section class="section">
-        <div class="container section-grid">
-          <div>
-            <h2>free up writing time.</h2>
-            <p>
-              Start with your notes, ticket context, or rough bullets. VerbaDoc helps shape the first draft
-              so your team spends less time formatting and more time improving the message.
-            </p>
-          </div>
-
-          <div class="mini-visual" aria-hidden="true">
-            <div class="bubble blue">input: rough release notes</div>
-            <div class="bubble green">output: clear docs draft ✅</div>
-            <div class="bubble blue">consistent sections + tone</div>
-          </div>
+    <section class="cta-band">
+      <div class="container cta-inner">
+        <h3>ready to stop rereading and <span class="g">actually learn faster?</span></h3>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="btn btn-green" href="#">Join waitlist</a>
+          <a class="btn btn-ghost" href="#">Talk to team</a>
         </div>
-      </section>
-
-      <section class="section">
-        <div class="container section-grid">
-          <div class="feature-list">
-            <article class="feature-card">
-              <h3>draft faster</h3>
-              <p>Turn scattered notes into structured documentation in minutes.</p>
-            </article>
-            <article class="feature-card">
-              <h3>stay consistent</h3>
-              <p>Keep terminology, voice, and formatting aligned across every page.</p>
-            </article>
-            <article class="feature-card">
-              <h3>publish with confidence</h3>
-              <p>Catch unclear wording early so readers get the point the first time.</p>
-            </article>
-          </div>
-
-          <div>
-            <h2>simple, playful, effective.</h2>
-            <p>
-              Built for fast-moving teams who still care about quality writing. VerbaDoc keeps your docs clean,
-              useful, and easy to maintain without slowing your workflow down.
-            </p>
-            <p style="margin-top:16px;">
-              <a href="#" style="color: var(--color-spark-blue); font-weight: 700;">
-                explore early access →
-              </a>
-            </p>
-          </div>
-        </div>
-      </section>
-    </div>
+      </div>
+    </section>
   </main>
 
-  <footer class="footer-band">
+  <footer class="footer">
     <div class="container footer-grid">
-      <div class="footer-brand">
+      <div>
         <h3>VerbaDoc</h3>
-        <p>
-          Better docs, less chaos. Write clearly, move faster, help everyone stay aligned.
-        </p>
+        <p>study smarter. stay consistent. pass stuff without cooking your brain.</p>
       </div>
-
-      <nav class="footer-col" aria-label="Product links">
+      <nav>
         <h4>Product</h4>
-        <a href="#">Features</a>
+        <a href="#features">Features</a>
         <a href="#">Use cases</a>
         <a href="#">Pricing</a>
       </nav>
-
-      <nav class="footer-col" aria-label="Company links">
+      <nav>
         <h4>Company</h4>
         <a href="#">About</a>
         <a href="#">Contact</a>
@@ -750,5 +784,59 @@
       </nav>
     </div>
   </footer>
+
+  <script>
+    // Progress bar
+    const progressBar = document.getElementById("progressBar");
+    const updateProgress = () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      progressBar.style.width = pct + "%";
+    };
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    updateProgress();
+
+    // Reveal on scroll
+    const reveals = [...document.querySelectorAll(".reveal")];
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    reveals.forEach((el) => io.observe(el));
+
+    // Notebook tilt on mouse move
+    const book = document.getElementById("tiltBook");
+    if (book && window.matchMedia("(pointer:fine)").matches) {
+      const parent = book.parentElement;
+      let raf = null;
+      let rx = 0, ry = 0;
+
+      const setTilt = (x, y) => {
+        const rect = parent.getBoundingClientRect();
+        const px = (x - rect.left) / rect.width;
+        const py = (y - rect.top) / rect.height;
+
+        ry = (px - 0.5) * 12;  // Y rotation
+        rx = (0.5 - py) * 10;  // X rotation
+        if (!raf) {
+          raf = requestAnimationFrame(() => {
+            book.style.transform =
+              `rotate(-6deg) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+            raf = null;
+          });
+        }
+      };
+
+      parent.addEventListener("mousemove", (e) => setTilt(e.clientX, e.clientY));
+      parent.addEventListener("mouseleave", () => {
+        book.style.transform = "rotate(-6deg) rotateX(0deg) rotateY(0deg)";
+      });
+    }
+  </script>
 </body>
 </html>
