@@ -308,8 +308,7 @@
     color: var(--ink);
   }
   .waitlist-form input::placeholder { color: var(--pencil); }
-  .waitlist-form.is-submitted .submit-wrap { display: none; }
-  .submit-wrap { display: inline-flex; }
+  .waitlist-form.is-submitted { display: none; }
   .submit-success {
     display: none;
     color: var(--pine);
@@ -317,7 +316,7 @@
     font-size: 15px;
     padding: 10px 0;
   }
-  .waitlist-form.is-submitted .submit-success { display: inline-block; }
+  .submit-success.is-visible { display: inline-block; }
 
   /* ---------- Footer ---------- */
   footer { border-top: 1px solid #DEDDD5; padding: 40px 0; }
@@ -452,11 +451,9 @@
     <h2>Get early access before it's open to everyone.</h2>
     <form class="waitlist-form" action="https://formspree.io/f/xeevyzlv" method="POST" id="waitlist-form">
       <input type="email" name="email" placeholder="Email address" required>
-      <div class="submit-wrap">
-        <button class="btn-primary" type="submit">Join the waitlist</button>
-      </div>
-      <span class="submit-success" aria-live="polite">Thanks — you’re on the list.</span>
+      <button class="btn-primary" type="submit">Join the waitlist</button>
     </form>
+    <p class="submit-success" id="waitlist-thanks" aria-live="polite">Thanks — you’re on the list.</p>
   </div>
 </section>
 
@@ -473,9 +470,12 @@
 
 <script>
   const form = document.getElementById('waitlist-form');
-  if (form) {
-    form.addEventListener('submit', () => {
+  const thanks = document.getElementById('waitlist-thanks');
+
+  if (form && thanks) {
+    form.addEventListener('submit', function () {
       form.classList.add('is-submitted');
+      thanks.classList.add('is-visible');
     });
   }
 </script>
