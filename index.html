@@ -1,645 +1,447 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VerbaDoc — turn notes into better study tools</title>
-  <meta name="description" content="Upload notes, generate flashcards, get deep explanations, and study with VerbaDoc." />
-  <style>
-    :root {
-      --green: #58cc02;
-      --green-soft: #d7ffb8;
-      --blue: #1cb0f6;
-      --white: #ffffff;
-      --charcoal: #4b4b4b;
-      --gray: #777777;
-      --gray-fade: #afafaf;
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VerbaDoc — your notes, corrected into something that actually sticks</title>
+<meta name="description" content="Upload notes, get flashcards, explanations, and tutor support built from what you actually wrote.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F5F4F0;
+    --paper-dim: #EDECE6;
+    --ink: #1C1C1A;
+    --pencil: #6B6B63;
+    --pine: #1F4E3D;
+    --pine-dim: #E7EDE9;
+    --correction: #A23B2E;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --sans: 'IBM Plex Sans', -apple-system, sans-serif;
+    --max: 1180px;
+    --edge: clamp(20px, 5vw, 64px);
+  }
 
-      --book-1: #b57a52;
-      --book-2: #9c6643;
-      --label: #fffefc;
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
 
-      --font-display: "Nunito", "Avenir Next", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
-      --font-body: "Inter", "Nunito Sans", "Segoe UI", Roboto, Arial, sans-serif;
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  }
 
-      --r: 12px;
-      --r2: 18px;
-      --r3: 22px;
-      --b: 2px;
-      --max: 1200px;
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
 
-      --s8: 8px; --s12: 12px; --s16: 16px; --s20: 20px; --s24: 24px; --s32: 32px;
-      --s40: 40px; --s48: 48px; --s64: 64px; --s80: 80px; --s96: 96px;
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--pine); outline-offset: 3px; }
 
-      --shadow-card: 0 6px 0 rgba(0,0,0,.06);
-      --shadow-pop: 0 10px 0 rgba(0,0,0,.08);
-      --shadow-book: 0 14px 0 rgba(0,0,0,.10);
-      --ring: 0 0 0 4px rgba(28,176,246,.22);
-    }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--edge); }
 
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; }
-    body {
-      font-family: var(--font-body);
-      color: var(--charcoal);
-      background: var(--white);
-      line-height: 1.45;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
-    }
+  /* ---------- Header ---------- */
+  header {
+    border-bottom: 1px solid #DEDDD5;
+  }
+  .header-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 0;
+  }
+  .wordmark {
+    font-family: var(--serif);
+    font-size: 21px; font-weight: 600;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+  nav.links { display: flex; align-items: center; gap: 32px; }
+  nav.links a {
+    text-decoration: none;
+    font-size: 15px;
+    color: var(--pencil);
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  nav.links a:hover { color: var(--ink); border-color: var(--pencil); }
+  .btn-primary {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    font-size: 15px; font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 3px;
+    border: 1px solid var(--ink);
+    transition: background 0.15s ease;
+  }
+  .btn-primary:hover { background: #000; }
+  .btn-secondary {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 15px; font-weight: 500;
+    color: var(--ink);
+    padding: 10px 18px;
+    border-radius: 3px;
+    border: 1px solid var(--pencil);
+  }
+  .btn-secondary:hover { border-color: var(--ink); }
 
-    a { color: inherit; text-decoration: none; }
-    .container { width: min(100% - 32px, var(--max)); margin-inline: auto; }
+  /* ---------- Hero ---------- */
+  .hero { padding: clamp(56px, 9vw, 104px) 0 clamp(48px, 7vw, 80px); }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: clamp(32px, 5vw, 72px);
+    align-items: start;
+  }
+  .eyebrow-line {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--pencil);
+    margin: 0 0 18px;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(38px, 5.2vw, 60px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 0 0 28px;
+    max-width: 15ch;
+  }
+  .mark-wrap { position: relative; display: inline-block; }
+  .strike {
+    text-decoration: line-through;
+    text-decoration-color: var(--correction);
+    text-decoration-thickness: 2px;
+    color: var(--pencil);
+  }
+  .correction-note {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--correction);
+    font-size: 0.55em;
+    vertical-align: super;
+    margin-left: 2px;
+  }
+  .hero p.lede {
+    font-size: 19px;
+    color: var(--ink);
+    max-width: 46ch;
+    margin: 0 0 32px;
+  }
+  .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 40px; }
+  .stakes {
+    font-family: var(--serif);
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--ink);
+    max-width: 42ch;
+    padding-left: 20px;
+    border-left: 2px solid var(--pine);
+  }
 
-    .progress {
-      position: fixed; top: 0; left: 0; width: 100%; height: 5px; z-index: 9999;
-    }
-    .progress > span {
-      display: block; width: 0%; height: 100%;
-      background: linear-gradient(90deg, var(--green), var(--blue));
-      box-shadow: 0 0 12px rgba(88,204,2,.45);
-      transition: width .08s linear;
-    }
+  /* ---------- Hero right: annotated excerpt panel ---------- */
+  .excerpt {
+    background: #FFFFFF;
+    border: 1px solid #DEDDD5;
+    border-radius: 2px;
+    padding: 30px 32px;
+    position: relative;
+  }
+  .excerpt-label {
+    font-size: 13px;
+    color: var(--pencil);
+    margin: 0 0 16px;
+  }
+  .excerpt-body {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--ink);
+  }
+  .underline-mark {
+    text-decoration: underline;
+    text-decoration-color: var(--pine);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+  .margin-note {
+    display: block;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--pine);
+    margin-top: 4px;
+    padding-left: 14px;
+    border-left: 2px solid var(--pine-dim);
+  }
+  .grade-mark {
+    position: absolute;
+    top: -14px;
+    right: 24px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--correction);
+    background: var(--paper);
+    padding: 0 8px;
+  }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes floaty {
-      0%,100% { transform: translateY(0) rotate(var(--rot,0deg)); }
-      50% { transform: translateY(-8px) rotate(var(--rot,0deg)); }
-    }
-    @keyframes pulse {
-      0%,100% { box-shadow: 0 0 0 0 rgba(88,204,2,.35); }
-      70% { box-shadow: 0 0 0 14px rgba(88,204,2,0); }
-    }
-    @keyframes shine {
-      0%,65% { transform: translateX(-120%); }
-      100% { transform: translateX(130%); }
-    }
+  /* ---------- Steps (real sequence, so numbered) ---------- */
+  .steps-section { padding: clamp(56px, 8vw, 96px) 0; border-top: 1px solid #DEDDD5; }
+  .section-head { max-width: 56ch; margin-bottom: clamp(36px, 5vw, 56px); }
+  .section-head h2 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(28px, 3.4vw, 38px);
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+  .section-head p { color: var(--pencil); font-size: 17px; margin: 0; }
 
-    .reveal { opacity: 0; transform: translateY(16px); }
-    .reveal.in { animation: fadeUp .7s ease forwards; }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: #DEDDD5;
+    border: 1px solid #DEDDD5;
+  }
+  .step {
+    background: var(--paper);
+    padding: 32px 28px;
+  }
+  .step-number {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--pine);
+    margin: 0 0 18px;
+  }
+  .step h3 {
+    font-family: var(--serif);
+    font-size: 21px;
+    font-weight: 600;
+    margin: 0 0 10px;
+  }
+  .step p { color: var(--pencil); font-size: 15.5px; margin: 0; }
 
-    .header {
-      position: sticky; top: 0; z-index: 200;
-      border-bottom: 1px solid #f0f0f0;
-      background: rgba(255,255,255,.92);
-      backdrop-filter: blur(8px);
-    }
-    .header-row {
-      display: flex; align-items: center; justify-content: space-between; gap: var(--s12);
-      padding: 12px 0;
-    }
-    .brand {
-      display: inline-flex; align-items: center; gap: 10px;
-      font-size: 20px; font-weight: 800;
-    }
-    .badge {
-      width: 34px; height: 34px; display: grid; place-items: center;
-      border: var(--b) solid var(--charcoal); border-radius: 10px; background: #fff;
-      transform: rotate(-8deg);
-      font-size: 15px; font-weight: 800;
-    }
+  /* ---------- What comes out (asymmetric, not a card grid) ---------- */
+  .outputs { padding: clamp(56px, 8vw, 96px) 0; border-top: 1px solid #DEDDD5; }
+  .outputs-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(28px, 5vw, 64px);
+  }
+  .output-list { list-style: none; margin: 0; padding: 0; }
+  .output-list li {
+    padding: 20px 0;
+    border-top: 1px solid #DEDDD5;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+  }
+  .output-list li:last-child { border-bottom: 1px solid #DEDDD5; }
+  .output-list dt {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 17px;
+  }
+  .output-list dd { margin: 0; color: var(--pencil); font-size: 15.5px; }
 
-    .header-actions { display: flex; align-items: center; gap: var(--s12); }
-    .pill {
-      border: var(--b) solid var(--gray-fade); border-radius: var(--r);
-      padding: 10px 14px; background: #fff; color: var(--gray);
-      font-size: 13px; font-weight: 700; letter-spacing: .055em; text-transform: uppercase;
-      line-height: 1;
-    }
+  .tutor-panel {
+    background: #FFFFFF;
+    border: 1px solid #DEDDD5;
+    border-radius: 2px;
+    padding: 28px;
+  }
+  .tutor-panel .who {
+    font-size: 13px;
+    color: var(--pencil);
+    margin: 0 0 6px;
+  }
+  .tutor-panel .line {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.65;
+    margin: 0 0 22px;
+  }
+  .tutor-panel .line:last-child { margin-bottom: 0; }
+  .tutor-panel .line.reply { padding-left: 16px; border-left: 2px solid var(--pine); }
 
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      border-radius: var(--r); padding: 12px 16px;
-      font-size: 13px; font-weight: 700; letter-spacing: .055em; text-transform: uppercase;
-      transition: .16s ease; cursor: pointer;
-      line-height: 1;
-    }
-    .btn:hover { transform: translateY(-1px); }
-    .btn:focus-visible, .pill:focus-visible { outline: none; box-shadow: var(--ring); }
+  /* ---------- CTA band ---------- */
+  .cta-band {
+    padding: clamp(56px, 8vw, 88px) 0;
+    border-top: 1px solid #DEDDD5;
+  }
+  .cta-band .inner {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 32px; flex-wrap: wrap;
+  }
+  .cta-band h2 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(26px, 3.2vw, 34px);
+    margin: 0;
+    max-width: 20ch;
+  }
+  .cta-actions { display: flex; gap: 14px; flex-wrap: wrap; }
 
-    .btn-green { border: none; color: #fff; background: var(--green); animation: pulse 2.3s infinite; }
-    .btn-ghost { border: var(--b) solid var(--gray-fade); background: #fff; color: var(--blue); }
+  /* ---------- Footer ---------- */
+  footer { border-top: 1px solid #DEDDD5; padding: 40px 0; }
+  .footer-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    flex-wrap: wrap; gap: 16px;
+  }
+  footer .wordmark-small {
+    font-family: var(--serif); font-size: 16px; color: var(--pencil);
+  }
+  footer .foot-links { display: flex; gap: 24px; }
+  footer .foot-links a { font-size: 14px; color: var(--pencil); text-decoration: none; }
+  footer .foot-links a:hover { color: var(--ink); text-decoration: underline; }
 
-    .hero { padding: var(--s48) 0 var(--s64); position: relative; overflow: clip; }
-    .hero-grid {
-      display: grid; grid-template-columns: 1.06fr .94fr;
-      gap: var(--s40); align-items: center; position: relative; z-index: 2;
-    }
-    .eyebrow {
-      display: inline-block; margin-bottom: var(--s16);
-      color: var(--blue); font-size: 12px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: .08em;
-    }
-    h1 {
-      margin: 0;
-      font-family: var(--font-display);
-      font-size: clamp(38px, 6vw, 68px);
-      line-height: 1.1;
-      letter-spacing: -.02em;
-      color: var(--charcoal);
-      max-width: 13ch;
-    }
-    .green { color: var(--green); }
-    .hero-copy {
-      margin: var(--s24) 0;
-      color: var(--gray);
-      font-size: 17px;
-      max-width: 58ch;
-    }
-    .hero-copy b { color: var(--charcoal); }
+  /* ---------- One orchestrated reveal, nothing else animated ---------- */
+  @keyframes drawStrike {
+    from { text-decoration-color: transparent; }
+    to { text-decoration-color: var(--correction); }
+  }
+  .strike { animation: drawStrike 0.6s ease 0.4s both; }
+  .correction-note { animation: fadeIn 0.5s ease 0.9s both; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    .hero-actions { display: flex; flex-wrap: wrap; gap: var(--s12); margin-bottom: var(--s12); }
-    .micro { margin: 0; color: var(--gray); font-size: 13px; }
-
-    .hero-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: var(--s16); }
-    .chip {
-      border: var(--b) solid #dbeef8;
-      background: #f4fbff; color: #0e86be;
-      border-radius: 999px; padding: 6px 10px;
-      font-size: 12px; font-weight: 700;
-    }
-
-    .blob {
-      position: absolute; border-radius: 50%; pointer-events: none; opacity: .2; z-index: 1;
-      animation: floaty 5s ease-in-out infinite;
-    }
-    .blob.b1 { width: 180px; height: 180px; background: #dcffc4; top: 40px; right: -30px; --rot: 6deg; }
-    .blob.b2 { width: 120px; height: 120px; background: #d8f2ff; left: -50px; top: 200px; --rot: -5deg; animation-delay: .5s; }
-    .blob.b3 { width: 90px; height: 90px; background: #ffe7d7; right: 24%; top: 380px; --rot: 8deg; animation-delay: .9s; }
-
-    .book-wrap {
-      position: relative; min-height: 500px; display: grid; place-items: center; perspective: 1100px;
-    }
-    .sticker {
-      position: absolute; z-index: 5;
-      border: var(--b) solid var(--charcoal); border-radius: 999px;
-      background: #fff; padding: 6px 12px;
-      font-size: 12px; font-weight: 700;
-      animation: floaty 2.8s ease-in-out infinite;
-      box-shadow: var(--shadow-card);
-    }
-    .sticker.one { top: 30px; right: 32px; background: var(--green-soft); --rot: 12deg; }
-    .sticker.two { top: 88px; left: 14px; background: #e6f7ff; color: #0879ad; --rot: -10deg; animation-delay: .35s; }
-    .sticker.three { bottom: 34px; left: 24px; background: #fff4e7; color: #b35512; --rot: 9deg; animation-delay: .7s; }
-
-    .book {
-      width: min(435px, 100%);
-      aspect-ratio: .76 / 1;
-      position: relative;
-      border: var(--b) solid var(--charcoal);
-      border-radius: 22px;
-      background: linear-gradient(135deg, var(--book-1), var(--book-2));
-      box-shadow: var(--shadow-book);
-      transform: rotate(-6deg) rotateX(0deg) rotateY(0deg);
-      transition: transform .2s ease;
-      overflow: hidden;
-      will-change: transform;
-    }
-    .book::before {
-      content: "";
-      position: absolute; inset: 16px;
-      border: 2px dashed rgba(255,255,255,.26);
-      border-radius: 14px;
-    }
-    .book::after {
-      content: "";
-      position: absolute; inset: 0;
-      background: linear-gradient(120deg, rgba(255,255,255,0) 15%, rgba(255,255,255,.14) 35%, rgba(255,255,255,0) 55%);
-      transform: translateX(-120%);
-      animation: shine 3.8s ease-in-out infinite;
-    }
-    .ribbon {
-      position: absolute; right: 26px; top: 24px;
-      width: 60px; height: 10px;
-      border: 2px solid var(--charcoal); border-radius: 999px;
-      background: #f4d35e;
-      transform: rotate(6deg);
-    }
-    .label {
-      position: absolute; right: 20px; bottom: 20px; z-index: 4;
-      width: 238px; background: var(--label);
-      border: 2px solid var(--charcoal); border-radius: 10px;
-      padding: 12px;
-      box-shadow: 0 3px 0 rgba(0,0,0,.08);
-      transform: rotate(3deg);
-    }
-    .label h3 {
-      margin: 0 0 8px;
-      font-family: var(--font-display);
-      font-size: 20px; line-height: 1.08;
-    }
-    .label p { margin: 2px 0; color: var(--gray); font-size: 13px; font-weight: 600; }
-
-    .capy {
-      position: absolute; right: 0; bottom: -8px; width: 145px; z-index: 6;
-      filter: drop-shadow(0 5px 0 rgba(0,0,0,.09));
-      animation: floaty 3s ease-in-out infinite;
-      --rot: -3deg;
-    }
-
-    .section {
-      padding: var(--s64) 0;
-      border-top: 1px solid #f2f2f2;
-    }
-    .section h2 {
-      margin: 0 0 var(--s16);
-      font-family: var(--font-display);
-      font-size: clamp(32px, 5vw, 50px);
-      line-height: 1.12;
-      letter-spacing: -.02em;
-      color: var(--green);
-    }
-    .section p.lead {
-      margin: 0;
-      color: var(--gray);
-      font-size: 17px;
-      max-width: 62ch;
-    }
-
-    .feature-grid {
-      margin-top: var(--s32);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--s24);
-    }
-    .card {
-      border: var(--b) solid var(--gray-fade);
-      border-radius: var(--r3);
-      padding: var(--s24);
-      background: #fff;
-      box-shadow: var(--shadow-card);
-      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-    }
-    .card:hover {
-      transform: translateY(-3px);
-      border-color: #8fd95a;
-      box-shadow: var(--shadow-pop);
-    }
-    .card h3 {
-      margin: 0 0 12px;
-      font-size: 24px;
-      line-height: 1.2;
-      font-weight: 800;
-      font-family: var(--font-display);
-      color: var(--charcoal);
-    }
-
-    .checklist { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
-    .checklist li {
-      display: flex; align-items: flex-start; gap: 10px;
-      color: var(--gray); font-size: 16px; line-height: 1.35;
-    }
-    .check {
-      width: 21px; height: 21px; flex: 0 0 21px;
-      border-radius: 6px; border: 2px solid var(--gray-fade);
-      display: grid; place-items: center; margin-top: 2px;
-      font-size: 12px; color: var(--green); background: #fff;
-    }
-
-    .tag {
-      display: inline-flex;
-      margin-top: 14px;
-      border: 2px solid #bfe9fc;
-      background: #f3fbff;
-      color: #0f88c1;
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .split {
-      margin-top: var(--s32);
-      display: grid;
-      grid-template-columns: .95fr 1.05fr;
-      gap: var(--s24);
-      align-items: stretch;
-    }
-
-    .mock-chat {
-      border: var(--b) solid var(--charcoal);
-      border-radius: 22px;
-      background: #fbffef;
-      padding: var(--s20);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 10px;
-      min-height: 290px;
-      box-shadow: var(--shadow-card);
-    }
-    .bubble {
-      max-width: 92%;
-      border: 2px solid var(--charcoal);
-      border-radius: 16px;
-      padding: 10px 12px;
-      font-size: 14px;
-      font-weight: 600;
-      background: #fff;
-      color: var(--charcoal);
-    }
-    .bubble.right { margin-left: auto; background: #eaffd9; }
-    .bubble.blue { background: #e8f7ff; color: #0f709b; }
-
-    .stats {
-      border: var(--b) solid #dfe9da;
-      border-radius: 22px;
-      background: #fff;
-      padding: var(--s20);
-      display: grid; gap: 12px;
-      box-shadow: var(--shadow-card);
-    }
-    .stat {
-      border: 2px solid #eef3ea;
-      border-radius: 14px;
-      padding: 10px 12px;
-      display: flex; justify-content: space-between; align-items: center; gap: 10px;
-      font-size: 14px;
-    }
-    .stat b { color: var(--charcoal); }
-    .stat span { color: #5f9e35; font-weight: 700; }
-
-    .cta-band {
-      margin-top: var(--s48);
-      border-top: 1px solid #ecf5e6;
-      border-bottom: 1px solid #ecf5e6;
-      background: #f9fff4;
-      padding: var(--s40) 0;
-    }
-    .cta-inner {
-      display: flex; flex-wrap: wrap;
-      align-items: center; justify-content: space-between; gap: var(--s16);
-    }
-    .cta-inner h3 {
-      margin: 0;
-      font-family: var(--font-display);
-      font-size: clamp(26px, 4vw, 40px);
-      line-height: 1.14;
-      letter-spacing: -.02em;
-      color: var(--charcoal);
-    }
-    .cta-inner h3 .g { color: var(--green); }
-
-    .footer {
-      background: var(--green);
-      color: #fff;
-      padding: var(--s48) 0;
-    }
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr 1fr;
-      gap: var(--s24);
-    }
-    .footer h3 {
-      margin: 0 0 10px;
-      font-family: var(--font-display);
-      font-size: 34px; line-height: 1.08;
-      letter-spacing: -.02em;
-    }
-    .footer p { margin: 0; color: var(--green-soft); max-width: 35ch; font-size: 15px; }
-    .footer h4 { margin: 0 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; }
-    .footer a { display: block; margin: 6px 0; color: var(--green-soft); font-size: 14px; }
-    .footer a:hover { text-decoration: underline; }
-
-    @media (max-width: 1024px) {
-      .hero-grid, .feature-grid, .split, .footer-grid { grid-template-columns: 1fr; }
-      .book-wrap { min-height: 420px; }
-      .book { width: min(370px, 92%); transform: rotate(-4deg); }
-      .capy { right: 10px; width: 128px; }
-    }
-    @media (max-width: 680px) {
-      .container { width: min(100% - 20px, var(--max)); }
-      .pill { display: none; }
-      .hero { padding: var(--s32) 0 var(--s48); }
-      .hero-copy { font-size: 16px; }
-      .book-wrap { min-height: 345px; }
-      .book { width: min(320px, 92%); }
-      .label { width: 190px; right: 14px; bottom: 14px; }
-      .label h3 { font-size: 17px; }
-      .capy { width: 108px; right: -2px; bottom: -2px; }
-      .btn { padding: 11px 14px; font-size: 12px; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-    }
-  </style>
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1024px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .outputs-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    nav.links { display: none; }
+    .steps { grid-template-columns: 1fr; }
+    .output-list li { grid-template-columns: 1fr; gap: 6px; }
+    .cta-band .inner { flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 480px) {
+    body { font-size: 16px; }
+    h1 { max-width: none; }
+  }
+</style>
 </head>
 <body>
-  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
 
-  <header class="header">
-    <div class="container header-row">
-      <a href="#" class="brand" aria-label="VerbaDoc home">
-        <span class="badge">VD</span>
-        <span>VerbaDoc</span>
-      </a>
-      <div class="header-actions">
-        <button class="pill" type="button" aria-label="Language selector">English</button>
-        <a class="btn btn-green waitlist-link" href="#waitlist">Get started</a>
+<header>
+  <div class="wrap header-row">
+    <a class="wordmark" href="#">VerbaDoc</a>
+    <nav class="links">
+      <a href="#how">How it works</a>
+      <a href="#output">What you get</a>
+      <a href="#waitlist" class="btn-primary">Get started</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow-line">for the night before the test</p>
+      <h1>
+        <span class="mark-wrap"><span class="strike">study harder.</span><span class="correction-note">study smarter</span></span><br>
+        from the notes you already took.
+      </h1>
+      <p class="lede">VerbaDoc reads what you actually wrote — a PDF, a photo of your notebook, a paste of your slides — and turns it into flashcards, explanations, and a tutor that answers from your material, not the internet's.</p>
+      <div class="hero-cta">
+        <a class="btn-primary" href="#waitlist">Join the waitlist</a>
+        <a class="btn-secondary" href="#how">See how it works</a>
+      </div>
+      <p class="stakes">A bad grade can feel like a verdict on you, not just the test. VerbaDoc exists because studying alone at 11pm shouldn't be this hard.</p>
+    </div>
+
+    <div class="excerpt">
+      <span class="grade-mark">nice — see comment</span>
+      <p class="excerpt-label">from your notes</p>
+      <p class="excerpt-body">
+        Active transport moves molecules from <span class="underline-mark">low to high concentration</span>, against the gradient, and always requires ATP. The sodium-potassium pump is the clearest example.
+      </p>
+      <span class="margin-note">flashcard: "against the gradient" → 1-word cue: ATP</span>
+    </div>
+  </div>
+</section>
+
+<section class="steps-section" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Three steps, in order — nothing hidden.</h2>
+      <p>No setup, no account required to see how it works.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <p class="step-number">first</p>
+        <h3>Upload what you have</h3>
+        <p>A PDF, a photo of a handwritten page, or notes pasted straight from your slides.</p>
+      </div>
+      <div class="step">
+        <p class="step-number">then</p>
+        <h3>VerbaDoc reads it closely</h3>
+        <p>It pulls out the terms and ideas that actually matter — not a generic summary of the topic.</p>
+      </div>
+      <div class="step">
+        <p class="step-number">finally</p>
+        <h3>You study what's real</h3>
+        <p>Flashcards, explanations, and tutor answers built only from what you gave it.</p>
       </div>
     </div>
-  </header>
+  </div>
+</section>
 
-  <main>
-    <section class="hero">
-      <span class="blob b1" aria-hidden="true"></span>
-      <span class="blob b2" aria-hidden="true"></span>
-      <span class="blob b3" aria-hidden="true"></span>
-
-      <div class="container hero-grid">
-        <div class="reveal">
-          <span class="eyebrow">clear notes, faster learning</span>
-          <h1>your notes go in, <span class="green">smart study tools</span> come out.</h1>
-          <p class="hero-copy">
-            VerbaDoc turns class notes into flashcards, guided explanations, and tutor support.
-            Build study materials quickly, keep quality high, and focus on understanding.
-          </p>
-
-          <div class="hero-actions">
-            <a class="btn btn-green waitlist-link" href="#waitlist">Join waitlist</a>
-            <a class="btn btn-ghost" href="#features">See features</a>
-          </div>
-          <p class="micro">Built for students and teams who want a clean study workflow.</p>
-
-          <div class="hero-chips">
-            <span class="chip">pdf upload</span>
-            <span class="chip">ocr from photos</span>
-            <span class="chip">flashcards</span>
-            <span class="chip">deep explain</span>
-            <span class="chip">ai tutor</span>
-          </div>
-        </div>
-
-        <div class="book-wrap reveal">
-          <span class="sticker one">new</span>
-          <span class="sticker two">notes to cards</span>
-          <span class="sticker three">study glow-up</span>
-
-          <div class="book" id="tiltBook">
-            <div class="ribbon"></div>
-            <div class="label">
-              <h3>VerbaDoc</h3>
-              <p>Class: Bio + Calc</p>
-              <p>Mode: Exam prep</p>
-              <p>Status: Ready to review</p>
-            </div>
-          </div>
-
-          <svg class="capy" viewBox="0 0 220 180" role="img" aria-label="Capybara mascot">
-            <title>Capybara mascot</title>
-            <ellipse cx="112" cy="98" rx="86" ry="54" fill="#b77c52" stroke="#4b4b4b" stroke-width="4"/>
-            <ellipse cx="116" cy="112" rx="46" ry="28" fill="#c8916a" opacity=".6"/>
-            <circle cx="62" cy="48" r="13" fill="#9f6845" stroke="#4b4b4b" stroke-width="4"/>
-            <circle cx="62" cy="48" r="5" fill="#4b4b4b"/>
-            <ellipse cx="74" cy="78" rx="40" ry="34" fill="#b77c52" stroke="#4b4b4b" stroke-width="4"/>
-            <ellipse cx="58" cy="92" rx="10" ry="8" fill="#8e5b3c"/>
-            <circle cx="83" cy="76" r="4.2" fill="#2f2f2f"/>
-            <path d="M68 98 Q78 104 88 98" fill="none" stroke="#4b4b4b" stroke-width="3" stroke-linecap="round"/>
-            <ellipse cx="132" cy="146" rx="16" ry="9" fill="#9f6845" stroke="#4b4b4b" stroke-width="3"/>
-            <ellipse cx="166" cy="142" rx="15" ry="8" fill="#9f6845" stroke="#4b4b4b" stroke-width="3"/>
-          </svg>
-        </div>
+<section class="outputs" id="output">
+  <div class="wrap outputs-grid">
+    <div>
+      <div class="section-head">
+        <h2>What comes out the other side.</h2>
+        <p>Every one of these is generated from your own material, not a general knowledge base.</p>
       </div>
-    </section>
-
-    <section class="section" id="features">
-      <div class="container">
-        <div class="reveal">
-          <h2>everything that matters, no fluff.</h2>
-          <p class="lead">Core VerbaDoc capabilities for input, extraction, and content generation.</p>
-        </div>
-
-        <div class="feature-grid">
-          <article class="card reveal">
-            <h3>Input + Extraction</h3>
-            <ul class="checklist">
-              <li><span class="check">✓</span><span>Upload PDF and extract text</span></li>
-              <li><span class="check">✓</span><span>Upload photo and extract text with OCR</span></li>
-              <li><span class="check">✓</span><span>Paste notes directly as text</span></li>
-            </ul>
-            <span class="tag">fast setup</span>
-          </article>
-
-          <article class="card reveal">
-            <h3>Input + Content Creation</h3>
-            <ul class="checklist">
-              <li><span class="check">✓</span><span>Generate AI flashcards from notes</span></li>
-              <li><span class="check">✓</span><span>Regenerate flashcards for any document</span></li>
-              <li><span class="check">✓</span><span>Deep Explain on any flashcard</span></li>
-              <li><span class="check">✓</span><span>AI Tutor chat with Verba</span></li>
-              <li><span class="check">✓</span><span>Photo homework help in AI Tutor</span></li>
-            </ul>
-            <span class="tag">from notes to mastery</span>
-          </article>
-        </div>
-
-        <div class="split">
-          <div class="mock-chat reveal">
-            <div class="bubble blue">Student: Explain mitosis in simple steps with one memory trick.</div>
-            <div class="bubble right">Verba: Done. Four phases, one line each, plus a quick mnemonic and a practice question.</div>
-            <div class="bubble blue">Student: Now turn that into flashcards with easy and hard versions.</div>
-            <div class="bubble right">Verba: Generated. 12 core cards and 8 challenge cards, grouped by topic.</div>
-          </div>
-
-          <div class="stats reveal">
-            <div class="stat"><b>PDF/notes to flashcards</b><span>fast</span></div>
-            <div class="stat"><b>Photo homework support</b><span>built in</span></div>
-            <div class="stat"><b>Tutor follow-up prompts</b><span>guided</span></div>
-            <div class="stat"><b>Regenerate by topic</b><span>one click</span></div>
-            <div class="stat"><b>Deep Explain mode</b><span>for hard concepts</span></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="cta-band" id="waitlist">
-      <div class="container cta-inner">
-        <h3>Ready to study with more clarity and <span class="g">less repetition?</span></h3>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <a class="btn btn-green waitlist-link" href="#waitlist">Join waitlist</a>
-          <a class="btn btn-ghost" href="#">Contact team</a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="container footer-grid">
-      <div>
-        <h3>VerbaDoc</h3>
-        <p>Clear study materials, consistent structure, better outcomes.</p>
-      </div>
-      <nav>
-        <h4>Product</h4>
-        <a href="#features">Features</a>
-        <a href="#">Use cases</a>
-        <a href="#">Pricing</a>
-      </nav>
-      <nav>
-        <h4>Company</h4>
-        <a href="#">About</a>
-        <a href="#">Contact</a>
-        <a href="#">Privacy</a>
-      </nav>
+      <dl class="output-list">
+        <li><dt>Flashcards</dt><dd>Short, specific answers — a term and a few words, not a paragraph to reread.</dd></li>
+        <li><dt>Deep Explain</dt><dd>Ask for more on any card and get a real explanation, not a repeat of the definition.</dd></li>
+        <li><dt>Tutor chat</dt><dd>Answers grounded in your notes first, with anything else it adds clearly marked.</dd></li>
+        <li><dt>Photo homework help</dt><dd>Point your camera at a problem and start there.</dd></li>
+      </dl>
     </div>
-  </footer>
+    <div class="tutor-panel">
+      <p class="who">you asked</p>
+      <p class="line">Explain mitosis without just repeating the textbook.</p>
+      <p class="who">from your notes</p>
+      <p class="line reply">Your notes cover four phases — I'll walk through each with the memory trick you wrote in the margin, then check you actually followed it with one question.</p>
+    </div>
+  </div>
+</section>
 
-  <script>
-    // 1) Set your real waitlist destination here once:
-    // Examples:
-    // const WAITLIST_URL = "https://formspree.io/f/xxxxxx";
-    // const WAITLIST_URL = "https://forms.gle/your-google-form-id";
-    // const WAITLIST_URL = "mailto:hello@verbadc.com?subject=Waitlist";
-    const WAITLIST_URL = "https://formspree.io/f/xeevyzlv";
+<section class="cta-band" id="waitlist">
+  <div class="wrap inner">
+    <h2>Get early access before it's open to everyone.</h2>
+    <div class="cta-actions">
+      <a class="btn-primary" href="#">Join the waitlist</a>
+      <a class="btn-secondary" href="mailto:hello@verbadc.com">Contact us</a>
+    </div>
+  </div>
+</section>
 
-    // Wire all waitlist buttons
-    document.querySelectorAll(".waitlist-link").forEach((el) => {
-      el.setAttribute("href", WAITLIST_URL);
-      el.setAttribute("target", "_blank");
-      el.setAttribute("rel", "noopener noreferrer");
-    });
+<footer>
+  <div class="wrap footer-row">
+    <span class="wordmark-small">VerbaDoc</span>
+    <div class="foot-links">
+      <a href="#how">How it works</a>
+      <a href="#output">What you get</a>
+      <a href="mailto:hello@verbadc.com">Contact</a>
+    </div>
+  </div>
+</footer>
 
-    // Scroll progress bar
-    const progressBar = document.getElementById("progressBar");
-    const updateProgress = () => {
-      const top = window.scrollY || document.documentElement.scrollTop;
-      const height = document.documentElement.scrollHeight - window.innerHeight;
-      progressBar.style.width = (height > 0 ? (top / height) * 100 : 0) + "%";
-    };
-    window.addEventListener("scroll", updateProgress, { passive: true });
-    updateProgress();
-
-    // Reveal on scroll
-    const reveals = [...document.querySelectorAll(".reveal")];
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("in");
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15 });
-    reveals.forEach((el) => io.observe(el));
-
-    // Notebook tilt
-    const book = document.getElementById("tiltBook");
-    if (book && window.matchMedia("(pointer:fine)").matches) {
-      const parent = book.parentElement;
-      parent.addEventListener("mousemove", (e) => {
-        const rect = parent.getBoundingClientRect();
-        const px = (e.clientX - rect.left) / rect.width;
-        const py = (e.clientY - rect.top) / rect.height;
-        const ry = (px - 0.5) * 12;
-        const rx = (0.5 - py) * 10;
-        book.style.transform = `rotate(-6deg) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
-      });
-      parent.addEventListener("mouseleave", () => {
-        book.style.transform = "rotate(-6deg) rotateX(0deg) rotateY(0deg)";
-      });
-    }
-  </script>
 </body>
 </html>
